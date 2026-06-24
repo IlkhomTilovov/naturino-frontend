@@ -13,10 +13,10 @@ const SLOT_WIDTH = 340;
 // the further it sits from the active slide, stacking into a pyramid of photos.
 const FAN_STOPS = [
   { scale: 1.15, opacity: 1, blur: 0, translateY: 0, z: 40 },
-  { scale: 0.75, opacity: 0.12, blur: 6, translateY: 46, z: 30 },
-  { scale: 0.6, opacity: 0.06, blur: 6, translateY: 78, z: 20 },
-  { scale: 0.5, opacity: 0, blur: 6, translateY: 102, z: 10 },
-  { scale: 0.4, opacity: 0, blur: 6, translateY: 118, z: 0 },
+  { scale: 0.75, opacity: 0.35, blur: 4, translateY: 46, z: 30 },
+  { scale: 0.6, opacity: 0.22, blur: 4, translateY: 78, z: 20 },
+  { scale: 0.5, opacity: 0.12, blur: 4, translateY: 102, z: 10 },
+  { scale: 0.4, opacity: 0.08, blur: 4, translateY: 118, z: 0 },
 ];
 
 function fanStop(distance: number) {
@@ -69,32 +69,30 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
         />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-        {product.isFeatured && (
-          <span className="rounded-full bg-[var(--rt-accent)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--rt-accent)]">
-            Tavsiya etiladi
-          </span>
-        )}
-        {badges.map((badge) => (
-          <span
-            key={badge}
-            className="rounded-full bg-[var(--rt-brand-primary)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--rt-brand-primary)]"
-          >
-            {badge}
-          </span>
-        ))}
-      </div>
+      {isCenter && (
+        <>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            {product.isFeatured && (
+              <span className="rounded-full bg-[var(--rt-accent)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--rt-accent)]">
+                Tavsiya etiladi
+              </span>
+            )}
+            {badges.map((badge) => (
+              <span
+                key={badge}
+                className="rounded-full bg-[var(--rt-brand-primary)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--rt-brand-primary)]"
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
 
-      <h3
-        className={`mt-2 pb-0.5 font-bold leading-[1.35] text-slate-900 ${
-          isCenter ? "text-xl sm:text-2xl" : "line-clamp-2 text-sm sm:text-base"
-        }`}
-      >
-        {product.name}
-      </h3>
+          <h3 className="mt-2 pb-0.5 text-xl font-bold leading-[1.35] text-slate-900 sm:text-2xl">{product.name}</h3>
 
-      {isCenter && product.shortDescription && (
-        <p className="mt-1.5 line-clamp-1 max-w-md text-sm text-slate-500">{product.shortDescription}</p>
+          {product.shortDescription && (
+            <p className="mt-1.5 line-clamp-1 max-w-md text-sm text-slate-500">{product.shortDescription}</p>
+          )}
+        </>
       )}
     </Link>
   );
