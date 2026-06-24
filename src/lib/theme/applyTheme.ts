@@ -1,10 +1,19 @@
 import { parseTokens, type Theme } from "../../types/theme";
 import { DEFAULT_COLOR_TOKENS, DEFAULT_RADIUS_TOKENS, DEFAULT_SHADOW_TOKENS, RADIUS_STYLE_PX, SHADOW_LEVEL_VALUE } from "./defaults";
+import { findFont } from "./fontLibrary";
+import { loadGoogleFonts } from "./googleFonts";
 
 export function applyTheme(theme: Theme) {
   const colors = parseTokens(theme.colorTokensJson, DEFAULT_COLOR_TOKENS);
   const radius = parseTokens(theme.radiusTokensJson, DEFAULT_RADIUS_TOKENS);
   const shadow = parseTokens(theme.shadowTokensJson, DEFAULT_SHADOW_TOKENS);
+
+  loadGoogleFonts(
+    [theme.fontHeading, theme.fontBody].map((name) => ({
+      name,
+      weights: findFont(name)?.weights,
+    })),
+  );
 
   const root = document.documentElement.style;
   root.setProperty("--rt-brand-primary", colors.brand.primary);

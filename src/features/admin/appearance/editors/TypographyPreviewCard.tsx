@@ -30,19 +30,19 @@ export function TypographyPreviewCard({
 
   return (
     <div className="rounded-2xl border border-admin-border bg-white p-6">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-admin-muted">Typography Preview</p>
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-admin-muted">Tipografiya ko'rinishi</p>
 
       <span className="mb-3 inline-block rounded-full bg-admin-accent-50 px-3 py-1 text-[11px] font-semibold uppercase text-admin-accent">
         ISO 22000
       </span>
 
       <h3 className="text-admin-primary" style={headingStyle}>
-        Premium Pet Food Export
+        Premium uy hayvonlari ozuqasi eksporti
       </h3>
 
       <p className="mt-3 text-sm text-admin-muted" style={bodyStyle}>
-        Naturino produces premium pet food products for international distributors and importers. Export-ready
-        documentation and certified manufacturing processes ensure consistent quality.
+        Naturino xalqaro distribyutorlar va importyorlar uchun premium uy hayvonlari ozuqasini ishlab chiqaradi.
+        Eksportga tayyor hujjatlar va sertifikatlangan ishlab chiqarish jarayonlari barqaror sifatni ta'minlaydi.
       </p>
 
       <button
@@ -50,7 +50,7 @@ export function TypographyPreviewCard({
         className="mt-4 rounded-full bg-admin-primary px-5 py-2.5 text-sm font-semibold text-white"
         style={{ fontFamily: fontBody }}
       >
-        Export Catalog
+        Eksport katalogi
       </button>
 
       <div className="mt-5 grid grid-cols-3 gap-3 border-t border-admin-border pt-5">
@@ -68,7 +68,7 @@ export function TypographyPreviewCard({
       </div>
 
       <p className="mt-5 border-t border-admin-border pt-4 text-[11px] text-admin-muted" style={{ fontFamily: fontBody }}>
-        © Naturino by Steppe Nutrition — Premium pet food export
+        © Naturino by Steppe Nutrition — Premium uy hayvonlari ozuqasi eksporti
       </p>
     </div>
   );

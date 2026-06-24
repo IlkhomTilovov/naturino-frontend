@@ -2,11 +2,11 @@ import type { RadiusTokens } from "../../../../types/theme";
 import { RADIUS_STYLE_PX } from "../../../../lib/theme/defaults";
 
 const OPTIONS: { key: RadiusTokens["style"]; label: string }[] = [
-  { key: "sharp", label: "Sharp" },
-  { key: "soft", label: "Soft" },
-  { key: "rounded", label: "Rounded" },
-  { key: "modern", label: "Modern" },
-  { key: "pill", label: "Pill" },
+  { key: "sharp", label: "O'tkir" },
+  { key: "soft", label: "Yumshoq" },
+  { key: "rounded", label: "Dumaloq" },
+  { key: "modern", label: "Zamonaviy" },
+  { key: "pill", label: "Tabletka" },
 ];
 
 export function RadiusEditor({ tokens, onChange }: { tokens: RadiusTokens; onChange: (next: RadiusTokens) => void }) {

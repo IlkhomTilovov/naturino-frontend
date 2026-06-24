@@ -16,7 +16,7 @@ export function ShadowEditor({ tokens, onChange }: { tokens: ShadowTokens; onCha
           }`}
         >
           <span className="h-10 w-10 rounded-lg bg-white" style={{ boxShadow: SHADOW_LEVEL_VALUE[level] }} />
-          <span className="text-xs font-medium text-admin-primary">Level {level}</span>
+          <span className="text-xs font-medium text-admin-primary">Daraja {level}</span>
         </button>
       ))}
     </div>

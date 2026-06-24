@@ -39,23 +39,6 @@ export const PARAGRAPH_WIDTH_PX: Record<string, number> = {
   wide: 760,
 };
 
-export const HEADING_FONTS = [
-  { name: "Inter", type: "Modern Sans Serif", recommended: true },
-  { name: "Montserrat", type: "Corporate & Strong" },
-  { name: "Lora", type: "Elegant Serif" },
-  { name: "Geist", type: "Modern Product UI" },
-  { name: "Poppins", type: "Friendly Modern" },
-];
-
-export const BODY_FONTS = [
-  { name: "Inter", type: "Modern Sans Serif", recommended: true },
-  { name: "Roboto", type: "Neutral & Readable" },
-  { name: "Open Sans", type: "Friendly & Clear" },
-  { name: "Geist", type: "Modern Product UI" },
-  { name: "Poppins", type: "Friendly Modern" },
-  { name: "Nunito", type: "Soft & Rounded" },
-];
-
 export const FONT_WEIGHTS = [
   { value: "300", label: "Light" },
   { value: "400", label: "Regular" },

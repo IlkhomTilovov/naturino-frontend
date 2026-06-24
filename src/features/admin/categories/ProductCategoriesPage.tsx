@@ -8,6 +8,7 @@ import { TableSkeleton } from "../../../components/admin/TableSkeleton";
 import { IconButton } from "../../../components/admin/IconButton";
 import { CategorySeoBadge, CategoryStatusBadge } from "../../../components/admin/CategorySeoBadge";
 import { BoxIcon, CopyIcon, DragHandleIcon, EyeIcon, GlobeIcon, PencilIcon, PlusIcon, SearchIcon, TrashIcon } from "../../../components/admin/icons";
+import { FolderTree } from "lucide-react";
 import { computeCategorySeoScore } from "../../../lib/utils/categorySeo";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../lib/utils/media";
 import { useToastStore } from "../../../store/toastStore";
@@ -153,6 +154,7 @@ export function ProductCategoriesPage() {
                 <tr>
                   <td colSpan={8}>
                     <EmptyState
+                      icon={FolderTree}
                       title="Toifalar topilmadi"
                       description="Qidiruvni o'zgartiring yoki yangi toifa qo'shing."
                       action={

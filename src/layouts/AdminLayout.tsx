@@ -6,12 +6,14 @@ import {
   ChevronsRight,
   FileText,
   FolderTree,
-  Globe,
+  Images,
+  Languages,
   LayoutDashboard,
   Menu,
   Package,
   Palette,
   Search,
+  SearchCheck,
   Settings,
   Users,
 } from "lucide-react";
@@ -34,7 +36,7 @@ const NAV_GROUPS = [
   },
   {
     title: "Lokalizatsiya",
-    items: [{ to: "/admin/languages", label: "Tillar", end: false, icon: Globe }],
+    items: [{ to: "/admin/languages", label: "Tillar", end: false, icon: Languages }],
   },
   {
     title: "Ko'rinish",
@@ -44,8 +46,8 @@ const NAV_GROUPS = [
     title: "Sozlamalar",
     items: [
       { to: "/admin/settings", label: "Umumiy sozlamalar", end: true, icon: Settings },
-      { to: "/admin/settings/seo", label: "SEO", end: false, icon: Search },
-      { to: "/admin/settings/media", label: "Media Manager", end: false, icon: FileText },
+      { to: "/admin/settings/seo", label: "SEO", end: false, icon: SearchCheck },
+      { to: "/admin/settings/media", label: "Media Manager", end: false, icon: Images },
       { to: "/admin/settings/users", label: "Foydalanuvchilar", end: false, icon: Users },
     ],
   },
@@ -92,7 +94,7 @@ function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavig
                     {({ isActive }) => (
                       <>
                         {isActive && <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-admin-accent" />}
-                        <Icon className="h-[18px] w-[18px] shrink-0" />
+                        <Icon strokeWidth={1.8} className="h-[18px] w-[18px] shrink-0" />
                         {!collapsed && <span className="truncate">{item.label}</span>}
                         {collapsed && (
                           <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-md bg-admin-primary px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
@@ -145,9 +147,9 @@ export function AdminLayout() {
           onClick={() => setCollapsed((c) => !c)}
           className="flex items-center justify-center gap-2 border-t border-admin-border py-3 text-xs font-medium text-admin-muted transition-colors hover:bg-slate-100 hover:text-admin-primary"
         >
-          {collapsed ? <ChevronsRight className="h-4 w-4" /> : (
+          {collapsed ? <ChevronsRight strokeWidth={1.8} className="h-4 w-4" /> : (
             <>
-              <ChevronsLeft className="h-4 w-4" /> Yig'ish
+              <ChevronsLeft strokeWidth={1.8} className="h-4 w-4" /> Yig'ish
             </>
           )}
         </button>
@@ -168,11 +170,11 @@ export function AdminLayout() {
               onClick={() => setMobileOpen(true)}
               className="flex h-9 w-9 items-center justify-center rounded-lg text-admin-muted hover:bg-slate-100 lg:hidden"
             >
-              <Menu className="h-5 w-5" />
+              <Menu strokeWidth={1.8} className="h-[18px] w-[18px]" />
             </button>
 
             <div className="relative hidden sm:block">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-muted" />
+              <Search strokeWidth={1.8} className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-muted" />
               <input
                 type="text"
                 placeholder="Qidirish..."
@@ -186,8 +188,8 @@ export function AdminLayout() {
               <span className="rounded-full bg-admin-primary px-2.5 py-1 text-white">UZ</span>
               <span className="px-2.5 py-1 text-admin-muted">RU</span>
             </div>
-            <button type="button" className="relative text-admin-muted hover:text-admin-primary" title="Bildirishnomalar">
-              <Bell className="h-5 w-5" />
+            <button type="button" className="relative text-admin-muted hover:text-admin-primary" title="Bildirishnomalar" aria-label="Bildirishnomalar">
+              <Bell strokeWidth={1.8} className="h-[18px] w-[18px]" />
             </button>
             <div className="group relative">
               <button

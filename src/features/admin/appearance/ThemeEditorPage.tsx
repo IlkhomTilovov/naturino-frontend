@@ -42,8 +42,8 @@ const TABS: ThemeTab[] = [
   { key: "layout", label: "Layout" },
   { key: "animation", label: "Animatsiya" },
   { key: "logo", label: "Logo" },
-  { key: "customcss", label: "Custom CSS" },
-  { key: "preview", label: "Preview" },
+  { key: "customcss", label: "Maxsus CSS" },
+  { key: "preview", label: "Ko'rib chiqish" },
 ];
 
 const EMPTY_FORM: ThemeFormValues = {

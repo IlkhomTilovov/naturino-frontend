@@ -1,5 +1,5 @@
 import { FormSectionCard } from "../../../../components/admin/FormSectionCard";
-import { BODY_FONTS, HEADING_FONTS } from "../../../../lib/theme/defaults";
+import { FONT_LIBRARY } from "../../../../lib/theme/fontLibrary";
 import type { TypographyTokens } from "../../../../types/theme";
 import { AdvancedTypographyEditor } from "./AdvancedTypographyEditor";
 import { FontPicker } from "./FontPicker";
@@ -30,7 +30,7 @@ export function TypographyEditor({
         <div className="space-y-5">
           <div>
             <label className="mb-2 block text-xs font-medium text-admin-primary">Heading Font Family</label>
-            <FontPicker fonts={HEADING_FONTS} value={fontHeading} onChange={(f) => onFontChange(f, fontBody)} />
+            <FontPicker fonts={FONT_LIBRARY} value={fontHeading} onChange={(f) => onFontChange(f, fontBody)} />
           </div>
 
           <div>
@@ -61,7 +61,7 @@ export function TypographyEditor({
           <div>
             <label className="mb-2 block text-xs font-medium text-admin-primary">Body Font</label>
             <FontPicker
-              fonts={BODY_FONTS}
+              fonts={FONT_LIBRARY}
               value={fontBody}
               onChange={(f) => onFontChange(fontHeading, f)}
               previewText="produces premium pet food for export."

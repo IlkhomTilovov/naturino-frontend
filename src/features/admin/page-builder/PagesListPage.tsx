@@ -5,6 +5,7 @@ import { pagesApi } from "../../../api/endpoints/pages";
 import { PageHeader } from "../../../components/admin/PageHeader";
 import { EmptyState } from "../../../components/admin/EmptyState";
 import { SearchIcon } from "../../../components/admin/icons";
+import { FileText } from "lucide-react";
 import { timeAgo } from "../../../lib/utils/timeAgo";
 import type { Page } from "../../../types/page";
 
@@ -91,7 +92,7 @@ export function PagesListPage() {
 
       {!isLoading && filtered.length === 0 && (
         <div className="rounded-xl border border-admin-border bg-white">
-          <EmptyState title="Sahifalar topilmadi" description="Qidiruv yoki filtrlarni o'zgartirib ko'ring." />
+          <EmptyState icon={FileText} title="Sahifalar topilmadi" description="Qidiruv yoki filtrlarni o'zgartirib ko'ring." />
         </div>
       )}
 

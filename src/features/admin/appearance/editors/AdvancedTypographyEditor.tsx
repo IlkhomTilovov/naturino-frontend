@@ -14,24 +14,24 @@ export function AdvancedTypographyEditor({
     <div className="space-y-5">
       <div>
         <div className="mb-1.5 flex items-center gap-1.5">
-          <label className="text-xs font-medium text-admin-primary">Text Transform</label>
+          <label className="text-xs font-medium text-admin-primary">Matn ko'rinishi</label>
           <InfoTooltip text="Matn katta-kichik harflarini avtomatik o'zgartiradi." />
         </div>
         <SegmentedControl
           value={tokens.textTransform}
           onChange={(v) => onChange({ ...tokens, textTransform: v })}
           options={[
-            { key: "none", label: "None" },
-            { key: "uppercase", label: "Uppercase" },
-            { key: "capitalize", label: "Capitalize" },
-            { key: "lowercase", label: "Lowercase" },
+            { key: "none", label: "Yo'q" },
+            { key: "uppercase", label: "BOSH HARFLAR" },
+            { key: "capitalize", label: "Har So'z Bosh Harf" },
+            { key: "lowercase", label: "kichik harflar" },
           ]}
         />
       </div>
 
       <label className="flex items-center justify-between rounded-2xl border border-admin-border px-4 py-3">
         <span className="flex items-center gap-1.5 text-sm">
-          <span className="font-medium text-admin-primary">Font Smoothing</span>
+          <span className="font-medium text-admin-primary">Shrift silliqlashi</span>
           <InfoTooltip text="Shriftlarni ekran rezolutsiyasiga moslab tekislaydi (antialiasing)." />
         </span>
         <input
@@ -42,20 +42,20 @@ export function AdvancedTypographyEditor({
       </label>
 
       <div>
-        <label className="mb-1.5 block text-xs font-medium text-admin-primary">Rendering Mode</label>
+        <label className="mb-1.5 block text-xs font-medium text-admin-primary">Render rejimi</label>
         <SegmentedControl
           value={tokens.renderingMode}
           onChange={(v) => onChange({ ...tokens, renderingMode: v })}
           options={[
-            { key: "auto", label: "Auto" },
-            { key: "sharp", label: "Sharp" },
-            { key: "smooth", label: "Smooth" },
+            { key: "auto", label: "Avtomatik" },
+            { key: "sharp", label: "O'tkir" },
+            { key: "smooth", label: "Silliq" },
           ]}
         />
       </div>
 
       <PremiumSlider
-        label="Word Spacing"
+        label="So'zlar orasi"
         value={tokens.wordSpacing}
         min={-4}
         max={12}
@@ -63,7 +63,7 @@ export function AdvancedTypographyEditor({
       />
 
       <PremiumSlider
-        label="Character Spacing"
+        label="Harflar orasi"
         value={tokens.charSpacing}
         min={-2}
         max={6}

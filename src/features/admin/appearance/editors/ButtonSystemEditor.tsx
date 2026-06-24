@@ -3,30 +3,30 @@ import { RADIUS_STYLE_PX } from "../../../../lib/theme/defaults";
 import { SegmentedControl } from "./SegmentedControl";
 
 const STYLE_OPTIONS: { key: ButtonTokens["primaryStyle"]; label: string }[] = [
-  { key: "solid", label: "Solid" },
-  { key: "outline", label: "Outline" },
-  { key: "soft", label: "Soft" },
-  { key: "ghost", label: "Ghost" },
+  { key: "solid", label: "To'liq" },
+  { key: "outline", label: "Konturli" },
+  { key: "soft", label: "Yumshoq" },
+  { key: "ghost", label: "Shaffof" },
 ];
 
 const SIZE_OPTIONS: { key: ButtonTokens["size"]; label: string }[] = [
-  { key: "small", label: "Small" },
-  { key: "medium", label: "Medium" },
-  { key: "large", label: "Large" },
+  { key: "small", label: "Kichik" },
+  { key: "medium", label: "O'rta" },
+  { key: "large", label: "Katta" },
 ];
 
 const HOVER_OPTIONS: { key: ButtonTokens["hoverEffect"]; label: string }[] = [
-  { key: "none", label: "None" },
-  { key: "lift", label: "Lift" },
-  { key: "glow", label: "Glow" },
-  { key: "scale", label: "Scale" },
+  { key: "none", label: "Yo'q" },
+  { key: "lift", label: "Ko'tarilish" },
+  { key: "glow", label: "Yorqinlik" },
+  { key: "scale", label: "Kattalashish" },
 ];
 
 const RADIUS_OPTIONS = [
-  { key: "sharp", label: "Sharp" },
-  { key: "soft", label: "Soft" },
-  { key: "rounded", label: "Rounded" },
-  { key: "pill", label: "Pill" },
+  { key: "sharp", label: "O'tkir" },
+  { key: "soft", label: "Yumshoq" },
+  { key: "rounded", label: "Dumaloq" },
+  { key: "pill", label: "Tabletka" },
 ];
 
 const SIZE_PADDING: Record<ButtonTokens["size"], string> = {
@@ -111,8 +111,8 @@ export function ButtonSystemEditor({ tokens, onChange }: { tokens: ButtonTokens;
       </div>
 
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-admin-border bg-slate-50 p-5">
-        <PreviewButton label="Export Catalog" variant="primaryStyle" tokens={tokens} />
-        <PreviewButton label="Learn More" variant="secondaryStyle" tokens={tokens} />
+        <PreviewButton label="Eksport katalogi" variant="primaryStyle" tokens={tokens} />
+        <PreviewButton label="Batafsil" variant="secondaryStyle" tokens={tokens} />
       </div>
     </div>
   );

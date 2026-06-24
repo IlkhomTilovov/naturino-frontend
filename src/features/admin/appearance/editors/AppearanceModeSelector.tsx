@@ -1,9 +1,9 @@
 import type { AppearanceMode } from "../../../../types/theme";
 
 const OPTIONS: { key: AppearanceMode; label: string; icon: string }[] = [
-  { key: "light", label: "Light Mode", icon: "☀️" },
-  { key: "dark", label: "Dark Mode", icon: "🌙" },
-  { key: "auto", label: "Auto Mode", icon: "🌗" },
+  { key: "light", label: "Yorug' rejim", icon: "☀️" },
+  { key: "dark", label: "Qorong'i rejim", icon: "🌙" },
+  { key: "auto", label: "Avtomatik rejim", icon: "🌗" },
 ];
 
 export function AppearanceModeSelector({ value, onChange }: { value: AppearanceMode; onChange: (v: AppearanceMode) => void }) {

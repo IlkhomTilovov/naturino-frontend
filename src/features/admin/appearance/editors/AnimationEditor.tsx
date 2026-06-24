@@ -40,11 +40,11 @@ export function AnimationEditor({ tokens, onChange }: { tokens: AnimationTokens;
     <div className="space-y-4">
       <FormSectionCard title="Harakat sozlamalari" description="Saytdagi animatsiyalarni yoqing/o'chiring">
         <div className="space-y-2.5">
-          <ToggleRow label="Hover Animation" description="Umumiy hover effektlari" checked={tokens.hoverAnimation} onChange={(v) => onChange({ ...tokens, hoverAnimation: v })} />
-          <ToggleRow label="Card Hover" description="Kartalar hover holatida ko'tariladi" checked={tokens.cardHover} onChange={(v) => onChange({ ...tokens, cardHover: v })} />
-          <ToggleRow label="Button Hover" description="Tugmalar hover animatsiyasi" checked={tokens.buttonHover} onChange={(v) => onChange({ ...tokens, buttonHover: v })} />
-          <ToggleRow label="Scroll Reveal" description="Sahifa skroll qilinganda elementlar paydo bo'ladi" checked={tokens.scrollReveal} onChange={(v) => onChange({ ...tokens, scrollReveal: v })} />
-          <ToggleRow label="Fade In" description="Elementlar asta-sekin ko'rinadi" checked={tokens.fadeIn} onChange={(v) => onChange({ ...tokens, fadeIn: v })} />
+          <ToggleRow label="Hover animatsiyasi" description="Umumiy hover effektlari" checked={tokens.hoverAnimation} onChange={(v) => onChange({ ...tokens, hoverAnimation: v })} />
+          <ToggleRow label="Karta hover" description="Kartalar hover holatida ko'tariladi" checked={tokens.cardHover} onChange={(v) => onChange({ ...tokens, cardHover: v })} />
+          <ToggleRow label="Tugma hover" description="Tugmalar hover animatsiyasi" checked={tokens.buttonHover} onChange={(v) => onChange({ ...tokens, buttonHover: v })} />
+          <ToggleRow label="Skroll bilan paydo bo'lish" description="Sahifa skroll qilinganda elementlar paydo bo'ladi" checked={tokens.scrollReveal} onChange={(v) => onChange({ ...tokens, scrollReveal: v })} />
+          <ToggleRow label="Asta-sekin paydo bo'lish" description="Elementlar asta-sekin ko'rinadi" checked={tokens.fadeIn} onChange={(v) => onChange({ ...tokens, fadeIn: v })} />
         </div>
       </FormSectionCard>
 
@@ -53,14 +53,14 @@ export function AnimationEditor({ tokens, onChange }: { tokens: AnimationTokens;
           value={tokens.speed}
           onChange={(v) => onChange({ ...tokens, speed: v })}
           options={[
-            { key: "slow", label: "Slow" },
-            { key: "medium", label: "Medium" },
-            { key: "fast", label: "Fast" },
+            { key: "slow", label: "Sekin" },
+            { key: "medium", label: "O'rta" },
+            { key: "fast", label: "Tez" },
           ]}
         />
       </FormSectionCard>
 
-      <FormSectionCard title="Preview" description="Har bir effektni sinab ko'ring">
+      <FormSectionCard title="Ko'rib chiqish" description="Har bir effektni sinab ko'ring">
         <div className="flex flex-wrap gap-4">
           <div
             className={`flex h-16 w-28 items-center justify-center rounded-xl border border-admin-border bg-white text-xs font-medium text-admin-muted ${
@@ -68,7 +68,7 @@ export function AnimationEditor({ tokens, onChange }: { tokens: AnimationTokens;
             }`}
             style={{ transitionDuration: `${speedMs}ms` }}
           >
-            Card Hover
+            Karta hover
           </div>
           <button
             type="button"
@@ -77,7 +77,7 @@ export function AnimationEditor({ tokens, onChange }: { tokens: AnimationTokens;
             }`}
             style={{ transitionDuration: `${speedMs}ms` }}
           >
-            Button Hover
+            Tugma hover
           </button>
         </div>
       </FormSectionCard>

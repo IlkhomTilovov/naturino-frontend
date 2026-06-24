@@ -21,7 +21,7 @@ export function IconButton({ label, onClick, variant = "default", disabled = fal
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${variantClass}`}
+      className={`inline-flex h-8 w-8 items-center justify-center rounded-md transition-all duration-200 ease-out hover:-translate-y-px active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:active:scale-100 ${variantClass}`}
     >
       {children}
     </button>

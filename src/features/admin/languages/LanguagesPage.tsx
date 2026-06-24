@@ -8,6 +8,7 @@ import { EmptyState } from "../../../components/admin/EmptyState";
 import { TableSkeleton } from "../../../components/admin/TableSkeleton";
 import { IconButton } from "../../../components/admin/IconButton";
 import { DragHandleIcon, PencilIcon, PlusIcon, SearchIcon, StarIcon, TrashIcon } from "../../../components/admin/icons";
+import { Languages } from "lucide-react";
 import { useToastStore } from "../../../store/toastStore";
 import type { Language, LanguageFormValues } from "../../../types/language";
 import { LanguageModal } from "./LanguageModal";
@@ -160,6 +161,7 @@ export function LanguagesPage() {
                 <tr>
                   <td colSpan={9}>
                     <EmptyState
+                      icon={Languages}
                       title="Tillar topilmadi"
                       description="Qidiruvni o'zgartiring yoki yangi til qo'shing."
                       action={

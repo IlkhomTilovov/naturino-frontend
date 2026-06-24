@@ -2,10 +2,10 @@ import { FONT_SCALE_PX } from "../../../../lib/theme/defaults";
 import type { TypographyTokens } from "../../../../types/theme";
 
 const SCALES: { key: TypographyTokens["fontScale"]; label: string }[] = [
-  { key: "small", label: "Small" },
-  { key: "medium", label: "Medium" },
-  { key: "large", label: "Large" },
-  { key: "xlarge", label: "Extra Large" },
+  { key: "small", label: "Kichik" },
+  { key: "medium", label: "O'rta" },
+  { key: "large", label: "Katta" },
+  { key: "xlarge", label: "Juda katta" },
 ];
 
 export function ScaleSelector({

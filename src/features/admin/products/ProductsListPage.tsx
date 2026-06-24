@@ -9,6 +9,7 @@ import { EmptyState } from "../../../components/admin/EmptyState";
 import { TableSkeleton } from "../../../components/admin/TableSkeleton";
 import { IconButton } from "../../../components/admin/IconButton";
 import { EyeIcon, PencilIcon, PlusIcon, RefreshIcon, SearchIcon, StarIcon, TrashIcon } from "../../../components/admin/icons";
+import { Package } from "lucide-react";
 import { computeSeoScore } from "../../../lib/utils/seo";
 import { resolveMediaUrl, FALLBACK_IMAGE } from "../../../lib/utils/media";
 import type { Product } from "../../../types/product";
@@ -218,6 +219,7 @@ export function ProductsListPage() {
                 <tr>
                   <td colSpan={8}>
                     <EmptyState
+                      icon={Package}
                       title="Mahsulotlar topilmadi"
                       description="Qidiruv yoki filtrlarni o'zgartirib ko'ring, yoki yangi mahsulot qo'shing."
                       action={

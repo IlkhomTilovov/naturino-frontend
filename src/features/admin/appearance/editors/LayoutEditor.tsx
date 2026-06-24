@@ -35,9 +35,9 @@ export function LayoutEditor({ tokens, onChange }: { tokens: LayoutTokens; onCha
             value={tokens.sectionSpacing}
             onChange={(v) => onChange({ ...tokens, sectionSpacing: v })}
             options={[
-              { key: "compact", label: "Compact" },
-              { key: "comfortable", label: "Comfortable" },
-              { key: "spacious", label: "Spacious" },
+              { key: "compact", label: "Ixcham" },
+              { key: "comfortable", label: "Qulay" },
+              { key: "spacious", label: "Keng" },
             ]}
           />
           <div className="flex flex-col gap-1.5 rounded-xl border border-admin-border p-3">
@@ -85,9 +85,9 @@ export function LayoutEditor({ tokens, onChange }: { tokens: LayoutTokens; onCha
           value={tokens.maxContentWidth}
           onChange={(v) => onChange({ ...tokens, maxContentWidth: v })}
           options={[
-            { key: "narrow", label: `Narrow (${MAX_CONTENT_WIDTH_PX.narrow}px)` },
-            { key: "standard", label: `Standard (${MAX_CONTENT_WIDTH_PX.standard}px)` },
-            { key: "wide", label: `Wide (${MAX_CONTENT_WIDTH_PX.wide}px)` },
+            { key: "narrow", label: `Tor (${MAX_CONTENT_WIDTH_PX.narrow}px)` },
+            { key: "standard", label: `Standart (${MAX_CONTENT_WIDTH_PX.standard}px)` },
+            { key: "wide", label: `Keng (${MAX_CONTENT_WIDTH_PX.wide}px)` },
           ]}
         />
       </FormSectionCard>
