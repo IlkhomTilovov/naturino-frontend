@@ -162,7 +162,7 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
       <div ref={scrollWrapperRef} className="relative h-[400vh]">
         <section className="sticky top-0 isolate h-screen overflow-hidden bg-slate-900">
           <ScrollFrameAnimation
-            framePattern={banner.framePattern ?? "/hero-frames/frame-{n}.png"}
+            framePattern={banner.framePattern ?? "/hero-frames/frame-{n}.webp"}
             frameCount={banner.frameCount ?? 221}
             progress={scrollProgress}
             className="absolute inset-0 h-full w-full"

@@ -37,9 +37,16 @@ export function ScrollFrameAnimation({ framePattern, frameCount, progress, class
       imagesRef.current = images;
       setIsReady(true);
 
-      for (let i = 1; i < frameCount; i++) {
+      // Load the rest in small concurrent batches — much faster to fill the buffer
+      // than one-at-a-time, which left late frames stuttering on a fast scroll.
+      const BATCH_SIZE = 8;
+      for (let start = 1; start < frameCount; start += BATCH_SIZE) {
         if (cancelled) return;
-        await loadFrame(i);
+        const batch = Array.from(
+          { length: Math.min(BATCH_SIZE, frameCount - start) },
+          (_, j) => loadFrame(start + j),
+        );
+        await Promise.all(batch);
       }
     })();
 
