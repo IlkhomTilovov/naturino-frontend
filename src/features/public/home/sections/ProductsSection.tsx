@@ -12,11 +12,11 @@ const SLOT_WIDTH = 340;
 // Distance-from-center lookup: scale/opacity/blur shrink and the card drops lower
 // the further it sits from the active slide, stacking into a pyramid of photos.
 const FAN_STOPS = [
-  { scale: 1, opacity: 1, blur: 0, translateY: 0, z: 40 },
-  { scale: 0.8, opacity: 0.4, blur: 2, translateY: 46, z: 30 },
-  { scale: 0.62, opacity: 0.22, blur: 3, translateY: 78, z: 20 },
-  { scale: 0.5, opacity: 0.1, blur: 4, translateY: 102, z: 10 },
-  { scale: 0.4, opacity: 0, blur: 4, translateY: 118, z: 0 },
+  { scale: 1.15, opacity: 1, blur: 0, translateY: 0, z: 40 },
+  { scale: 0.75, opacity: 0.12, blur: 6, translateY: 46, z: 30 },
+  { scale: 0.6, opacity: 0.06, blur: 6, translateY: 78, z: 20 },
+  { scale: 0.5, opacity: 0, blur: 6, translateY: 102, z: 10 },
+  { scale: 0.4, opacity: 0, blur: 6, translateY: 118, z: 0 },
 ];
 
 function fanStop(distance: number) {
@@ -62,7 +62,7 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
           src={imageSrc}
           alt={product.name}
           className="animate-float h-full w-full object-contain"
-          style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))" }}
+          style={{ filter: "drop-shadow(0 30px 50px rgba(0,0,0,0.18))" }}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
           }}
@@ -86,7 +86,9 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
       </div>
 
       <h3
-        className={`mt-2 line-clamp-2 overflow-hidden font-bold leading-snug text-slate-900 ${isCenter ? "text-xl sm:text-2xl" : "text-sm sm:text-base"}`}
+        className={`mt-2 pb-0.5 font-bold leading-[1.35] text-slate-900 ${
+          isCenter ? "text-xl sm:text-2xl" : "line-clamp-2 text-sm sm:text-base"
+        }`}
       >
         {product.name}
       </h3>
@@ -162,8 +164,21 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
   };
 
   return (
-    <section className="bg-[#FAFAF7] px-4 py-16 sm:px-6 sm:py-24">
-      <div className="mx-auto max-w-6xl text-center">
+    <section
+      className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-24"
+      style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F8FAF5 100%)" }}
+    >
+      {/* Soft brand-green glow behind the active product — barely visible, just enough
+          to lift the packaging off the background without competing for attention. */}
+      <div
+        className="pointer-events-none absolute left-1/2 top-[60%] h-[280px] w-[85vw] -translate-x-1/2 -translate-y-1/2 sm:h-[420px] sm:w-[700px] lg:h-[520px] lg:w-[900px]"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(46,107,62,0.08) 0%, rgba(46,107,62,0.03) 35%, transparent 70%)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-6xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-brand-primary)]">{eyebrow}</p>
         <h2 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">{title}</h2>
         <p className="mx-auto mt-3 max-w-2xl text-slate-500">{subtitle}</p>
@@ -204,16 +219,15 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
 
         {!isLoading && len > 0 && (
           <>
-            {/* Sliding carousel track — stays inside the section's own column; the gradient masks
-                fade the edges so it never looks clipped against the column boundary. */}
+            {/* Sliding carousel track — stays inside the section's own column. No edge mask:
+                side products already fade to near-invisible via FAN_STOPS opacity/blur, so a
+                solid-color mask here just drew a visible seam against the gradient background. */}
             <div
               className="relative mt-16 cursor-grab overflow-hidden select-none"
               onWheel={handleWheel}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-              <div className="pointer-events-none absolute inset-y-0 left-0 z-50 w-16 bg-gradient-to-r from-[#FAFAF7] to-transparent sm:w-28" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 z-50 w-16 bg-gradient-to-l from-[#FAFAF7] to-transparent sm:w-28" />
 
               {/* Card row — buttons are centered against this element's natural (untransformed)
                   height, so they land on the center card's middle regardless of the fan buffer below. */}
