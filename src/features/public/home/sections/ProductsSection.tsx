@@ -12,7 +12,7 @@ const SLOT_WIDTH = 340;
 // Distance-from-center lookup: scale/opacity/blur shrink and the card drops lower
 // the further it sits from the active slide, stacking into a pyramid of photos.
 const FAN_STOPS = [
-  { scale: 1.15, opacity: 1, blur: 0, translateY: 0, z: 40 },
+  { scale: 1.15, opacity: 1, blur: 0, translateY: 12, z: 40 },
   { scale: 0.75, opacity: 0.35, blur: 4, translateY: 46, z: 30 },
   { scale: 0.6, opacity: 0.22, blur: 4, translateY: 78, z: 20 },
   { scale: 0.5, opacity: 0.12, blur: 4, translateY: 102, z: 10 },
@@ -229,7 +229,7 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
 
               {/* Card row — buttons are centered against this element's natural (untransformed)
                   height, so they land on the center card's middle regardless of the fan buffer below. */}
-              <div className="relative pt-2">
+              <div className="relative min-h-[600px] pt-2">
                 {len > 1 && (
                   <>
                     <button
