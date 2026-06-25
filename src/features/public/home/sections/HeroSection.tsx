@@ -72,7 +72,7 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
   if (enableScrollFrames && isMobile) {
     return (
       <div ref={scrollWrapperRef} className="relative h-[280vh]">
-        <section className="sticky top-0 isolate h-[85vh] min-h-[32rem] overflow-hidden bg-slate-900">
+        <section className="sticky top-0 isolate h-[100vh] min-h-[32rem] overflow-hidden bg-slate-900">
           <ScrollFrameAnimation
             framePattern="/hero-frames-mobile/frame-{n}.webp"
             frameCount={207}
@@ -80,78 +80,6 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
             className="absolute inset-0 h-full w-full"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
-
-        <div ref={heroInViewRef} className="relative z-10 flex h-full flex-col justify-end px-5 pb-10">
-          {banner.badge && (
-            <p
-              style={fadeUpStyle(heroInView, 0)}
-              className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/80 ${fadeUpClass(heroInView)}`}
-            >
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--rt-accent)]" />
-              {banner.badge}
-            </p>
-          )}
-
-          {banner.title && (
-            <h1
-              style={fadeUpStyle(heroInView, 100)}
-              className={`mt-3 text-3xl font-bold leading-tight text-white ${fadeUpClass(heroInView)}`}
-            >
-              {banner.title}
-              {banner.highlight && <span className="text-[var(--rt-accent)]">{banner.highlight}</span>}
-            </h1>
-          )}
-
-          {banner.subtitle && (
-            <p style={fadeUpStyle(heroInView, 200)} className={`mt-3 text-base text-white/80 ${fadeUpClass(heroInView)}`}>
-              {banner.subtitle}
-            </p>
-          )}
-
-          <div style={fadeUpStyle(heroInView, 300)} className={`mt-6 flex flex-wrap items-center gap-3 ${fadeUpClass(heroInView)}`}>
-            {banner.primaryButtonText && (
-              <Link
-                to={banner.primaryButtonUrl ?? "/products"}
-                className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-5 py-3 font-semibold text-slate-900 transition-colors hover:brightness-110"
-              >
-                {banner.primaryButtonText} <span aria-hidden>→</span>
-              </Link>
-            )}
-            {banner.secondaryButtonText && (
-              <Link
-                to={banner.secondaryButtonUrl ?? "/contact"}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/5 px-5 py-3 font-semibold text-white transition-colors hover:bg-white/15"
-              >
-                {banner.secondaryButtonText}
-              </Link>
-            )}
-          </div>
-
-          {checklist.length > 0 && (
-            <ul style={fadeUpStyle(heroInView, 400)} className={`mt-5 grid grid-cols-2 gap-2 ${fadeUpClass(heroInView)}`}>
-              {checklist.map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-white/85">
-                  <span className="mt-0.5 text-[var(--rt-accent)]">✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {banners.length > 1 && (
-            <div className="mt-5 flex gap-2">
-              {banners.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Banner ${i + 1}`}
-                  onClick={() => setActiveIndex(i)}
-                  className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[var(--rt-accent)]" : "w-2 bg-white/30"}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
         </section>
       </div>
     );
