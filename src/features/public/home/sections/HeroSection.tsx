@@ -69,18 +69,17 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
   const banner = banners[Math.min(activeIndex, banners.length - 1)];
   const checklist = banner.checklist ?? [];
 
-  // The pinned scroll-jacked frame animation needs a tall scroll runway and steady
-  // 60fps canvas redraws — both are unreliable on phones (address-bar resize jitter,
-  // slower CPUs, mobile data loading 120 webp frames), so fall back to the static hero there.
   if (enableScrollFrames && isMobile) {
     return (
-      <section className="relative isolate h-[85vh] min-h-[32rem] overflow-hidden bg-slate-900">
-        <img
-          src="/hero-mobile.jpg"
-          alt=""
-          className="absolute inset-0 h-full w-full animate-hero-kenburns object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
+      <div ref={scrollWrapperRef} className="relative h-[280vh]">
+        <section className="sticky top-0 isolate h-[85vh] min-h-[32rem] overflow-hidden bg-slate-900">
+          <ScrollFrameAnimation
+            framePattern="/hero-frames-mobile/frame-{n}.webp"
+            frameCount={207}
+            progress={scrollProgress}
+            className="absolute inset-0 h-full w-full"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
 
         <div ref={heroInViewRef} className="relative z-10 flex h-full flex-col justify-end px-5 pb-10">
           {banner.badge && (
@@ -153,7 +152,8 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
             </div>
           )}
         </div>
-      </section>
+        </section>
+      </div>
     );
   }
 
