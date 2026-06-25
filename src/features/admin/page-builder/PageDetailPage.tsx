@@ -13,6 +13,7 @@ import { StringListEditor } from "../../../components/admin/StringListEditor";
 import { MediaUploaderField } from "../../../components/admin/MediaUploaderField";
 import { HeroBannerManager } from "./HeroBannerManager";
 import { LivePreviewPane, type DeviceMode } from "./LivePreviewPane";
+import { AddSectionModal, type InsertPosition } from "./AddSectionModal";
 import { SeoPanel, type SeoDraft } from "./SeoPanel";
 import { getLocalized, setLocalized, type ContentLanguage } from "../../../lib/page/localizedContent";
 import { publicPathForSlug } from "../../../lib/page/publicPath";
@@ -22,12 +23,6 @@ interface HistorySnapshot {
   draftEnabled: Record<string, boolean>;
   order: string[] | null;
 }
-
-const ADDABLE_SECTION_TYPES = [
-  "Hero", "TrustBar", "Stats", "Features", "Comparison", "Products",
-  "PrivateLabel", "Process", "Quality", "Partners", "CTA", "About", "Certificates", "Contact",
-  "WhyPartner", "WhoWeWorkWith", "ProductRange", "ExportCapabilities", "Gallery", "FAQ",
-];
 
 const AUTOSAVE_DELAY_MS = 2500;
 
@@ -47,6 +42,11 @@ export function PageDetailPage() {
     enabled: Boolean(id),
   });
 
+  // Kept warm so the Page Selector can jump straight to another page without
+  // ever leaving this route — switching `id` here re-runs the query above but
+  // never unmounts this editor shell (toolbar/sidebar/inspector stay mounted).
+  const { data: allPages } = useQuery({ queryKey: ["pages"], queryFn: pagesApi.getAll });
+
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [draftContent, setDraftContent] = useState<Record<string, PageSectionContent>>({});
   const [draftEnabled, setDraftEnabled] = useState<Record<string, boolean>>({});
@@ -55,7 +55,7 @@ export function PageDetailPage() {
   const [isPublished, setIsPublished] = useState(false);
   const [device, setDevice] = useState<DeviceMode>("desktop");
   const [showSeoPanel, setShowSeoPanel] = useState(false);
-  const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [seoDraft, setSeoDraft] = useState<SeoDraft | null>(null);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
 
@@ -64,7 +64,7 @@ export function PageDetailPage() {
       setIsPublished(page.isPublished);
       const sorted = [...page.sections].sort((a, b) => a.sortOrder - b.sortOrder);
       setOrder(sorted.map((s) => s.id));
-      if (!activeSectionId && sorted.length > 0) setActiveSectionId(sorted[0].id);
+      setActiveSectionId(sorted.length > 0 ? sorted[0].id : null);
       setSeoDraft({
         metaTitle: page.metaTitle ?? "",
         metaDescription: page.metaDescription ?? "",
@@ -75,6 +75,15 @@ export function PageDetailPage() {
         isFollow: page.isFollow,
       });
     }
+    // Switching pages via the Page Selector keeps this editor shell mounted — clear the
+    // previous page's draft/history state so it can never leak into the newly loaded page.
+    setDraftContent({});
+    setDraftEnabled({});
+    setHistory([]);
+    setHistoryIndex(-1);
+    setLastSavedAt(null);
+    setShowSeoPanel(false);
+    setShowAddModal(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page?.id]);
 
@@ -95,7 +104,9 @@ export function PageDetailPage() {
   const activeContent = activeSection ? getLocalized(draftContent[activeSection.id] ?? activeSection.content, activeLang) : {};
   const activeEnabled = activeSection ? draftEnabled[activeSection.id] ?? activeSection.isEnabled : true;
 
-  const isDirty = Object.keys(draftContent).length > 0 || Object.keys(draftEnabled).length > 0 || isPublished !== page?.isPublished;
+  const originalOrder = page ? [...page.sections].sort((a, b) => a.sortOrder - b.sortOrder).map((s) => s.id) : [];
+  const orderDirty = order !== null && order.join() !== originalOrder.join();
+  const isDirty = Object.keys(draftContent).length > 0 || Object.keys(draftEnabled).length > 0 || orderDirty || isPublished !== page?.isPublished;
   const hasUnpublishedChanges = isDirty || sortedSections.some((s) => s.hasUnpublishedChanges);
 
   const savePage = useMutation({
@@ -117,13 +128,33 @@ export function PageDetailPage() {
   });
 
   const addSection = useMutation({
-    mutationFn: (sectionType: number) => pagesApi.addSection(id!, { sectionType, sortOrder: sortedSections.length }),
-    onSuccess: (section) => {
+    mutationFn: ({ sectionType }: { sectionType: number; position: InsertPosition }) =>
+      pagesApi.addSection(id!, { sectionType, sortOrder: sortedSections.length }),
+    onSuccess: (section, variables) => {
       queryClient.invalidateQueries({ queryKey: ["page", id] });
+
+      const baseOrder = (order ?? sortedSections.map((s) => s.id)).filter((sid) => sid !== section.id);
+      const activeIndex = activeSectionId ? baseOrder.indexOf(activeSectionId) : -1;
+      let insertAt = baseOrder.length;
+      if (variables.position === "start") insertAt = 0;
+      else if (variables.position === "before" && activeIndex >= 0) insertAt = activeIndex;
+      else if (variables.position === "after" && activeIndex >= 0) insertAt = activeIndex + 1;
+      const nextOrder = [...baseOrder];
+      nextOrder.splice(insertAt, 0, section.id);
+      setOrder(nextOrder);
       setActiveSectionId(section.id);
+
+      window.setTimeout(() => {
+        document.querySelector(`[data-section-id="${section.id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 150);
+
       addToast("Bo'lim qo'shildi");
     },
   });
+
+  const handleAddSection = (typeName: string, position: InsertPosition) => {
+    addSection.mutate({ sectionType: SECTION_TYPE_NAMES.indexOf(typeName), position });
+  };
 
   const deleteSection = useMutation({
     mutationFn: (sectionId: string) => pagesApi.deleteSection(sectionId),
@@ -213,7 +244,7 @@ export function PageDetailPage() {
       if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draftContent, draftEnabled, isPublished]);
+  }, [draftContent, draftEnabled, order, isPublished]);
 
   const pushHistory = (next: HistorySnapshot) => {
     if (isRestoringHistory.current) return;
@@ -275,11 +306,11 @@ export function PageDetailPage() {
   };
 
   if (isLoading || !page || !seoDraft) {
-    return <p className="text-sm text-admin-muted">Yuklanmoqda...</p>;
+    return <div className="flex h-screen items-center justify-center text-sm text-admin-muted">Yuklanmoqda...</div>;
   }
 
   return (
-    <div className="-m-6 flex h-[calc(100vh-57px)] flex-col">
+    <div className="flex h-screen flex-col bg-admin-bg">
       <div className="flex items-center justify-between gap-3 border-b border-admin-border bg-white px-6 py-3">
         <div className="flex items-center gap-3">
           <button
@@ -290,10 +321,19 @@ export function PageDetailPage() {
           >
             ←
           </button>
-          <div>
-            <h1 className="text-base font-semibold text-admin-primary">{page.title}</h1>
-            <p className="text-xs text-admin-muted">{page.slug ? `/${page.slug}` : "/"}</p>
-          </div>
+          <select
+            value={page.id}
+            onChange={(e) => navigate(`/admin/pages/${e.target.value}`)}
+            title="Sahifa tanlash"
+            className="max-w-[220px] rounded-lg border border-admin-border bg-white px-2.5 py-1.5 text-sm font-semibold text-admin-primary focus:border-admin-primary focus:outline-none"
+          >
+            {(allPages ?? [page]).map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.title}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-admin-muted">{page.slug ? `/${page.slug}` : "/"}</p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -377,85 +417,72 @@ export function PageDetailPage() {
         <aside className="w-60 overflow-y-auto border-r border-admin-border bg-white p-3">
           <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-admin-muted">Bo'limlar</p>
           <div className="space-y-1">
-            {sortedSections.map((section) => {
-              const typeName = SECTION_TYPE_NAMES[Number(section.sectionType)] ?? String(section.sectionType);
-              const enabled = draftEnabled[section.id] ?? section.isEnabled;
-              return (
-                <div
-                  key={section.id}
-                  draggable
-                  onDragStart={() => setDraggedId(section.id)}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => handleDrop(section.id)}
-                  onClick={() => setActiveSectionId(section.id)}
-                  className={`group flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
-                    activeSectionId === section.id ? "bg-admin-primary text-white" : "text-admin-primary hover:bg-slate-100"
-                  } ${draggedId === section.id ? "opacity-50" : ""} ${!enabled ? "opacity-50" : ""}`}
-                >
-                  <span className="truncate">{sectionTypeLabel(typeName)}</span>
-                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      type="button"
-                      title="Nusxalash"
-                      onClick={() =>
-                        duplicateSection.mutate({
-                          sectionType: Number(section.sectionType),
-                          sortOrder: sortedSections.length,
-                          content: draftContent[section.id] ?? section.content,
-                        })
-                      }
-                      className="hidden text-xs opacity-70 hover:opacity-100 group-hover:inline"
-                    >
-                      ⧉
-                    </button>
-                    <button
-                      type="button"
-                      title="O'chirish"
-                      onClick={() => {
-                        if (confirm("Bu bo'limni o'chirmoqchimisiz?")) deleteSection.mutate(section.id);
-                      }}
-                      className="hidden text-xs opacity-70 hover:opacity-100 group-hover:inline"
-                    >
-                      ✕
-                    </button>
-                    <input
-                      type="checkbox"
-                      checked={enabled}
-                      onClick={(e) => e.stopPropagation()}
-                      onChange={(e) => handleToggleEnabled(section.id, e.target.checked)}
-                    />
+            {(() => {
+              const occurrence: Record<string, number> = {};
+              return sortedSections.map((section) => {
+                const typeName = SECTION_TYPE_NAMES[Number(section.sectionType)] ?? String(section.sectionType);
+                const enabled = draftEnabled[section.id] ?? section.isEnabled;
+                occurrence[typeName] = (occurrence[typeName] ?? 0) + 1;
+                const count = occurrence[typeName];
+                const label = count > 1 ? `${sectionTypeLabel(typeName)} ${count}` : sectionTypeLabel(typeName);
+                return (
+                  <div
+                    key={section.id}
+                    draggable
+                    onDragStart={() => setDraggedId(section.id)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => handleDrop(section.id)}
+                    onClick={() => setActiveSectionId(section.id)}
+                    className={`group flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
+                      activeSectionId === section.id ? "bg-admin-primary text-white" : "text-admin-primary hover:bg-slate-100"
+                    } ${draggedId === section.id ? "opacity-50" : ""} ${!enabled ? "opacity-50" : ""}`}
+                  >
+                    <span className="truncate">{label}</span>
+                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        title="Nusxalash"
+                        onClick={() =>
+                          duplicateSection.mutate({
+                            sectionType: Number(section.sectionType),
+                            sortOrder: sortedSections.length,
+                            content: draftContent[section.id] ?? section.content,
+                          })
+                        }
+                        className="hidden text-xs opacity-70 hover:opacity-100 group-hover:inline"
+                      >
+                        ⧉
+                      </button>
+                      <button
+                        type="button"
+                        title="O'chirish"
+                        onClick={() => {
+                          if (confirm("Bu bo'limni o'chirmoqchimisiz?")) deleteSection.mutate(section.id);
+                        }}
+                        className="hidden text-xs opacity-70 hover:opacity-100 group-hover:inline"
+                      >
+                        ✕
+                      </button>
+                      <input
+                        type="checkbox"
+                        checked={enabled}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => handleToggleEnabled(section.id, e.target.checked)}
+                      />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              });
+            })()}
           </div>
 
-          <div className="relative mt-3">
-            <button
-              type="button"
-              onClick={() => setShowAddMenu((v) => !v)}
-              className="w-full rounded-lg border border-dashed border-admin-border py-2 text-sm font-medium text-admin-muted hover:border-admin-primary hover:text-admin-primary"
-            >
-              + Bo'lim qo'shish
-            </button>
-            {showAddMenu && (
-              <div className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-admin-border bg-white shadow-lg">
-                {ADDABLE_SECTION_TYPES.map((typeName) => (
-                  <button
-                    key={typeName}
-                    type="button"
-                    onClick={() => {
-                      addSection.mutate(SECTION_TYPE_NAMES.indexOf(typeName));
-                      setShowAddMenu(false);
-                    }}
-                    className="block w-full px-3 py-2 text-left text-sm text-admin-primary hover:bg-slate-50"
-                  >
-                    {sectionTypeLabel(typeName)}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowAddModal(true)}
+            className="mt-3 w-full rounded-lg border border-dashed border-admin-border py-2 text-sm font-medium text-admin-muted hover:border-admin-primary hover:text-admin-primary"
+          >
+            + Bo'lim qo'shish
+          </button>
         </aside>
 
         <main className="flex-1 overflow-hidden">
@@ -499,6 +526,13 @@ export function PageDetailPage() {
           isSaving={saveSeo.isPending}
         />
       )}
+
+      <AddSectionModal
+        open={showAddModal}
+        onOpenChange={setShowAddModal}
+        hasActiveSection={Boolean(activeSectionId)}
+        onAdd={handleAddSection}
+      />
     </div>
   );
 }

@@ -7,6 +7,17 @@ import { EditableStatsSection } from "./EditableStatsSection";
 import { EditableCtaSection } from "./EditableCtaSection";
 import { EditableTrustBarSection } from "./EditableTrustBarSection";
 import { EditableFeaturesSection } from "./EditableFeaturesSection";
+import { EditableComparisonSection } from "./EditableComparisonSection";
+import { EditableProductsSection } from "./EditableProductsSection";
+import { EditablePrivateLabelSection } from "./EditablePrivateLabelSection";
+import { EditableProcessSection } from "./EditableProcessSection";
+import { EditableQualitySection } from "./EditableQualitySection";
+import { EditablePartnersSection } from "./EditablePartnersSection";
+import { EditableContentSection } from "./EditableContentSection";
+import { EditableFeatureCardsSection } from "./EditableFeatureCardsSection";
+import { EditableProductRangeSection } from "./EditableProductRangeSection";
+import { EditableGallerySection } from "./EditableGallerySection";
+import { EditableFaqSection } from "./EditableFaqSection";
 
 export type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -23,6 +34,21 @@ const EDITABLE_SECTIONS: Record<string, ComponentType<FieldEditableProps>> = {
   CTA: EditableCtaSection,
   TrustBar: EditableTrustBarSection,
   Features: EditableFeaturesSection,
+  Comparison: EditableComparisonSection,
+  Products: EditableProductsSection,
+  PrivateLabel: EditablePrivateLabelSection,
+  Process: EditableProcessSection,
+  Quality: EditableQualitySection,
+  Partners: EditablePartnersSection,
+  About: EditableContentSection,
+  Certificates: EditableContentSection,
+  Contact: EditableContentSection,
+  WhyPartner: EditableFeatureCardsSection,
+  WhoWeWorkWith: EditableFeatureCardsSection,
+  ExportCapabilities: EditableFeatureCardsSection,
+  ProductRange: EditableProductRangeSection,
+  Gallery: EditableGallerySection,
+  FAQ: EditableFaqSection,
 };
 
 export function LivePreviewPane({
@@ -59,6 +85,7 @@ export function LivePreviewPane({
           return (
             <div
               key={section.id}
+              data-section-id={section.id}
               onClick={(e) => {
                 e.preventDefault();
                 onSelect(section.id);

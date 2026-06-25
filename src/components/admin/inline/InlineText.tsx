@@ -53,7 +53,7 @@ export function InlineText({
         onKeyDown={(e) => {
           if (e.key === "Escape") cancel();
         }}
-        className={`${className} block min-w-0 w-full resize-none overflow-hidden rounded-md border-2 border-admin-primary bg-white outline-none`}
+        className={`${className} block min-w-0 w-full resize-none overflow-hidden rounded-md border-2 border-admin-primary !bg-white !text-slate-900 outline-none`}
       />
     ) : (
       <input
@@ -66,7 +66,7 @@ export function InlineText({
           if (e.key === "Enter") commit();
           if (e.key === "Escape") cancel();
         }}
-        className={`${className} rounded-md border-2 border-admin-primary bg-white outline-none`}
+        className={`${className} rounded-md border-2 border-admin-primary !bg-white !text-slate-900 outline-none`}
       />
     );
   }

@@ -12,9 +12,42 @@ import { EditableStatsSection } from "./EditableStatsSection";
 import { EditableCtaSection } from "./EditableCtaSection";
 import { EditableTrustBarSection } from "./EditableTrustBarSection";
 import { EditableFeaturesSection } from "./EditableFeaturesSection";
+import { EditableComparisonSection } from "./EditableComparisonSection";
+import { EditableProductsSection } from "./EditableProductsSection";
+import { EditablePrivateLabelSection } from "./EditablePrivateLabelSection";
+import { EditableProcessSection } from "./EditableProcessSection";
+import { EditableQualitySection } from "./EditableQualitySection";
+import { EditablePartnersSection } from "./EditablePartnersSection";
+import { EditableContentSection } from "./EditableContentSection";
+import { EditableFeatureCardsSection } from "./EditableFeatureCardsSection";
+import { EditableProductRangeSection } from "./EditableProductRangeSection";
+import { EditableGallerySection } from "./EditableGallerySection";
+import { EditableFaqSection } from "./EditableFaqSection";
 import { useLiveEditStore } from "../../../store/liveEditStore";
 
-const EDITABLE_TYPES = new Set(["Hero", "Stats", "CTA", "TrustBar", "Features"]);
+const EDITABLE_COMPONENTS = {
+  Stats: EditableStatsSection,
+  CTA: EditableCtaSection,
+  TrustBar: EditableTrustBarSection,
+  Features: EditableFeaturesSection,
+  Comparison: EditableComparisonSection,
+  Products: EditableProductsSection,
+  PrivateLabel: EditablePrivateLabelSection,
+  Process: EditableProcessSection,
+  Quality: EditableQualitySection,
+  Partners: EditablePartnersSection,
+  About: EditableContentSection,
+  Certificates: EditableContentSection,
+  Contact: EditableContentSection,
+  WhyPartner: EditableFeatureCardsSection,
+  WhoWeWorkWith: EditableFeatureCardsSection,
+  ExportCapabilities: EditableFeatureCardsSection,
+  ProductRange: EditableProductRangeSection,
+  Gallery: EditableGallerySection,
+  FAQ: EditableFaqSection,
+} as const;
+
+const EDITABLE_TYPES = new Set(["Hero", ...Object.keys(EDITABLE_COMPONENTS)]);
 const SAVE_DELAY_MS = 900;
 
 export function LiveEditPage() {
@@ -128,9 +161,7 @@ export function LiveEditPage() {
           );
         }
 
-        const Editable = { Stats: EditableStatsSection, CTA: EditableCtaSection, TrustBar: EditableTrustBarSection, Features: EditableFeaturesSection }[
-          typeName as "Stats" | "CTA" | "TrustBar" | "Features"
-        ];
+        const Editable = EDITABLE_COMPONENTS[typeName as keyof typeof EDITABLE_COMPONENTS];
 
         return (
           <div key={section.id} className="outline-dashed outline-2 outline-offset-[-2px] outline-transparent hover:outline-admin-accent/50">

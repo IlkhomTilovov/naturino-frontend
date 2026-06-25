@@ -5,6 +5,7 @@ import { LoginPage } from "../features/admin/auth/LoginPage";
 import { ProductsListPage } from "../features/admin/products/ProductsListPage";
 import { ProductFormPage } from "../features/admin/products/ProductFormPage";
 import { ProductCategoriesPage } from "../features/admin/categories/ProductCategoriesPage";
+import { ContentHubPage } from "../features/admin/content-hub/ContentHubPage";
 import { PagesListPage } from "../features/admin/page-builder/PagesListPage";
 import { PageDetailPage } from "../features/admin/page-builder/PageDetailPage";
 import { LiveEditPage } from "../features/admin/page-builder/LiveEditPage";
@@ -46,6 +47,18 @@ export function AppRoutes() {
         />
       </Route>
 
+      {/* Full-screen editor takeover — deliberately outside AdminLayout so its own
+          toolbar/section-list/inspector panels get the whole viewport instead of
+          competing with the permanent admin sidebar for width. */}
+      <Route
+        path="/admin/pages/:id"
+        element={
+          <ProtectedRoute>
+            <PageDetailPage />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="/admin" element={<AuthLayout />}>
         <Route path="login" element={<LoginPage />} />
       </Route>
@@ -63,8 +76,8 @@ export function AppRoutes() {
         <Route path="products/new" element={<ProductFormPage />} />
         <Route path="products/:id" element={<ProductFormPage />} />
         <Route path="categories" element={<ProductCategoriesPage />} />
+        <Route path="content" element={<ContentHubPage />} />
         <Route path="pages" element={<PagesListPage />} />
-        <Route path="pages/:id" element={<PageDetailPage />} />
         <Route path="languages" element={<LanguagesPage />} />
         <Route path="appearance/themes" element={<ThemesPage />} />
         <Route path="appearance/themes/new" element={<ThemeEditorPage />} />

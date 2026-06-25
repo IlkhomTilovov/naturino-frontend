@@ -4,7 +4,6 @@ import {
   Bell,
   ChevronsLeft,
   ChevronsRight,
-  FileText,
   FolderTree,
   Images,
   Languages,
@@ -12,6 +11,7 @@ import {
   Menu,
   Package,
   Palette,
+  PenTool,
   Search,
   SearchCheck,
   Settings,
@@ -31,7 +31,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/admin/products", label: "Mahsulotlar", end: false, icon: Package },
       { to: "/admin/categories", label: "Kategoriyalar", end: false, icon: FolderTree },
-      { to: "/admin/pages", label: "Sahifalar", end: false, icon: FileText },
+      { to: "/admin/content", label: "Sayt kontenti", end: false, icon: PenTool },
     ],
   },
   {
