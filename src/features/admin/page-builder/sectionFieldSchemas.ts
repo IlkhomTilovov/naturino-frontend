@@ -112,7 +112,7 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
         { key: "number", label: "Raqam" },
         { key: "title", label: "Sarlavha" },
         { key: "description", label: "Tavsif", type: "textarea" },
-        { key: "icon", label: "Ikon (inquiry/agreement/export)" },
+        { key: "icon", label: "Ikon (inquiry/agreement/export/wheat/formula/factory/quality/packaging/shipping)" },
       ],
     },
     { key: "buttonText", label: "Tugma matni", type: "text" },
@@ -173,6 +173,7 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
       itemFields: [
         { key: "imageUrl", label: "Rasm", type: "image" },
         { key: "name", label: "Nomi" },
+        { key: "downloadUrl", label: "PDF havolasi (bo'lsa, rasm o'rniga yuklab olish tugmasi ko'rsatiladi)" },
       ],
     },
   ],

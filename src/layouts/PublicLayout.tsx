@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Mail, MapPin, Menu, Phone } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../components/ui/sheet";
@@ -18,10 +18,6 @@ const NAV_LINKS = [
   { to: "/partnership", key: "nav.export" },
   { to: "/contact", key: "nav.contact" },
 ];
-
-function isNavLinkActive(linkTo: string, pathname: string): boolean {
-  return pathname === linkTo;
-}
 
 const FOOTER_TRUST = ["ISO 22000 sertifikatlangan", "HACCP standartlari", "20+ eksport bozori", "12 000+ tonna/yil ishlab chiqarish quvvati"];
 
@@ -106,7 +102,6 @@ function LanguageSwitcher({ glass = false }: { glass?: boolean }) {
 export function PublicLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
   const { t } = useLanguage();
 
   const liveEditActive = useLiveEditStore((s) => s.active);
@@ -138,11 +133,17 @@ export function PublicLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="fixed inset-x-0 top-0 z-[60] px-4 pt-5">
+      <div
+        className={`fixed inset-x-0 top-0 z-[60] px-4 transition-all duration-300 ${
+          scrolled
+            ? "bg-[color-mix(in_srgb,var(--rt-brand-primary),black_12%)]/85 pb-3 pt-3 shadow-[0_8px_30px_rgba(0,0,0,0.16)] backdrop-blur-lg"
+            : "bg-transparent pt-5"
+        }`}
+      >
         <header
           aria-label="Asosiy navigatsiya"
-          className={`mx-auto flex max-w-[1400px] items-center justify-between gap-3 transition-all duration-300 ${
-            scrolled ? "h-16" : "h-[76px]"
+          className={`mx-auto flex max-w-[1400px] items-center gap-3 transition-all duration-300 ${
+            scrolled ? "h-14" : "h-[76px]"
           }`}
         >
           {/* 1 — Logo */}
@@ -160,28 +161,29 @@ export function PublicLayout() {
             </span>
           </Link>
 
-          {/* 2 — Nav links */}
-          <nav
-            aria-label="Asosiy menyu"
-            className="hidden h-11 items-center gap-1 rounded-full border border-white/10 bg-[var(--rt-brand-primary)]/50 px-2 text-sm font-medium text-white shadow-[0_8px_32px_rgba(15,23,42,0.08)] backdrop-blur-md lg:flex"
-          >
-            {NAV_LINKS.map((link) => {
-              const isActive = isNavLinkActive(link.to, location.pathname);
-              return (
-                <Link
+          {/* 2 — Nav links — centered in the space between logo and the right-side group, so it stays balanced regardless of how wide either side is. */}
+          <div className="flex flex-1 items-center justify-center">
+            <nav
+              aria-label="Asosiy menyu"
+              className="hidden h-11 items-center gap-1 rounded-full border border-white/10 bg-[var(--rt-brand-primary)]/50 px-2 text-sm font-medium text-white shadow-[0_8px_32px_rgba(15,23,42,0.08)] backdrop-blur-md lg:flex"
+            >
+              {NAV_LINKS.map((link) => (
+                <NavLink
                   key={link.key}
                   to={resolveNavTo(link.to)}
-                  className={`rounded-full px-4 py-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rt-accent)] ${
-                    isActive ? "bg-white/15 text-white" : "text-white/85 hover:bg-white/10 hover:text-white"
-                  }`}
+                  className={({ isActive }) =>
+                    `rounded-full px-4 py-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rt-accent)] ${
+                      isActive ? "bg-white/15 text-white" : "text-white/90 hover:bg-white/10 hover:text-white"
+                    }`
+                  }
                 >
                   {t(link.key)}
-                </Link>
-              );
-            })}
-          </nav>
+                </NavLink>
+              ))}
+            </nav>
+          </div>
 
-          <div className="flex h-full items-center gap-3">
+          <div className="flex h-full items-center gap-5">
             {/* 3 — Til */}
             <div className="hidden h-10 items-center rounded-full border border-white/10 bg-[var(--rt-brand-primary)]/50 px-1 shadow-[0_8px_32px_rgba(15,23,42,0.08)] backdrop-blur-md sm:flex">
               <LanguageSwitcher glass />
@@ -215,14 +217,18 @@ export function PublicLayout() {
 
           <nav aria-label="Mobil menyu" className="flex flex-col gap-1 px-4 text-base font-medium text-[#0F172A]">
             {NAV_LINKS.map((link) => (
-              <Link
+              <NavLink
                 key={link.key}
                 to={resolveNavTo(link.to)}
                 onClick={() => setMobileNavOpen(false)}
-                className="rounded-xl px-3 py-3 transition-colors hover:bg-white hover:text-[var(--rt-brand-primary)]"
+                className={({ isActive }) =>
+                  `rounded-xl px-3 py-3 transition-colors hover:bg-white hover:text-[var(--rt-brand-primary)] ${
+                    isActive ? "bg-white text-[var(--rt-brand-primary)]" : ""
+                  }`
+                }
               >
                 {t(link.key)}
-              </Link>
+              </NavLink>
             ))}
           </nav>
 
@@ -335,8 +341,8 @@ export function PublicLayout() {
                 <a href="mailto:export@naturino.uz" className="flex items-center gap-2 transition-colors hover:text-[var(--rt-brand-primary)]">
                   <Mail className="h-4 w-4 shrink-0 text-[var(--rt-brand-primary)]" /> export@naturino.uz
                 </a>
-                <a href="tel:+998000000000" className="flex items-center gap-2 transition-colors hover:text-[var(--rt-brand-primary)]">
-                  <Phone className="h-4 w-4 shrink-0 text-[var(--rt-brand-primary)]" /> +998 XX XXX XX XX
+                <a href="tel:+998901234567" className="flex items-center gap-2 transition-colors hover:text-[var(--rt-brand-primary)]">
+                  <Phone className="h-4 w-4 shrink-0 text-[var(--rt-brand-primary)]" /> +998 90 123 45 67
                 </a>
               </div>
 
@@ -361,7 +367,7 @@ export function PublicLayout() {
         {/* Bottom bar */}
         <div className="border-t border-slate-200">
           <div className="mx-auto flex h-auto min-h-[72px] max-w-6xl flex-col items-center justify-between gap-3 px-6 py-5 text-xs text-slate-500 sm:flex-row">
-            <p>© {new Date().getFullYear()} Naturino by Steppe Nutrition</p>
+            <p>© {new Date().getFullYear()} Naturino</p>
             <div className="flex items-center gap-5">
               <Link to="/contact" className="transition-colors hover:text-[var(--rt-brand-primary)]">
                 {t("footer.privacy")}

@@ -192,12 +192,8 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
         {banner.badge && (
           <p
             style={fadeUpStyle(heroInView, 0)}
-            className={`flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-accent)] ${fadeUpClass(heroInView)}`}
+            className={`text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-accent)] ${fadeUpClass(heroInView)}`}
           >
-            <Link to="/" className="text-white/50 transition-colors hover:text-white">
-              Bosh sahifa
-            </Link>
-            <span aria-hidden className="text-white/30">/</span>
             {banner.badge}
           </p>
         )}

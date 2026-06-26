@@ -8,12 +8,13 @@ export function QualitySection({ content }: { content: PageSectionContent }) {
   const subtitle = content.subtitle as string | undefined;
   const items = (content.items as string[] | undefined) ?? [];
   const imageSrc = resolveMediaUrl(content.imageUrl as string | undefined) ?? FALLBACK_IMAGE;
+  const isDark = content.theme === "dark";
   const { ref, inView } = useInView<HTMLDivElement>();
 
   if (!title) return null;
 
   return (
-    <section className="bg-[#F8F9F4] px-4 py-16 sm:px-6 sm:py-24">
+    <section className={`px-4 py-16 sm:px-6 sm:py-24 ${isDark ? "bg-[var(--rt-brand-primary)]" : "bg-[#F8F9F4]"}`}>
       <div ref={ref} className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
         <div
           style={{ transitionDelay: inView ? "100ms" : "0ms" }}
@@ -27,25 +28,25 @@ export function QualitySection({ content }: { content: PageSectionContent }) {
         <div>
           {eyebrow && (
             <p
-              className={`text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-brand-secondary)] transition-all duration-700 ${
-                inView ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-              }`}
+              className={`text-xs font-semibold uppercase tracking-[0.2em] transition-all duration-700 ${
+                isDark ? "text-[var(--rt-accent)]" : "text-[var(--rt-brand-secondary)]"
+              } ${inView ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"}`}
             >
               {eyebrow}
             </p>
           )}
           <h2
             style={{ transitionDelay: inView ? "100ms" : "0ms" }}
-            className={`mt-4 text-2xl font-bold leading-tight text-[#0F172A] transition-all duration-700 sm:text-3xl ${
-              inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-            }`}
+            className={`mt-4 text-2xl font-bold leading-tight transition-all duration-700 sm:text-3xl ${
+              isDark ? "text-white" : "text-[#0F172A]"
+            } ${inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
           >
             {title}
           </h2>
           {subtitle && (
             <p
               style={{ transitionDelay: inView ? "200ms" : "0ms" }}
-              className={`mt-3 text-slate-600 transition-all duration-700 ${
+              className={`mt-3 transition-all duration-700 ${isDark ? "text-white/70" : "text-slate-600"} ${
                 inView ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
               }`}
             >
@@ -63,9 +64,13 @@ export function QualitySection({ content }: { content: PageSectionContent }) {
               {items.map((item) => (
                 <span
                   key={item}
-                  className="flex items-center gap-1.5 rounded-full border border-[var(--rt-brand-secondary)]/20 bg-white px-3.5 py-1.5 text-sm font-semibold text-[#0F172A] shadow-sm"
+                  className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold shadow-sm ${
+                    isDark
+                      ? "border border-white/15 bg-white/10 text-white"
+                      : "border border-[var(--rt-brand-secondary)]/20 bg-white text-[#0F172A]"
+                  }`}
                 >
-                  <span className="text-[var(--rt-brand-secondary)]">✓</span>
+                  <span className={isDark ? "text-[var(--rt-accent)]" : "text-[var(--rt-brand-secondary)]"}>✓</span>
                   {item}
                 </span>
               ))}

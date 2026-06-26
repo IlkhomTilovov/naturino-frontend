@@ -31,8 +31,6 @@ const DEFAULT_CARDS: FeatureCard[] = [
   { icon: "handshake", title: "Biznes hamkorlik", description: "Barqaror o'sishga yo'naltirilgan uzoq muddatli hamkorlik." },
 ];
 
-const TRUST_BADGES = ["ISO 22000", "HACCP", "GMP+", "EAC", "Veterinariya tasdig'i"];
-
 export function FeatureCardsSection({ content }: { content: PageSectionContent }) {
   const eyebrow = content.eyebrow as string | undefined;
   const title = content.title as string | undefined;
@@ -101,22 +99,6 @@ export function FeatureCardsSection({ content }: { content: PageSectionContent }
             })}
           </div>
 
-          <div
-            style={{ transitionDelay: inView ? "760ms" : "0ms" }}
-            className={`mt-10 flex flex-wrap items-center gap-3 border-t border-[#E7EBDD] pt-8 transition-all duration-700 ${
-              inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-            }`}
-          >
-            {TRUST_BADGES.map((badge) => (
-              <span
-                key={badge}
-                className="group flex items-center gap-1.5 rounded-full border border-[var(--rt-brand-secondary)]/20 bg-white px-4 py-2 text-xs font-semibold text-[#0F172A] shadow-sm transition-all duration-300 hover:border-[var(--rt-brand-secondary)] hover:bg-[var(--rt-brand-secondary)] hover:text-white"
-              >
-                <span className="text-[var(--rt-brand-secondary)] group-hover:text-white">✓</span>
-                {badge}
-              </span>
-            ))}
-          </div>
         </div>
 
         <div

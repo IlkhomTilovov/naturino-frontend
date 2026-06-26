@@ -28,7 +28,7 @@ export function ProductCard({ product }: { product: Product }) {
       className="group flex flex-col overflow-hidden rounded-[28px] border border-black/[0.06] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]"
     >
       {/* Showcase area */}
-      <div className="relative bg-[#F7F8F5] px-6 pt-6">
+      <div className="relative flex h-56 items-center justify-center bg-[#F7F8F5] px-4 pt-4 sm:h-64">
         {product.isFeatured && (
           <span className="absolute left-4 top-4 z-10 rounded-full bg-[var(--rt-brand-secondary)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
             Tavsiya etiladi
@@ -37,7 +37,7 @@ export function ProductCard({ product }: { product: Product }) {
         <img
           src={imageSrc}
           alt={product.name}
-          className="mx-auto h-32 w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+          className="mx-auto h-full w-auto max-w-[85%] object-contain transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
           }}

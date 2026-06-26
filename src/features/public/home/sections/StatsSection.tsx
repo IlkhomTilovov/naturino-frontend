@@ -19,17 +19,30 @@ const ICONS: Record<string, LucideIcon> = {
 
 const DEFAULT_CERTIFICATIONS = ["ISO 22000", "HACCP", "GMP+", "EAC", "Veterinariya tasdig'i"];
 
-/** Splits "12 000+" into { prefix: "", number: 12000, suffix: "+" } so we can count up the digits only. */
+/**
+ * Splits "12 000+" into { prefix: "", number: 12000, suffix: "+" } so we can count up the
+ * digits only. The digit group only swallows whitespace as a thousands separator between
+ * groups of exactly 3 digits — otherwise a value like "5 konteyner/hafta" would have its
+ * separating space misread as part of "the number", merging the suffix onto it with no space.
+ */
 function parseStatValue(raw: string) {
-  const match = raw.match(/^(\D*)([\d\s.,]+)(\D*)$/);
+  const match = raw.match(/^(\D*?)(\d{1,3}(?:[\s.,]\d{3})*(?:[.,]\d+)?)(\D.*)?$/);
   if (!match) return { prefix: "", number: 0, suffix: raw, isNumeric: false };
-  const [, prefix, digits, suffix] = match;
+  const [, prefix, digits, suffix = ""] = match;
   const number = Number(digits.replace(/[\s.,]/g, ""));
   return { prefix, number, suffix, isNumeric: Number.isFinite(number) };
 }
 
 function formatNumber(n: number) {
   return n.toLocaleString("ru-RU");
+}
+
+/** Long non-numeric values ("FOB & CIF", "5 konteyner/hafta") need a smaller, wrapping
+ * font so they stay inside the card instead of overflowing or forcing it wider. */
+function valueSizeClass(value: string) {
+  if (value.length > 10) return "text-xl sm:text-2xl";
+  if (value.length > 6) return "text-2xl sm:text-3xl";
+  return "text-4xl sm:text-5xl";
 }
 
 function StatCard({ item, index, inView }: { item: StatItem; index: number; inView: boolean }) {
@@ -41,7 +54,7 @@ function StatCard({ item, index, inView }: { item: StatItem; index: number; inVi
   return (
     <div
       style={{ transitionDelay: inView ? `${120 + index * 110}ms` : "0ms" }}
-      className={`group rounded-3xl border border-black/5 bg-white p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] ${
+      className={`group flex flex-col items-center overflow-hidden rounded-3xl border border-black/5 bg-white p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] ${
         inView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
       }`}
     >
@@ -49,7 +62,9 @@ function StatCard({ item, index, inView }: { item: StatItem; index: number; inVi
         <Icon className="h-6 w-6" strokeWidth={1.75} />
       </div>
 
-      <p className="mt-5 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">{displayValue}</p>
+      <p className={`mt-5 w-full break-words font-bold tracking-tight text-slate-900 ${valueSizeClass(displayValue)}`}>
+        {displayValue}
+      </p>
       <p className="mt-3 text-sm font-semibold text-slate-600">{item.label}</p>
       {item.supportingText && <p className="mt-1 text-xs text-slate-400">{item.supportingText}</p>}
     </div>

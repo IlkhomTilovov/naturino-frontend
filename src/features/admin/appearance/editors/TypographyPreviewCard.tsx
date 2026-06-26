@@ -68,7 +68,7 @@ export function TypographyPreviewCard({
       </div>
 
       <p className="mt-5 border-t border-admin-border pt-4 text-[11px] text-admin-muted" style={{ fontFamily: fontBody }}>
-        © Naturino by Steppe Nutrition — Premium uy hayvonlari ozuqasi eksporti
+        © Naturino — Premium uy hayvonlari ozuqasi eksporti
       </p>
     </div>
   );

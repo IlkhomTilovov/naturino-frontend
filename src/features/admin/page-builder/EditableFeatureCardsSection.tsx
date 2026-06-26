@@ -9,8 +9,6 @@ interface FeatureCard {
   description?: string;
 }
 
-const TRUST_BADGES = ["ISO 22000", "HACCP", "GMP+", "EAC", "Veterinariya tasdig'i"];
-
 export function EditableFeatureCardsSection({
   content,
   onFieldChange,
@@ -46,15 +44,6 @@ export function EditableFeatureCardsSection({
           />
 
           <InlineIconCardGrid cards={cards} onChange={(v) => onFieldChange("cards", v)} gridClassName="mt-10 grid gap-5 sm:grid-cols-2" />
-
-          <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-[#E7EBDD] pt-8">
-            {TRUST_BADGES.map((badge) => (
-              <span key={badge} className="flex items-center gap-1.5 rounded-full border border-[var(--rt-brand-secondary)]/20 bg-white px-4 py-2 text-xs font-semibold text-[#0F172A]">
-                <span className="text-[var(--rt-brand-secondary)]">✓</span>
-                {badge}
-              </span>
-            ))}
-          </div>
         </div>
 
         <div className="order-1 lg:order-2">

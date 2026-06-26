@@ -13,10 +13,10 @@ const SLOT_WIDTH = 340;
 // the further it sits from the active slide, stacking into a pyramid of photos.
 const FAN_STOPS = [
   { scale: 1.15, opacity: 1, blur: 0, translateY: 12, z: 40 },
-  { scale: 0.75, opacity: 0.35, blur: 4, translateY: 46, z: 30 },
-  { scale: 0.6, opacity: 0.22, blur: 4, translateY: 78, z: 20 },
-  { scale: 0.5, opacity: 0.12, blur: 4, translateY: 102, z: 10 },
-  { scale: 0.4, opacity: 0.08, blur: 4, translateY: 118, z: 0 },
+  { scale: 0.82, opacity: 0.55, blur: 1.5, translateY: 40, z: 30 },
+  { scale: 0.68, opacity: 0.32, blur: 2.5, translateY: 70, z: 20 },
+  { scale: 0.56, opacity: 0.16, blur: 3, translateY: 96, z: 10 },
+  { scale: 0.46, opacity: 0.08, blur: 3, translateY: 112, z: 0 },
 ];
 
 function fanStop(distance: number) {
