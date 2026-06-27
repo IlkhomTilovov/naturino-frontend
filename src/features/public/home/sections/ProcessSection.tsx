@@ -1,4 +1,4 @@
-import { FileCheck2, Factory, FlaskConical, Globe2, type LucideIcon, Microscope, PackageCheck, ShieldCheck, Truck, Wheat } from "lucide-react";
+import { FileCheck2, Factory, FlaskConical, Globe2, Handshake, type LucideIcon, Microscope, PackageCheck, ShieldCheck, Truck, Wheat } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { PageSectionContent } from "../../../../types/page";
 import { useInView } from "../../../../lib/hooks/useInView";
@@ -21,6 +21,7 @@ const ICONS: Record<string, LucideIcon> = {
   packaging: PackageCheck,
   shipping: Truck,
   lab: Microscope,
+  partnership: Handshake,
 };
 
 const DEFAULT_ICON_BY_INDEX: LucideIcon[] = [Globe2, FileCheck2, PackageCheck];
