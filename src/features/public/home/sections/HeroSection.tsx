@@ -181,15 +181,17 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
   // background photo instead of frame-by-frame scroll animation.
   if (!enableScrollFrames && banner.imageUrl) {
     return (
-      <section className="relative isolate h-screen min-h-[32rem] overflow-hidden bg-slate-900">
+      <section className="relative isolate h-screen min-h-[32rem] overflow-hidden bg-[var(--rt-brand-primary)]">
+        {/* object-contain keeps the photo at its own aspect ratio instead of cropping/zooming
+            it to cover the (much wider) hero band — it's docked to the right, behind the text. */}
         <img
           src={resolveMediaUrl(banner.imageUrl) ?? banner.imageUrl}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-contain object-right"
         />
         {/* Mobile: single column over the photo needs a flat, even-darker scrim for the text to stay readable. */}
         <div className="absolute inset-0 bg-black/60 sm:hidden" />
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-black/75 via-black/45 to-black/10 sm:block" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-[var(--rt-brand-primary)] via-[var(--rt-brand-primary)]/70 to-transparent sm:block" />
 
         <div ref={heroInViewRef} className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
           {banner.badge && (
