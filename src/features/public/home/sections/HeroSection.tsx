@@ -177,113 +177,93 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
     );
   }
 
-  // Static-image hero — image kept in its own portrait card instead of being
-  // force-cropped (object-cover) across the full, much wider hero band, which
-  // was zooming portrait photos in until the subject looked oversized.
+  // Static-image hero — same layout as the scroll-frame hero, but with a fixed
+  // background photo instead of frame-by-frame scroll animation.
   if (!enableScrollFrames && banner.imageUrl) {
     return (
-      <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-32 sm:pb-16 sm:pt-36">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--rt-accent) 12%, transparent) 0%, transparent 55%), radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--rt-brand-secondary) 25%, transparent) 0%, transparent 55%)",
-          }}
+      <section className="relative isolate h-screen min-h-[32rem] overflow-hidden bg-slate-900">
+        <img
+          src={resolveMediaUrl(banner.imageUrl) ?? banner.imageUrl}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
         />
+        {/* Mobile: single column over the photo needs a flat, even-darker scrim for the text to stay readable. */}
+        <div className="absolute inset-0 bg-black/60 sm:hidden" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-black/75 via-black/45 to-black/10 sm:block" />
 
-        <div
-          ref={heroInViewRef}
-          className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16"
-        >
-          <div className="order-2 lg:order-1">
-            {banner.badge && (
-              <p
-                style={fadeUpStyle(heroInView, 0)}
-                className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/80 ${fadeUpClass(heroInView)}`}
+        <div ref={heroInViewRef} className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
+          {banner.badge && (
+            <p
+              style={fadeUpStyle(heroInView, 0)}
+              className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/80 ${fadeUpClass(heroInView)}`}
+            >
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--rt-accent)]" />
+              {banner.badge}
+            </p>
+          )}
+
+          {banner.title && (
+            <h1
+              style={fadeUpStyle(heroInView, 100)}
+              className={`mt-4 max-w-2xl text-4xl font-bold leading-tight text-white md:text-5xl ${fadeUpClass(heroInView)}`}
+            >
+              {banner.title}
+              {banner.highlight && <span className="text-[var(--rt-accent)]">{banner.highlight}</span>}
+            </h1>
+          )}
+
+          {banner.subtitle && (
+            <p style={fadeUpStyle(heroInView, 200)} className={`mt-5 max-w-xl text-lg text-white/80 ${fadeUpClass(heroInView)}`}>
+              {banner.subtitle}
+            </p>
+          )}
+
+          <div style={fadeUpStyle(heroInView, 300)} className={`mt-8 flex flex-wrap items-center gap-3 ${fadeUpClass(heroInView)}`}>
+            {banner.primaryButtonText && (
+              <Link
+                to={banner.primaryButtonUrl ?? "/products"}
+                className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-slate-900 transition-colors hover:brightness-110"
               >
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--rt-accent)]" />
-                {banner.badge}
-              </p>
+                {banner.primaryButtonText} <span aria-hidden>→</span>
+              </Link>
             )}
-
-            {banner.title && (
-              <h1
-                style={fadeUpStyle(heroInView, 100)}
-                className={`mt-4 max-w-xl text-4xl font-bold leading-tight text-white md:text-5xl ${fadeUpClass(heroInView)}`}
+            {banner.secondaryButtonText && (
+              <Link
+                to={banner.secondaryButtonUrl ?? "/contact"}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/15"
               >
-                {banner.title}
-                {banner.highlight && <span className="text-[var(--rt-accent)]">{banner.highlight}</span>}
-              </h1>
-            )}
-
-            {banner.subtitle && (
-              <p style={fadeUpStyle(heroInView, 200)} className={`mt-5 max-w-xl text-lg text-white/80 ${fadeUpClass(heroInView)}`}>
-                {banner.subtitle}
-              </p>
-            )}
-
-            <div style={fadeUpStyle(heroInView, 300)} className={`mt-8 flex flex-wrap items-center gap-3 ${fadeUpClass(heroInView)}`}>
-              {banner.primaryButtonText && (
-                <Link
-                  to={banner.primaryButtonUrl ?? "/products"}
-                  className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-slate-900 transition-colors hover:brightness-110"
-                >
-                  {banner.primaryButtonText} <span aria-hidden>→</span>
-                </Link>
-              )}
-              {banner.secondaryButtonText && (
-                <Link
-                  to={banner.secondaryButtonUrl ?? "/contact"}
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/15"
-                >
-                  {banner.secondaryButtonText}
-                </Link>
-              )}
-            </div>
-
-            {checklist.length > 0 && (
-              <ul
-                style={fadeUpStyle(heroInView, 400)}
-                className={`mt-7 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 ${fadeUpClass(heroInView)}`}
-              >
-                {checklist.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-white/85">
-                    <span className="mt-0.5 text-[var(--rt-accent)]">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {banners.length > 1 && (
-              <div className="mt-6 flex gap-2">
-                {banners.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    aria-label={`Banner ${i + 1}`}
-                    onClick={() => setActiveIndex(i)}
-                    className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[var(--rt-accent)]" : "w-2 bg-white/30"}`}
-                  />
-                ))}
-              </div>
+                {banner.secondaryButtonText}
+              </Link>
             )}
           </div>
 
-          <div
-            style={{ transitionDelay: heroInView ? "150ms" : "0ms" }}
-            className={`order-1 lg:order-2 transition-all duration-1000 ${
-              heroInView ? "translate-y-0 scale-100 opacity-100" : "translate-y-4 scale-[0.97] opacity-0"
-            }`}
-          >
-            <div className="relative mx-auto aspect-[3/4] w-full max-w-sm overflow-hidden rounded-[2rem] shadow-2xl">
-              <img
-                src={resolveMediaUrl(banner.imageUrl) ?? banner.imageUrl}
-                alt=""
-                className="h-full w-full object-cover"
-              />
+          {checklist.length > 0 && (
+            <ul
+              style={fadeUpStyle(heroInView, 400)}
+              className={`mt-7 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 ${fadeUpClass(heroInView)}`}
+            >
+              {checklist.map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-white/85">
+                  <span className="mt-0.5 text-[var(--rt-accent)]">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {banners.length > 1 && (
+            <div className="mt-6 flex gap-2">
+              {banners.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Banner ${i + 1}`}
+                  onClick={() => setActiveIndex(i)}
+                  className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[var(--rt-accent)]" : "w-2 bg-white/30"}`}
+                />
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </section>
     );
