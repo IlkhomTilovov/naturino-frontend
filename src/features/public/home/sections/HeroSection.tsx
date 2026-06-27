@@ -184,16 +184,16 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
   if (!enableScrollFrames && banner.imageUrl) {
     return (
       <section className="relative isolate h-screen min-h-[32rem] overflow-hidden bg-[var(--rt-brand-primary)]">
-        {/* object-contain keeps the photo at its own aspect ratio instead of cropping/zooming
-            it to cover the (much wider) hero band — it's docked to the right, behind the text.
-            Mobile gets its own (typically portrait) crop via mobileImageUrl when set. */}
+        {/* Desktop uses a landscape crop close to the hero's own aspect ratio, so object-cover
+            fills it edge-to-edge without zooming in awkwardly. Mobile gets its own portrait
+            crop via mobileImageUrl. */}
         <img
           src={(() => {
             const src = isMobile && banner.mobileImageUrl ? banner.mobileImageUrl : banner.imageUrl;
             return resolveMediaUrl(src) ?? src;
           })()}
           alt=""
-          className="absolute inset-0 h-full w-full object-contain object-right"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         {/* Mobile: single column over the photo needs a flat, even-darker scrim for the text to stay readable. */}
         <div className="absolute inset-0 bg-black/60 sm:hidden" />
