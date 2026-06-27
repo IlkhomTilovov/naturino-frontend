@@ -5,6 +5,7 @@ import { ScrollFrameAnimation } from "../../../../components/shared/ScrollFrameA
 import { useScrollProgress } from "../../../../lib/hooks/useScrollProgress";
 import { useIsMobile } from "../../../../lib/hooks/useIsMobile";
 import { useInView } from "../../../../lib/hooks/useInView";
+import { resolveMediaUrl } from "../../../../lib/utils/media";
 
 function fadeUpClass(inView: boolean) {
   return `transition-all duration-700 ease-out ${inView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`;
@@ -173,6 +174,96 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
         </div>
         </section>
       </div>
+    );
+  }
+
+  // Static-image hero — same layout as the scroll-frame hero, but with a fixed
+  // background photo instead of frame-by-frame scroll animation.
+  if (!enableScrollFrames && banner.imageUrl) {
+    return (
+      <section className="relative isolate h-screen min-h-[32rem] overflow-hidden bg-slate-900">
+        <img
+          src={resolveMediaUrl(banner.imageUrl) ?? banner.imageUrl}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
+
+        <div ref={heroInViewRef} className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
+          {banner.badge && (
+            <p
+              style={fadeUpStyle(heroInView, 0)}
+              className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/80 ${fadeUpClass(heroInView)}`}
+            >
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--rt-accent)]" />
+              {banner.badge}
+            </p>
+          )}
+
+          {banner.title && (
+            <h1
+              style={fadeUpStyle(heroInView, 100)}
+              className={`mt-4 max-w-2xl text-4xl font-bold leading-tight text-white md:text-5xl ${fadeUpClass(heroInView)}`}
+            >
+              {banner.title}
+              {banner.highlight && <span className="text-[var(--rt-accent)]">{banner.highlight}</span>}
+            </h1>
+          )}
+
+          {banner.subtitle && (
+            <p style={fadeUpStyle(heroInView, 200)} className={`mt-5 max-w-xl text-lg text-white/80 ${fadeUpClass(heroInView)}`}>
+              {banner.subtitle}
+            </p>
+          )}
+
+          <div style={fadeUpStyle(heroInView, 300)} className={`mt-8 flex flex-wrap items-center gap-3 ${fadeUpClass(heroInView)}`}>
+            {banner.primaryButtonText && (
+              <Link
+                to={banner.primaryButtonUrl ?? "/products"}
+                className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-slate-900 transition-colors hover:brightness-110"
+              >
+                {banner.primaryButtonText} <span aria-hidden>→</span>
+              </Link>
+            )}
+            {banner.secondaryButtonText && (
+              <Link
+                to={banner.secondaryButtonUrl ?? "/contact"}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/15"
+              >
+                {banner.secondaryButtonText}
+              </Link>
+            )}
+          </div>
+
+          {checklist.length > 0 && (
+            <ul
+              style={fadeUpStyle(heroInView, 400)}
+              className={`mt-7 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 ${fadeUpClass(heroInView)}`}
+            >
+              {checklist.map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-white/85">
+                  <span className="mt-0.5 text-[var(--rt-accent)]">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {banners.length > 1 && (
+            <div className="mt-6 flex gap-2">
+              {banners.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Banner ${i + 1}`}
+                  onClick={() => setActiveIndex(i)}
+                  className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[var(--rt-accent)]" : "w-2 bg-white/30"}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
     );
   }
 

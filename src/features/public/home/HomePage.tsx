@@ -30,13 +30,11 @@ export function HomePage() {
         <meta name="description" content="Naturino — mushuklar uchun tabiiy va sifatli ovqat ishlab chiqaruvchi." />
       </Helmet>
 
-      {sections.map((section) =>
-        getSectionTypeName(section.sectionType) === "Hero" ? (
-          <HeroSection key={section.id} content={getLocalized(section.content, lang)} enableScrollFrames />
-        ) : (
-          renderSection(section, lang)
-        ),
-      )}
+      {sections.map((section) => {
+        if (getSectionTypeName(section.sectionType) !== "Hero") return renderSection(section, lang);
+        const content = getLocalized(section.content, lang);
+        return <HeroSection key={section.id} content={content} enableScrollFrames={Boolean(content.enableScrollFrames)} />;
+      })}
 
       {sections.length === 0 && (
         <div className="px-6 py-24 text-center text-slate-400">
