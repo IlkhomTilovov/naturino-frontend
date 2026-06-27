@@ -197,7 +197,7 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
         />
         {/* Mobile: single column over the photo needs a flat, even-darker scrim for the text to stay readable. */}
         <div className="absolute inset-0 bg-black/60 sm:hidden" />
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-[var(--rt-brand-primary)] via-[var(--rt-brand-primary)]/70 to-transparent sm:block" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-black/70 via-black/35 to-transparent sm:block" />
 
         <div ref={heroInViewRef} className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
           {banner.badge && (
