@@ -14,6 +14,7 @@ interface HeroBanner {
   secondaryButtonText?: string;
   secondaryButtonUrl?: string;
   imageUrl?: string;
+  mobileImageUrl?: string;
   imageStats?: Record<string, unknown>[];
   checklist?: string[];
   [key: string]: unknown;
@@ -30,6 +31,7 @@ const EMPTY_BANNER: HeroBanner = {
   secondaryButtonText: "",
   secondaryButtonUrl: "",
   imageUrl: "",
+  mobileImageUrl: "",
   imageStats: [],
   checklist: [],
 };
@@ -117,8 +119,13 @@ export function HeroBannerManager({ banners, onChange }: { banners: HeroBanner[]
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-admin-muted">Rasm</label>
+                <label className="mb-1 block text-xs font-medium text-admin-muted">Rasm (desktop)</label>
                 <MediaUploaderField imageUrl={banner.imageUrl} onChange={(url) => update(index, { imageUrl: url ?? "" })} />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-admin-muted">Rasm (mobil, ixtiyoriy)</label>
+                <MediaUploaderField imageUrl={banner.mobileImageUrl} onChange={(url) => update(index, { mobileImageUrl: url ?? "" })} />
               </div>
 
               <div>

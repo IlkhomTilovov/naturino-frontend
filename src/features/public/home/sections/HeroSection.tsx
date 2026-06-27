@@ -31,6 +31,7 @@ interface HeroBanner {
   secondaryButtonText?: string;
   secondaryButtonUrl?: string;
   imageUrl?: string;
+  mobileImageUrl?: string;
   imageStats?: HeroStat[];
   checklist?: string[];
   framePattern?: string;
@@ -49,6 +50,7 @@ function legacyBanner(content: PageSectionContent): HeroBanner {
     secondaryButtonText: content.secondaryButtonText as string | undefined,
     secondaryButtonUrl: content.secondaryButtonUrl as string | undefined,
     imageUrl: content.imageUrl as string | undefined,
+    mobileImageUrl: content.mobileImageUrl as string | undefined,
     imageStats: content.imageStats as HeroStat[] | undefined,
     checklist: content.checklist as string[] | undefined,
     framePattern: content.framePattern as string | undefined,
@@ -183,9 +185,13 @@ export function HeroSection({ content, enableScrollFrames }: { content: PageSect
     return (
       <section className="relative isolate h-screen min-h-[32rem] overflow-hidden bg-[var(--rt-brand-primary)]">
         {/* object-contain keeps the photo at its own aspect ratio instead of cropping/zooming
-            it to cover the (much wider) hero band — it's docked to the right, behind the text. */}
+            it to cover the (much wider) hero band — it's docked to the right, behind the text.
+            Mobile gets its own (typically portrait) crop via mobileImageUrl when set. */}
         <img
-          src={resolveMediaUrl(banner.imageUrl) ?? banner.imageUrl}
+          src={(() => {
+            const src = isMobile && banner.mobileImageUrl ? banner.mobileImageUrl : banner.imageUrl;
+            return resolveMediaUrl(src) ?? src;
+          })()}
           alt=""
           className="absolute inset-0 h-full w-full object-contain object-right"
         />
