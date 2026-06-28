@@ -212,7 +212,7 @@ function ProductDetailContent({
               <img
                 key={mainImage}
                 src={mainImage}
-                alt={name}
+                alt={name ?? product.name}
                 className="relative z-10 mx-auto aspect-square w-full max-w-sm object-contain drop-shadow-2xl transition-opacity duration-500"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;

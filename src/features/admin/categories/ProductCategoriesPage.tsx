@@ -13,7 +13,7 @@ import { computeCategorySeoScore } from "../../../lib/utils/categorySeo";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../lib/utils/media";
 import { useToastStore } from "../../../store/toastStore";
 import type { CategoryFormSchema } from "../../../lib/schemas/category";
-import type { ProductCategory } from "../../../types/product";
+import type { CategoryTranslation, ProductCategory } from "../../../types/product";
 import { CategoryModal } from "./CategoryModal";
 
 export function ProductCategoriesPage() {
@@ -31,7 +31,15 @@ export function ProductCategoriesPage() {
   });
 
   const save = useMutation({
-    mutationFn: async ({ values, imageFileId, id }: { values: CategoryFormSchema; imageFileId: string | null | undefined; id?: string }) => {
+    mutationFn: async ({
+      values,
+      imageFileId,
+      id,
+    }: {
+      values: CategoryFormSchema & { translations?: Record<string, CategoryTranslation> };
+      imageFileId: string | null | undefined;
+      id?: string;
+    }) => {
       const payload = { ...values, imageFileId };
       return id ? productCategoriesApi.update(id, payload) : productCategoriesApi.create(payload);
     },
