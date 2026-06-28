@@ -11,7 +11,11 @@ function isLocalizedShape(content: PageSectionContent): boolean {
 /** Reads a section's content for the given language, falling back to the flat legacy shape (treated as "uz") when the section hasn't been migrated to per-language content yet. */
 export function getLocalized(content: PageSectionContent, lang: ContentLanguage): PageSectionContent {
   if (!isLocalizedShape(content)) return content;
-  return (content[lang] as PageSectionContent | undefined) ?? (content.uz as PageSectionContent | undefined) ?? {};
+  const forLang = content[lang] as PageSectionContent | undefined;
+  // An empty {} (no translation ever entered for this language) must fall back to uz too —
+  // otherwise sections render with all fields blank instead of the default-language content.
+  if (forLang && Object.keys(forLang).length > 0) return forLang;
+  return (content.uz as PageSectionContent | undefined) ?? {};
 }
 
 /** Writes a patch into the given language's slot, migrating a legacy flat section to the per-language shape on first edit. */
