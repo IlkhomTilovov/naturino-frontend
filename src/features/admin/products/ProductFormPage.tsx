@@ -14,7 +14,18 @@ import { SeoStatusBadge } from "../../../components/admin/Badges";
 import { productSchema, type ProductFormSchema } from "../../../lib/schemas/product";
 import { useToastStore } from "../../../store/toastStore";
 import { computeSeoScore } from "../../../lib/utils/seo";
-import type { ProductTranslation } from "../../../types/product";
+import type {
+  ExportInfo,
+  IngredientItem,
+  NutritionalItem,
+  PackagingOption,
+  ProductCertification,
+  ProductTranslation,
+} from "../../../types/product";
+import { RepeaterEditor } from "../../../components/admin/RepeaterEditor";
+import { StringListEditor } from "../../../components/admin/StringListEditor";
+
+const EMPTY_EXPORT_INFO: ExportInfo = { incoterms: [], exportMarkets: [] };
 
 export function ProductFormPage() {
   const { id } = useParams();
@@ -25,6 +36,11 @@ export function ProductFormPage() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [translations, setTranslations] = useState<Record<string, ProductTranslation>>({});
+  const [nutritionalInfo, setNutritionalInfo] = useState<NutritionalItem[]>([]);
+  const [packagingOptions, setPackagingOptions] = useState<PackagingOption[]>([]);
+  const [ingredientsList, setIngredientsList] = useState<IngredientItem[]>([]);
+  const [certifications, setCertifications] = useState<ProductCertification[]>([]);
+  const [exportInfo, setExportInfo] = useState<ExportInfo>(EMPTY_EXPORT_INFO);
 
   const { data: categories } = useQuery({
     queryKey: ["product-categories"],
@@ -86,6 +102,11 @@ export function ProductFormPage() {
         isActive: product.isActive,
       });
       setTranslations(product.translations ?? {});
+      setNutritionalInfo(product.nutritionalInfo ?? []);
+      setPackagingOptions(product.packagingOptions ?? []);
+      setIngredientsList(product.ingredientsList ?? []);
+      setCertifications(product.certifications ?? []);
+      setExportInfo(product.exportInfo ?? EMPTY_EXPORT_INFO);
     }
   }, [product, reset]);
 
@@ -95,7 +116,7 @@ export function ProductFormPage() {
     setServerError(null);
     setIsSubmitting(true);
     try {
-      const payload = { ...values, translations };
+      const payload = { ...values, translations, nutritionalInfo, packagingOptions, ingredientsList, certifications, exportInfo };
       if (isEdit) {
         await productsApi.update(id!, payload);
       } else {
@@ -163,6 +184,9 @@ export function ProductFormPage() {
           </TabsTrigger>
           <TabsTrigger value="attributes" className="rounded-lg px-4 py-2 text-sm font-medium data-active:shadow-sm">
             Xususiyatlar
+          </TabsTrigger>
+          <TabsTrigger value="specs" className="rounded-lg px-4 py-2 text-sm font-medium data-active:shadow-sm">
+            Spetsifikatsiyalar
           </TabsTrigger>
           <TabsTrigger value="seo" className="rounded-lg px-4 py-2 text-sm font-medium data-active:shadow-sm">
             SEO
@@ -297,6 +321,114 @@ export function ProductFormPage() {
               </Field>
             </div>
           </FormSectionCard>
+        </TabsContent>
+
+        <TabsContent value="specs">
+          <div className="space-y-4">
+            <FormSectionCard title="Oziqlanish ma'lumotlari" description="Protein, yog', tola va boshqa ko'rsatkichlar - saytda avtomatik ko'rsatiladi">
+              <RepeaterEditor
+                items={nutritionalInfo as unknown as Record<string, unknown>[]}
+                onChange={(items) => setNutritionalInfo(items as unknown as NutritionalItem[])}
+                addLabel="Ko'rsatkich qo'shish"
+                fields={[
+                  { key: "label", label: "Nomi (masalan Protein)" },
+                  { key: "value", label: "Qiymati" },
+                  { key: "unit", label: "Birligi (%, mg...)" },
+                ]}
+              />
+            </FormSectionCard>
+
+            <FormSectionCard title="Tarkib" description="Ingredientlar ro'yxati, foiz va tartib bilan">
+              <RepeaterEditor
+                items={ingredientsList as unknown as Record<string, unknown>[]}
+                onChange={(items) => setIngredientsList(items as unknown as IngredientItem[])}
+                addLabel="Ingredient qo'shish"
+                fields={[
+                  { key: "name", label: "Nomi" },
+                  { key: "percentage", label: "Foizi (%)" },
+                ]}
+              />
+            </FormSectionCard>
+
+            <FormSectionCard title="Qadoqlash variantlari" description="Turli og'irlikdagi qadoqlar va shtrix-kodlar">
+              <RepeaterEditor
+                items={packagingOptions as unknown as Record<string, unknown>[]}
+                onChange={(items) => setPackagingOptions(items as unknown as PackagingOption[])}
+                addLabel="Qadoq qo'shish"
+                fields={[
+                  { key: "weight", label: "Og'irligi" },
+                  { key: "unit", label: "Birligi (kg, g)" },
+                  { key: "barcode", label: "Shtrix-kod" },
+                ]}
+              />
+            </FormSectionCard>
+
+            <FormSectionCard title="Sertifikatlar" description="Masalan: ISO22000, HACCP, GMP+, HALAL, EAC">
+              <RepeaterEditor
+                items={certifications as unknown as Record<string, unknown>[]}
+                onChange={(items) => setCertifications(items as unknown as ProductCertification[])}
+                addLabel="Sertifikat qo'shish"
+                fields={[
+                  { key: "code", label: "Kodi (ISO22000...)" },
+                  { key: "certificateNumber", label: "Sertifikat raqami" },
+                  { key: "expiryDate", label: "Amal qilish muddati" },
+                ]}
+              />
+            </FormSectionCard>
+
+            <FormSectionCard title="Eksport ma'lumotlari" description="B2B eksport uchun maxsus maydonlar">
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="MOQ (minimal buyurtma)">
+                  <input
+                    className="input"
+                    value={exportInfo.moq ?? ""}
+                    onChange={(e) => setExportInfo((prev) => ({ ...prev, moq: e.target.value }))}
+                  />
+                </Field>
+                <Field label="HS kodi">
+                  <input
+                    className="input"
+                    value={exportInfo.hsCode ?? ""}
+                    onChange={(e) => setExportInfo((prev) => ({ ...prev, hsCode: e.target.value }))}
+                  />
+                </Field>
+                <Field label="Ishlab chiqarish quvvati">
+                  <input
+                    className="input"
+                    value={exportInfo.productionCapacity ?? ""}
+                    onChange={(e) => setExportInfo((prev) => ({ ...prev, productionCapacity: e.target.value }))}
+                  />
+                </Field>
+                <Field label="Yetkazib berish muddati">
+                  <input
+                    className="input"
+                    value={exportInfo.leadTime ?? ""}
+                    onChange={(e) => setExportInfo((prev) => ({ ...prev, leadTime: e.target.value }))}
+                  />
+                </Field>
+              </div>
+
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium text-admin-primary">Incoterms (FOB, CIF, DAP...)</label>
+                <StringListEditor
+                  items={exportInfo.incoterms}
+                  onChange={(items) => setExportInfo((prev) => ({ ...prev, incoterms: items }))}
+                  addLabel="Incoterm qo'shish"
+                  placeholder="FOB"
+                />
+              </div>
+
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium text-admin-primary">Eksport bozorlari</label>
+                <StringListEditor
+                  items={exportInfo.exportMarkets}
+                  onChange={(items) => setExportInfo((prev) => ({ ...prev, exportMarkets: items }))}
+                  addLabel="Bozor qo'shish"
+                  placeholder="Rossiya"
+                />
+              </div>
+            </FormSectionCard>
+          </div>
         </TabsContent>
 
         <TabsContent value="seo">

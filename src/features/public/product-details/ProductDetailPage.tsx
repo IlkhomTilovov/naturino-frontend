@@ -176,14 +176,40 @@ function ProductDetailContent({
   const shelfLife = extractField(description, "Saqlash muddati");
   const proteinNum = protein ? Number(protein.replace(/[^\d.]/g, "")) : null;
 
+  const nutritionItems = product.nutritionalInfo ?? [];
+  const firstProteinEntry = nutritionItems.find((n) => n.label.toLowerCase().includes("protein"));
+  const specProteinValue = firstProteinEntry?.value
+    ? `${firstProteinEntry.value}${firstProteinEntry.unit ?? ""}`
+    : protein
+      ? `${protein}%`
+      : "—";
+
   const specCards = [
-    { label: "Protein", value: protein ? `${protein}%` : "—" },
+    { label: "Protein", value: specProteinValue },
     { label: "Qadoq", value: product.weight != null ? `${product.weight} kg` : "—" },
     { label: "Yosh guruhi", value: product.ageGroup ?? "—" },
     { label: "SKU", value: product.sku },
   ];
 
-  const packagingOptions = [product.weight != null ? `${product.weight} kg` : null].filter(Boolean) as string[];
+  const packagingOptionLabels =
+    product.packagingOptions && product.packagingOptions.length > 0
+      ? product.packagingOptions.map((p) => `${p.weight ?? ""}${p.unit ?? ""}`.trim()).filter(Boolean)
+      : ([product.weight != null ? `${product.weight} kg` : null].filter(Boolean) as string[]);
+
+  const exportInfoRows =
+    product.exportInfo &&
+    (product.exportInfo.moq || product.exportInfo.hsCode || product.exportInfo.incoterms?.length || product.exportInfo.productionCapacity || product.exportInfo.leadTime || product.exportInfo.exportMarkets?.length)
+      ? [
+          product.exportInfo.moq && { label: "MOQ", value: product.exportInfo.moq },
+          product.exportInfo.hsCode && { label: "HS kodi", value: product.exportInfo.hsCode },
+          product.exportInfo.incoterms?.length && { label: "Logistika", value: product.exportInfo.incoterms.join(" / ") },
+          product.exportInfo.productionCapacity && { label: "Ishlab chiqarish quvvati", value: product.exportInfo.productionCapacity },
+          product.exportInfo.leadTime && { label: "Yetkazib berish muddati", value: product.exportInfo.leadTime },
+          product.exportInfo.exportMarkets?.length && { label: "Bozorlar", value: product.exportInfo.exportMarkets.join(", ") },
+        ].filter(Boolean as unknown as (v: unknown) => boolean) as { label: string; value: string }[]
+      : EXPORT_INFO;
+
+  const certificationItems = product.certifications ?? [];
 
   return (
     <>
@@ -340,6 +366,12 @@ function ProductDetailContent({
                 Ozuqaviy tahlil
               </TabsTrigger>
               <TabsTrigger
+                value="ingredients"
+                className="rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-300 data-active:bg-[var(--rt-brand-secondary)] data-active:text-white"
+              >
+                Tarkib
+              </TabsTrigger>
+              <TabsTrigger
                 value="packaging"
                 className="rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-300 data-active:bg-[var(--rt-brand-secondary)] data-active:text-white"
               >
@@ -366,19 +398,50 @@ function ProductDetailContent({
 
             {/* Nutrition — progress bars instead of plain table */}
             <TabsContent value="nutrition" className="mt-6 space-y-5 rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-              <NutritionBar label="Protein" percent={proteinNum} />
-              <NutritionBar label="Yog'" percent={null} />
-              <NutritionBar label="Tola" percent={null} />
-              <NutritionBar label="Namlik" percent={null} />
+              {nutritionItems.length > 0 ? (
+                nutritionItems.map((item) => {
+                  const numeric = item.value ? Number(String(item.value).replace(/[^\d.]/g, "")) : null;
+                  return (
+                    <NutritionBar
+                      key={item.label}
+                      label={item.unit === "%" || !item.unit ? `${item.label}${item.value ? "" : ""}` : `${item.label} (${item.unit})`}
+                      percent={item.unit === "%" || !item.unit ? numeric : null}
+                    />
+                  );
+                })
+              ) : (
+                <>
+                  <NutritionBar label="Protein" percent={proteinNum} />
+                  <NutritionBar label="Yog'" percent={null} />
+                  <NutritionBar label="Tola" percent={null} />
+                  <NutritionBar label="Namlik" percent={null} />
+                </>
+              )}
               {shelfLife && <p className="pt-2 text-sm text-slate-500">Saqlash muddati: {shelfLife}</p>}
+            </TabsContent>
+
+            {/* Ingredients */}
+            <TabsContent value="ingredients" className="mt-6 rounded-2xl bg-white p-6 shadow-sm sm:p-8">
+              {product.ingredientsList && product.ingredientsList.length > 0 ? (
+                <ul className="space-y-2">
+                  {product.ingredientsList.map((ing) => (
+                    <li key={ing.name} className="flex items-center justify-between rounded-xl bg-[#F8F9F4] px-4 py-3 text-sm">
+                      <span className="text-[#0F172A]">{ing.name}</span>
+                      {ing.percentage && <span className="font-semibold text-[var(--rt-brand-secondary)]">{ing.percentage}%</span>}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-slate-500">Tarkib ma'lumoti hali kiritilmagan.</p>
+              )}
             </TabsContent>
 
             {/* Packaging — selectable size cards */}
             <TabsContent value="packaging" className="mt-6 rounded-2xl bg-white p-6 shadow-sm sm:p-8">
               <p className="text-sm font-semibold uppercase tracking-wide text-[var(--rt-brand-secondary)]">Mavjud qadoqlash</p>
               <div className="mt-4 flex flex-wrap gap-3">
-                {packagingOptions.length > 0 ? (
-                  packagingOptions.map((size) => (
+                {packagingOptionLabels.length > 0 ? (
+                  packagingOptionLabels.map((size) => (
                     <div
                       key={size}
                       className="flex items-center gap-2 rounded-2xl border-2 border-[var(--rt-brand-secondary)] bg-[var(--rt-brand-secondary)]/5 px-5 py-3 font-semibold text-[var(--rt-brand-primary)]"
@@ -396,7 +459,7 @@ function ProductDetailContent({
             {/* Export */}
             <TabsContent value="export" className="mt-6 rounded-2xl bg-white p-6 shadow-sm sm:p-8">
               <div className="grid gap-3 sm:grid-cols-2">
-                {EXPORT_INFO.map((item) => (
+                {exportInfoRows.map((item) => (
                   <div key={item.label} className="flex items-center justify-between rounded-xl bg-[#F8F9F4] px-4 py-3 text-sm">
                     <span className="text-slate-500">{item.label}</span>
                     <span className="font-semibold text-[#0F172A]">{item.value}</span>
@@ -408,16 +471,28 @@ function ProductDetailContent({
             {/* Certificates */}
             <TabsContent value="certificates" className="mt-6 rounded-2xl bg-white p-6 shadow-sm sm:p-8">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {CERTIFICATES.map((cert) => (
-                  <div
-                    key={cert.title}
-                    className="rounded-2xl border border-[#E7EBDD] bg-[#F8F9F4] p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
-                  >
-                    <cert.Icon className="mx-auto h-7 w-7 text-[var(--rt-brand-secondary)]" strokeWidth={1.75} />
-                    <p className="mt-3 font-semibold text-[#0F172A]">{cert.title}</p>
-                    <p className="mt-1 text-xs text-slate-500">{cert.description}</p>
-                  </div>
-                ))}
+                {certificationItems.length > 0
+                  ? certificationItems.map((cert) => (
+                      <div
+                        key={cert.code}
+                        className="rounded-2xl border border-[#E7EBDD] bg-[#F8F9F4] p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                      >
+                        <ShieldCheck className="mx-auto h-7 w-7 text-[var(--rt-brand-secondary)]" strokeWidth={1.75} />
+                        <p className="mt-3 font-semibold text-[#0F172A]">{cert.code}</p>
+                        {cert.certificateNumber && <p className="mt-1 text-xs text-slate-500">№ {cert.certificateNumber}</p>}
+                        {cert.expiryDate && <p className="text-xs text-slate-400">Amal qiladi: {cert.expiryDate}</p>}
+                      </div>
+                    ))
+                  : CERTIFICATES.map((cert) => (
+                      <div
+                        key={cert.title}
+                        className="rounded-2xl border border-[#E7EBDD] bg-[#F8F9F4] p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                      >
+                        <cert.Icon className="mx-auto h-7 w-7 text-[var(--rt-brand-secondary)]" strokeWidth={1.75} />
+                        <p className="mt-3 font-semibold text-[#0F172A]">{cert.title}</p>
+                        <p className="mt-1 text-xs text-slate-500">{cert.description}</p>
+                      </div>
+                    ))}
               </div>
             </TabsContent>
           </Tabs>

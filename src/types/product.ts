@@ -13,6 +13,39 @@ export interface ProductTranslation {
   description?: string | null;
 }
 
+export interface NutritionalItem {
+  label: string;
+  value?: string | null;
+  unit?: string | null;
+}
+
+export interface PackagingOption {
+  weight?: string | null;
+  unit?: string | null;
+  barcode?: string | null;
+  isDefault?: boolean;
+}
+
+export interface IngredientItem {
+  name: string;
+  percentage?: string | null;
+}
+
+export interface ProductCertification {
+  code: string;
+  certificateNumber?: string | null;
+  expiryDate?: string | null;
+}
+
+export interface ExportInfo {
+  moq?: string | null;
+  hsCode?: string | null;
+  incoterms: string[];
+  productionCapacity?: string | null;
+  leadTime?: string | null;
+  exportMarkets: string[];
+}
+
 export interface Product {
   id: string;
   categoryId: string;
@@ -34,6 +67,11 @@ export interface Product {
   updatedAt: string;
   images: ProductImage[];
   translations: Record<string, ProductTranslation>;
+  nutritionalInfo: NutritionalItem[];
+  packagingOptions: PackagingOption[];
+  ingredientsList: IngredientItem[];
+  certifications: ProductCertification[];
+  exportInfo: ExportInfo;
 }
 
 export interface ProductFormValues {
@@ -52,6 +90,11 @@ export interface ProductFormValues {
   isFeatured: boolean;
   isActive: boolean;
   translations?: Record<string, ProductTranslation>;
+  nutritionalInfo?: NutritionalItem[];
+  packagingOptions?: PackagingOption[];
+  ingredientsList?: IngredientItem[];
+  certifications?: ProductCertification[];
+  exportInfo?: ExportInfo;
 }
 
 export interface CategoryTranslation {
