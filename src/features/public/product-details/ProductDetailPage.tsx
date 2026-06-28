@@ -22,6 +22,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui
 import { StatsSection } from "../home/sections/StatsSection";
 import { CtaSection } from "../home/sections/CtaSection";
 import type { Product } from "../../../types/product";
+import { localizedProductField } from "../../../lib/product/localizedProduct";
+import { useLanguage } from "../../../i18n/LanguageContext";
 
 const HIGHLIGHTS = [
   { Icon: Bone, title: "Yuqori protein retsepti" },
@@ -161,12 +163,17 @@ function ProductDetailContent({
   activeImage: number;
   setActiveImage: (i: number) => void;
 }) {
+  const { language } = useLanguage();
+  const name = localizedProductField(product, language, "name");
+  const shortDescription = localizedProductField(product, language, "shortDescription");
+  const description = localizedProductField(product, language, "description");
+
   const images = product.images.length > 0 ? product.images : [{ id: "fallback", url: "", isPrimary: true, sortOrder: 0, mediaFileId: "" }];
   const mainImage = resolveMediaUrl(images[Math.min(activeImage, images.length - 1)]?.url) ?? FALLBACK_IMAGE;
   const badges = categoryBadges(product.categoryName);
 
-  const protein = extractField(product.description, "Protein");
-  const shelfLife = extractField(product.description, "Saqlash muddati");
+  const protein = extractField(description, "Protein");
+  const shelfLife = extractField(description, "Saqlash muddati");
   const proteinNum = protein ? Number(protein.replace(/[^\d.]/g, "")) : null;
 
   const specCards = [
@@ -181,8 +188,8 @@ function ProductDetailContent({
   return (
     <>
       <Helmet>
-        <title>{product.name} — Naturino</title>
-        {product.shortDescription && <meta name="description" content={product.shortDescription} />}
+        <title>{name} — Naturino</title>
+        {shortDescription && <meta name="description" content={shortDescription} />}
       </Helmet>
 
       <div className="bg-[#F8F9F4] pt-28 pb-3 sm:pt-32">
@@ -190,7 +197,7 @@ function ProductDetailContent({
           <Link to="/" className="hover:text-[var(--rt-brand-secondary)]">
             Bosh sahifa
           </Link>{" "}
-          / <Link to="/products" className="hover:text-[var(--rt-brand-secondary)]">Mahsulotlar</Link> / <span className="text-[#0F172A]">{product.name}</span>
+          / <Link to="/products" className="hover:text-[var(--rt-brand-secondary)]">Mahsulotlar</Link> / <span className="text-[#0F172A]">{name}</span>
         </div>
       </div>
 
@@ -205,7 +212,7 @@ function ProductDetailContent({
               <img
                 key={mainImage}
                 src={mainImage}
-                alt={product.name}
+                alt={name}
                 className="relative z-10 mx-auto aspect-square w-full max-w-sm object-contain drop-shadow-2xl transition-opacity duration-500"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
@@ -246,9 +253,9 @@ function ProductDetailContent({
               </div>
             )}
 
-            <h1 className="mt-4 text-3xl font-bold leading-tight text-[#0F172A] sm:text-4xl">{product.name}</h1>
+            <h1 className="mt-4 text-3xl font-bold leading-tight text-[#0F172A] sm:text-4xl">{name}</h1>
 
-            {product.shortDescription && <p className="mt-4 text-lg text-slate-500">{product.shortDescription}</p>}
+            {shortDescription && <p className="mt-4 text-lg text-slate-500">{shortDescription}</p>}
 
             {/* Premium mini stat cards */}
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -354,7 +361,7 @@ function ProductDetailContent({
 
             {/* Overview */}
             <TabsContent value="overview" className="mt-6 rounded-2xl bg-white p-6 text-slate-600 shadow-sm sm:p-8">
-              {product.description ?? "Tavsif hali qo'shilmagan."}
+              {description ?? "Tavsif hali qo'shilmagan."}
             </TabsContent>
 
             {/* Nutrition — progress bars instead of plain table */}

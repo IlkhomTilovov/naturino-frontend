@@ -7,10 +7,13 @@ import { pagesApi } from "../../../api/endpoints/pages";
 import { ProductCard } from "../../../components/shared/ProductCard";
 import { getSectionTypeName } from "../shared/renderSection";
 import type { Product } from "../../../types/product";
+import { localizedCategoryField } from "../../../lib/product/localizedCategory";
+import { useLanguage } from "../../../i18n/LanguageContext";
 
 const PAGE_SIZE = 12;
 
 export function ProductsPage() {
+  const { language } = useLanguage();
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [pageNum, setPageNum] = useState(1);
   const [searchParams] = useSearchParams();
@@ -110,7 +113,7 @@ export function ProductsPage() {
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              {category.name}
+              {localizedCategoryField(category, language, "name")}
             </button>
           ))}
         </div>

@@ -7,6 +7,12 @@ export interface ProductImage {
   sortOrder: number;
 }
 
+export interface ProductTranslation {
+  name?: string | null;
+  shortDescription?: string | null;
+  description?: string | null;
+}
+
 export interface Product {
   id: string;
   categoryId: string;
@@ -27,6 +33,7 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   images: ProductImage[];
+  translations: Record<string, ProductTranslation>;
 }
 
 export interface ProductFormValues {
@@ -44,13 +51,20 @@ export interface ProductFormValues {
   ageGroup?: string;
   isFeatured: boolean;
   isActive: boolean;
+  translations?: Record<string, ProductTranslation>;
+}
+
+export interface CategoryTranslation {
+  name?: string | null;
+  description?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
 }
 
 export interface ProductCategory {
   id: string;
   parentCategoryId?: string | null;
   name: string;
-  nameRu?: string | null;
   slug: string;
   description?: string | null;
   imageUrl?: string | null;
@@ -58,12 +72,11 @@ export interface ProductCategory {
   isActive: boolean;
   productCount: number;
   metaTitleUz?: string | null;
-  metaTitleRu?: string | null;
   metaDescriptionUz?: string | null;
-  metaDescriptionRu?: string | null;
   metaKeywords?: string | null;
   isIndexable: boolean;
   isFollow: boolean;
+  translations: Record<string, CategoryTranslation>;
 }
 
 export interface ProductCategoryReorderItem {
@@ -74,19 +87,17 @@ export interface ProductCategoryReorderItem {
 export interface ProductCategoryFormValues {
   parentCategoryId?: string | null;
   name: string;
-  nameRu?: string;
   slug?: string;
   description?: string;
   imageFileId?: string | null;
   sortOrder: number;
   isActive: boolean;
   metaTitleUz?: string;
-  metaTitleRu?: string;
   metaDescriptionUz?: string;
-  metaDescriptionRu?: string;
   metaKeywords?: string;
   isIndexable: boolean;
   isFollow: boolean;
+  translations?: Record<string, CategoryTranslation>;
 }
 
 export interface PagedResult<T> {

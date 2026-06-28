@@ -59,7 +59,7 @@ export function ProductCategoriesPage() {
 
   const filtered = (categories ?? []).filter((c) => {
     const q = search.toLowerCase();
-    return !q || c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q) || (c.nameRu ?? "").toLowerCase().includes(q);
+    return !q || c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q) || (c.translations.ru?.name ?? "").toLowerCase().includes(q);
   });
 
   const displayList = orderedIds
@@ -195,7 +195,7 @@ export function ProductCategoriesPage() {
                     </td>
                     <td className="px-4 py-3">
                       <p className="font-medium text-admin-primary">{category.name}</p>
-                      {category.nameRu && <p className="text-sm text-admin-muted">{category.nameRu}</p>}
+                      {category.translations.ru?.name && <p className="text-sm text-admin-muted">{category.translations.ru.name}</p>}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
@@ -226,18 +226,16 @@ export function ProductCategoriesPage() {
                               imageFileId: undefined,
                               values: {
                                 name: category.name,
-                                nameRu: category.nameRu ?? "",
                                 slug: category.slug,
                                 description: category.description ?? "",
                                 sortOrder: category.sortOrder,
                                 isActive: !category.isActive,
                                 metaTitleUz: category.metaTitleUz ?? "",
-                                metaTitleRu: category.metaTitleRu ?? "",
                                 metaDescriptionUz: category.metaDescriptionUz ?? "",
-                                metaDescriptionRu: category.metaDescriptionRu ?? "",
                                 metaKeywords: category.metaKeywords ?? "",
                                 isIndexable: category.isIndexable,
                                 isFollow: category.isFollow,
+                                translations: category.translations,
                               },
                             })
                           }

@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import { productCategoriesApi } from "../../../../api/endpoints/products";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../../lib/utils/media";
 import type { PageSectionContent } from "../../../../types/page";
+import { localizedCategoryField } from "../../../../lib/product/localizedCategory";
+import { useLanguage } from "../../../../i18n/LanguageContext";
 
 export function ProductRangeSection({ content }: { content: PageSectionContent }) {
+  const { language } = useLanguage();
   const eyebrow = content.eyebrow as string | undefined;
   const title = content.title as string | undefined;
   const subtitle = content.subtitle as string | undefined;
@@ -32,25 +35,28 @@ export function ProductRangeSection({ content }: { content: PageSectionContent }
 
         {visible.length > 0 && (
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {visible.map((category) => (
-              <Link
-                key={category.id}
-                to={`/products?category=${category.slug}`}
-                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
-              >
-                <div className="aspect-square bg-slate-100">
-                  <img
-                    src={resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE}
-                    alt={category.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-slate-900">{category.name}</h3>
-                  <p className="mt-1 text-xs text-slate-400">{category.productCount} mahsulot</p>
-                </div>
-              </Link>
-            ))}
+            {visible.map((category) => {
+              const name = localizedCategoryField(category, language, "name");
+              return (
+                <Link
+                  key={category.id}
+                  to={`/products?category=${category.slug}`}
+                  className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
+                >
+                  <div className="aspect-square bg-slate-100">
+                    <img
+                      src={resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE}
+                      alt={name ?? category.name}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-slate-900">{name}</h3>
+                    <p className="mt-1 text-xs text-slate-400">{category.productCount} mahsulot</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

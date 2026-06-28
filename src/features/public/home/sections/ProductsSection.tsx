@@ -6,6 +6,9 @@ import { productCategoriesApi, productsApi } from "../../../../api/endpoints/pro
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../../lib/utils/media";
 import type { Product } from "../../../../types/product";
 import type { PageSectionContent } from "../../../../types/page";
+import { localizedProductField } from "../../../../lib/product/localizedProduct";
+import { localizedCategoryField } from "../../../../lib/product/localizedCategory";
+import { useLanguage } from "../../../../i18n/LanguageContext";
 
 const SLOT_WIDTH = 340;
 
@@ -32,6 +35,9 @@ function categoryBadges(categoryName: string): string[] {
 }
 
 function ShowcaseCard({ product, offset }: { product: Product; offset: number }) {
+  const { language } = useLanguage();
+  const name = localizedProductField(product, language, "name");
+  const shortDescription = localizedProductField(product, language, "shortDescription");
   const primaryImage = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const imageSrc = resolveMediaUrl(primaryImage?.url) ?? FALLBACK_IMAGE;
   const badges = categoryBadges(product.categoryName);
@@ -60,7 +66,7 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
       >
         <img
           src={imageSrc}
-          alt={product.name}
+          alt={name ?? product.name}
           className="animate-float h-full w-full object-contain"
           style={{ filter: "drop-shadow(0 30px 50px rgba(0,0,0,0.18))" }}
           onError={(e) => {
@@ -87,10 +93,10 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
             ))}
           </div>
 
-          <h3 className="mt-2 pb-0.5 text-xl font-bold leading-[1.35] text-slate-900 sm:text-2xl">{product.name}</h3>
+          <h3 className="mt-2 pb-0.5 text-xl font-bold leading-[1.35] text-slate-900 sm:text-2xl">{name}</h3>
 
-          {product.shortDescription && (
-            <p className="mt-1.5 line-clamp-1 max-w-md text-sm text-slate-500">{product.shortDescription}</p>
+          {shortDescription && (
+            <p className="mt-1.5 line-clamp-1 max-w-md text-sm text-slate-500">{shortDescription}</p>
           )}
         </>
       )}
@@ -99,6 +105,7 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
 }
 
 export function ProductsSection({ content }: { content: PageSectionContent }) {
+  const { language } = useLanguage();
   const eyebrow = (content.eyebrow as string | undefined) ?? "MAHSULOTLARIMIZ";
   const title = (content.title as string | undefined) ?? "Eksportga tayyor premium mahsulotlar";
   const subtitle =
@@ -204,7 +211,7 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
                   : "border border-slate-200 text-slate-600 hover:border-[var(--rt-accent)] hover:text-[var(--rt-accent)]"
               }`}
             >
-              {category.name}
+              {localizedCategoryField(category, language, "name")}
             </button>
           ))}
         </div>

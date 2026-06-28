@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { mediaApi } from "../../../api/endpoints/media";
+import { languagesApi } from "../../../api/endpoints/languages";
 import { Button } from "../../../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
@@ -12,7 +14,7 @@ import { categorySchema, type CategoryFormSchema } from "../../../lib/schemas/ca
 import { computeCategorySeoScore } from "../../../lib/utils/categorySeo";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../lib/utils/media";
 import { slugify } from "../../../lib/utils/slugify";
-import type { ProductCategory } from "../../../types/product";
+import type { CategoryTranslation, ProductCategory } from "../../../types/product";
 
 export function CategoryModal({
   category,
@@ -22,7 +24,10 @@ export function CategoryModal({
 }: {
   category: ProductCategory | null;
   onClose: () => void;
-  onSubmit: (values: CategoryFormSchema, imageFileId: string | null | undefined) => Promise<void>;
+  onSubmit: (
+    values: CategoryFormSchema & { translations: Record<string, CategoryTranslation> },
+    imageFileId: string | null | undefined,
+  ) => Promise<void>;
   isSubmitting: boolean;
 }) {
   const [activeTab, setActiveTab] = useState("general");
@@ -31,7 +36,23 @@ export function CategoryModal({
   const [isUploading, setIsUploading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [translations, setTranslations] = useState<Record<string, CategoryTranslation>>(category?.translations ?? {});
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { data: languages } = useQuery({ queryKey: ["languages"], queryFn: languagesApi.getAll });
+  const activeLanguages = (languages ?? []).filter((l) => l.isActive);
+  const defaultLangCode = activeLanguages.find((l) => l.isDefault)?.code ?? "uz";
+  const [activeLang, setActiveLang] = useState(defaultLangCode);
+  const isDefaultLang = activeLang === defaultLangCode;
+
+  useEffect(() => {
+    setActiveLang(defaultLangCode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultLangCode]);
+
+  const updateTranslation = (key: keyof CategoryTranslation, value: string) => {
+    setTranslations((prev) => ({ ...prev, [activeLang]: { ...prev[activeLang], [key]: value } }));
+  };
 
   const {
     register,
@@ -43,15 +64,12 @@ export function CategoryModal({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       name: category?.name ?? "",
-      nameRu: category?.nameRu ?? "",
       slug: category?.slug ?? "",
       description: category?.description ?? "",
       sortOrder: category?.sortOrder ?? 0,
       isActive: category?.isActive ?? true,
       metaTitleUz: category?.metaTitleUz ?? "",
-      metaTitleRu: category?.metaTitleRu ?? "",
       metaDescriptionUz: category?.metaDescriptionUz ?? "",
-      metaDescriptionRu: category?.metaDescriptionRu ?? "",
       metaKeywords: category?.metaKeywords ?? "",
       isIndexable: category?.isIndexable ?? true,
       isFollow: category?.isFollow ?? true,
@@ -61,6 +79,7 @@ export function CategoryModal({
   useEffect(() => {
     setImageUrl(category?.imageUrl ?? null);
     setImageFileId(undefined);
+    setTranslations(category?.translations ?? {});
   }, [category]);
 
   const values = watch();
@@ -80,7 +99,7 @@ export function CategoryModal({
   const submit = handleSubmit(async (vals) => {
     setServerError(null);
     try {
-      await onSubmit(vals, imageFileId);
+      await onSubmit({ ...vals, translations }, imageFileId);
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 409) {
         setServerError("Shu nomdagi/slugdagi kategoriya allaqachon mavjud.");
@@ -106,6 +125,24 @@ export function CategoryModal({
         </DialogHeader>
 
         <form onSubmit={submit} className="space-y-4 px-6 py-5">
+          {activeLanguages.length > 1 && (
+            <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1.5">
+              <span className="px-2 text-xs font-medium text-admin-muted">Til:</span>
+              {activeLanguages.map((lang) => (
+                <button
+                  key={lang.code}
+                  type="button"
+                  onClick={() => setActiveLang(lang.code)}
+                  className={`rounded-md px-3 py-1.5 text-xs font-semibold uppercase ${
+                    activeLang === lang.code ? "bg-white text-admin-primary shadow-sm" : "text-admin-muted"
+                  }`}
+                >
+                  {lang.code}
+                </button>
+              ))}
+            </div>
+          )}
+
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as string)}>
             <TabsList className="h-auto gap-1 rounded-xl bg-slate-100 p-1.5">
               <TabsTrigger value="general" className="rounded-lg px-4 py-2 text-sm font-medium data-active:shadow-sm">
@@ -132,18 +169,35 @@ export function CategoryModal({
                     />
                     {errors.name && <p className="mt-1 text-xs text-admin-danger">{errors.name.message}</p>}
                   </div>
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-admin-primary">Nomi (RU)</label>
-                    <input className="input" {...register("nameRu")} />
-                  </div>
+                  {!isDefaultLang && (
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-admin-primary">Nomi ({activeLang.toUpperCase()})</label>
+                      <input
+                        className="input"
+                        value={translations[activeLang]?.name ?? ""}
+                        onChange={(e) => updateTranslation("name", e.target.value)}
+                      />
+                    </div>
+                  )}
                   <div className="col-span-2">
                     <label className="mb-1 block text-sm font-medium text-admin-primary">Slug (URL)</label>
                     <input className="input" placeholder="avtomatik yaratiladi" {...register("slug")} />
                     <p className="mt-1 text-xs text-admin-muted">URL: /catalog/{values.slug || slugify(values.name) || "..."}</p>
                   </div>
                   <div className="col-span-2">
-                    <label className="mb-1 block text-sm font-medium text-admin-primary">Tavsif</label>
-                    <textarea className="input" rows={2} {...register("description")} />
+                    <label className="mb-1 block text-sm font-medium text-admin-primary">
+                      Tavsif {!isDefaultLang && `(${activeLang.toUpperCase()})`}
+                    </label>
+                    {isDefaultLang ? (
+                      <textarea className="input" rows={2} {...register("description")} />
+                    ) : (
+                      <textarea
+                        className="input"
+                        rows={2}
+                        value={translations[activeLang]?.description ?? ""}
+                        onChange={(e) => updateTranslation("description", e.target.value)}
+                      />
+                    )}
                   </div>
                 </div>
               </FormSectionCard>
@@ -241,11 +295,17 @@ export function CategoryModal({
                     <input className="input" placeholder="Toifa nomi" {...register("metaTitleUz")} />
                     <p className="mt-1 text-xs text-admin-muted">{values.metaTitleUz?.length ?? 0}/60 belgi</p>
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-admin-muted">Meta Title (RU)</label>
-                    <input className="input" placeholder="Название категории" {...register("metaTitleRu")} />
-                    <p className="mt-1 text-xs text-admin-muted">{values.metaTitleRu?.length ?? 0}/60 belgi</p>
-                  </div>
+                  {!isDefaultLang && (
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-admin-muted">Meta Title ({activeLang.toUpperCase()})</label>
+                      <input
+                        className="input"
+                        value={translations[activeLang]?.metaTitle ?? ""}
+                        onChange={(e) => updateTranslation("metaTitle", e.target.value)}
+                      />
+                      <p className="mt-1 text-xs text-admin-muted">{translations[activeLang]?.metaTitle?.length ?? 0}/60 belgi</p>
+                    </div>
+                  )}
                 </div>
               </FormSectionCard>
 
@@ -256,11 +316,18 @@ export function CategoryModal({
                     <textarea className="input" rows={2} placeholder="Toifa tavsifi..." {...register("metaDescriptionUz")} />
                     <p className="mt-1 text-xs text-admin-muted">{values.metaDescriptionUz?.length ?? 0}/160 belgi</p>
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-admin-muted">Meta Description (RU)</label>
-                    <textarea className="input" rows={2} placeholder="Описание категории..." {...register("metaDescriptionRu")} />
-                    <p className="mt-1 text-xs text-admin-muted">{values.metaDescriptionRu?.length ?? 0}/160 belgi</p>
-                  </div>
+                  {!isDefaultLang && (
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-admin-muted">Meta Description ({activeLang.toUpperCase()})</label>
+                      <textarea
+                        className="input"
+                        rows={2}
+                        value={translations[activeLang]?.metaDescription ?? ""}
+                        onChange={(e) => updateTranslation("metaDescription", e.target.value)}
+                      />
+                      <p className="mt-1 text-xs text-admin-muted">{translations[activeLang]?.metaDescription?.length ?? 0}/160 belgi</p>
+                    </div>
+                  )}
                 </div>
               </FormSectionCard>
 

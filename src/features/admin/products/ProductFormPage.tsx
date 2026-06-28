@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { productCategoriesApi, productsApi } from "../../../api/endpoints/products";
+import { languagesApi } from "../../../api/endpoints/languages";
 import { Button } from "../../../components/ui/button";
 import { ProductImageManager } from "./ProductImageManager";
 import { PageHeader } from "../../../components/admin/PageHeader";
@@ -13,6 +14,7 @@ import { SeoStatusBadge } from "../../../components/admin/Badges";
 import { productSchema, type ProductFormSchema } from "../../../lib/schemas/product";
 import { useToastStore } from "../../../store/toastStore";
 import { computeSeoScore } from "../../../lib/utils/seo";
+import type { ProductTranslation } from "../../../types/product";
 
 export function ProductFormPage() {
   const { id } = useParams();
@@ -22,11 +24,31 @@ export function ProductFormPage() {
   const [activeTab, setActiveTab] = useState("general");
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [translations, setTranslations] = useState<Record<string, ProductTranslation>>({});
 
   const { data: categories } = useQuery({
     queryKey: ["product-categories"],
     queryFn: productCategoriesApi.getAll,
   });
+
+  const { data: languages } = useQuery({
+    queryKey: ["languages"],
+    queryFn: languagesApi.getAll,
+  });
+
+  const activeLanguages = (languages ?? []).filter((l) => l.isActive);
+  const defaultLangCode = activeLanguages.find((l) => l.isDefault)?.code ?? "uz";
+  const [activeLang, setActiveLang] = useState(defaultLangCode);
+  const isDefaultLang = activeLang === defaultLangCode;
+
+  useEffect(() => {
+    setActiveLang(defaultLangCode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultLangCode]);
+
+  const updateTranslation = (key: keyof ProductTranslation, value: string) => {
+    setTranslations((prev) => ({ ...prev, [activeLang]: { ...prev[activeLang], [key]: value } }));
+  };
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -63,6 +85,7 @@ export function ProductFormPage() {
         isFeatured: product.isFeatured,
         isActive: product.isActive,
       });
+      setTranslations(product.translations ?? {});
     }
   }, [product, reset]);
 
@@ -72,10 +95,11 @@ export function ProductFormPage() {
     setServerError(null);
     setIsSubmitting(true);
     try {
+      const payload = { ...values, translations };
       if (isEdit) {
-        await productsApi.update(id!, values);
+        await productsApi.update(id!, payload);
       } else {
-        await productsApi.create(values);
+        await productsApi.create(payload);
       }
       addToast("Mahsulot muvaffaqiyatli saqlandi");
       navigate("/admin/products");
@@ -107,6 +131,24 @@ export function ProductFormPage() {
         description={isEdit ? product?.name : "Yangi mahsulot qo'shish"}
       />
 
+      {activeLanguages.length > 1 && (
+        <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1.5">
+          <span className="px-2 text-xs font-medium text-admin-muted">Til:</span>
+          {activeLanguages.map((lang) => (
+            <button
+              key={lang.code}
+              type="button"
+              onClick={() => setActiveLang(lang.code)}
+              className={`rounded-md px-3 py-1.5 text-xs font-semibold uppercase ${
+                activeLang === lang.code ? "bg-white text-admin-primary shadow-sm" : "text-admin-muted"
+              }`}
+            >
+              {lang.code}
+            </button>
+          ))}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as string)}>
         <TabsList className="h-auto w-full justify-start gap-1 rounded-xl bg-slate-100 p-1.5">
@@ -131,9 +173,19 @@ export function ProductFormPage() {
           <div className="space-y-4">
             <FormSectionCard title="Asosiy ma'lumotlar">
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Nomi" error={errors.name?.message}>
-                  <input className="input" {...register("name")} />
-                </Field>
+                {isDefaultLang ? (
+                  <Field label="Nomi" error={errors.name?.message}>
+                    <input className="input" {...register("name")} />
+                  </Field>
+                ) : (
+                  <Field label={`Nomi (${activeLang.toUpperCase()})`}>
+                    <input
+                      className="input"
+                      value={translations[activeLang]?.name ?? ""}
+                      onChange={(e) => updateTranslation("name", e.target.value)}
+                    />
+                  </Field>
+                )}
                 <Field label="SKU" error={errors.sku?.message}>
                   <input className="input" {...register("sku")} />
                 </Field>
@@ -187,12 +239,35 @@ export function ProductFormPage() {
 
         <TabsContent value="content">
           <div className="space-y-4">
-            <FormSectionCard title="Qisqa tavsif" description="Mahsulot kartochkasida ko'rsatiladi">
-              <textarea className="input" rows={3} {...register("shortDescription")} />
-            </FormSectionCard>
-            <FormSectionCard title="To'liq tavsif" description="Mahsulot sahifasida to'liq matn">
-              <textarea className="input" rows={8} {...register("description")} />
-            </FormSectionCard>
+            {isDefaultLang ? (
+              <>
+                <FormSectionCard title="Qisqa tavsif" description="Mahsulot kartochkasida ko'rsatiladi">
+                  <textarea className="input" rows={3} {...register("shortDescription")} />
+                </FormSectionCard>
+                <FormSectionCard title="To'liq tavsif" description="Mahsulot sahifasida to'liq matn">
+                  <textarea className="input" rows={8} {...register("description")} />
+                </FormSectionCard>
+              </>
+            ) : (
+              <>
+                <FormSectionCard title={`Qisqa tavsif (${activeLang.toUpperCase()})`} description="Mahsulot kartochkasida ko'rsatiladi">
+                  <textarea
+                    className="input"
+                    rows={3}
+                    value={translations[activeLang]?.shortDescription ?? ""}
+                    onChange={(e) => updateTranslation("shortDescription", e.target.value)}
+                  />
+                </FormSectionCard>
+                <FormSectionCard title={`To'liq tavsif (${activeLang.toUpperCase()})`} description="Mahsulot sahifasida to'liq matn">
+                  <textarea
+                    className="input"
+                    rows={8}
+                    value={translations[activeLang]?.description ?? ""}
+                    onChange={(e) => updateTranslation("description", e.target.value)}
+                  />
+                </FormSectionCard>
+              </>
+            )}
           </div>
         </TabsContent>
 

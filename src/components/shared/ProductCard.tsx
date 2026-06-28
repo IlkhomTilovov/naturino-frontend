@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import type { Product } from "../../types/product";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../lib/utils/media";
+import { localizedProductField } from "../../lib/product/localizedProduct";
+import { useLanguage } from "../../i18n/LanguageContext";
 
 function categoryBadges(categoryName: string): string[] {
   return categoryName
@@ -11,9 +13,12 @@ function categoryBadges(categoryName: string): string[] {
 }
 
 export function ProductCard({ product }: { product: Product }) {
+  const { language } = useLanguage();
   const primaryImage = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const imageSrc = resolveMediaUrl(primaryImage?.url) ?? FALLBACK_IMAGE;
   const badges = categoryBadges(product.categoryName);
+  const name = localizedProductField(product, language, "name");
+  const shortDescription = localizedProductField(product, language, "shortDescription");
 
   const specs = [
     product.sku && { label: "SKU", value: product.sku },
@@ -36,7 +41,7 @@ export function ProductCard({ product }: { product: Product }) {
         )}
         <img
           src={imageSrc}
-          alt={product.name}
+          alt={name ?? product.name}
           className="mx-auto h-full w-auto max-w-[85%] object-contain transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
@@ -59,10 +64,10 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         )}
 
-        <h3 className="mt-3 line-clamp-2 text-base font-bold leading-snug text-slate-900">{product.name}</h3>
+        <h3 className="mt-3 line-clamp-2 text-base font-bold leading-snug text-slate-900">{name}</h3>
 
-        {product.shortDescription && (
-          <p className="mt-1.5 line-clamp-1 text-sm text-slate-500">{product.shortDescription}</p>
+        {shortDescription && (
+          <p className="mt-1.5 line-clamp-1 text-sm text-slate-500">{shortDescription}</p>
         )}
 
         {specs.length > 0 && (

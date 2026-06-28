@@ -12,9 +12,7 @@ export interface CategorySeoReport {
 
 type SeoFields = {
   metaTitleUz?: string | null;
-  metaTitleRu?: string | null;
   metaDescriptionUz?: string | null;
-  metaDescriptionRu?: string | null;
   metaKeywords?: string | null;
   isIndexable: boolean;
   slug?: string | null;
