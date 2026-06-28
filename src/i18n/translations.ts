@@ -1,4 +1,6 @@
-export type Language = "uz" | "ru" | "en";
+// Any language code works at runtime (driven by the Languages admin list) — these three
+// have hand-written UI string translations; other codes fall back to "uz" via t() below.
+export type Language = string;
 
 export const LANGUAGES: { code: Language; label: string }[] = [
   { code: "uz", label: "UZ" },
@@ -6,7 +8,7 @@ export const LANGUAGES: { code: Language; label: string }[] = [
   { code: "en", label: "EN" },
 ];
 
-export const translations: Record<Language, Record<string, string>> = {
+export const translations: Record<string, Record<string, string>> = {
   uz: {
     "nav.company": "Kompaniya",
     "nav.products": "Mahsulotlar",

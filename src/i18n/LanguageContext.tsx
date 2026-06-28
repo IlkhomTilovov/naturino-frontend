@@ -13,8 +13,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 function readStoredLanguage(): Language {
   if (typeof window === "undefined") return "uz";
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  return stored === "ru" || stored === "en" || stored === "uz" ? stored : "uz";
+  return window.localStorage.getItem(STORAGE_KEY) ?? "uz";
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -27,7 +26,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = (lang: Language) => setLanguageState(lang);
 
-  const t = (key: string) => translations[language][key] ?? translations.uz[key] ?? key;
+  const t = (key: string) => translations[language]?.[key] ?? translations.uz[key] ?? key;
 
   return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>;
 }

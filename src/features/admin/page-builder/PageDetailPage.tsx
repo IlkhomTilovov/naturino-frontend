@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { pagesApi } from "../../../api/endpoints/pages";
+import { languagesApi } from "../../../api/endpoints/languages";
 import { Button } from "../../../components/ui/button";
 import { useToastStore } from "../../../store/toastStore";
 import type { PageSection, PageSectionContent } from "../../../types/page";
@@ -35,6 +36,9 @@ export function PageDetailPage() {
   const [history, setHistory] = useState<HistorySnapshot[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const isRestoringHistory = useRef(false);
+
+  const { data: languages } = useQuery({ queryKey: ["languages"], queryFn: languagesApi.getAll });
+  const activeLanguages = (languages ?? []).filter((l) => l.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
 
   const { data: page, isLoading } = useQuery({
     queryKey: ["page", id],
@@ -338,7 +342,7 @@ export function PageDetailPage() {
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1">
-            {(["uz", "ru"] as ContentLanguage[]).map((lang) => (
+            {(activeLanguages.length > 0 ? activeLanguages.map((l) => l.code) : ["uz", "ru"]).map((lang) => (
               <button
                 key={lang}
                 type="button"

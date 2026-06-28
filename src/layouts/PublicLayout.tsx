@@ -8,6 +8,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 import { LANGUAGES } from "../i18n/translations";
 import { useLiveEditStore } from "../store/liveEditStore";
 import { pagesApi } from "../api/endpoints/pages";
+import { languagesApi } from "../api/endpoints/languages";
 import { ROUTE_TO_SLUG } from "../lib/page/publicPath";
 
 const NAV_LINKS = [
@@ -66,6 +67,14 @@ const SOCIAL_LINKS = [
 
 function LanguageSwitcher({ glass = false }: { glass?: boolean }) {
   const { language, setLanguage } = useLanguage();
+  const { data: languages } = useQuery({ queryKey: ["languages"], queryFn: languagesApi.getAll });
+
+  const options = languages
+    ? languages
+        .filter((l) => l.isActive)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((l) => ({ code: l.code, label: l.code.toUpperCase() }))
+    : LANGUAGES;
 
   return (
     <div
@@ -73,7 +82,7 @@ function LanguageSwitcher({ glass = false }: { glass?: boolean }) {
         glass ? "bg-transparent" : "bg-[#F8F9F4]"
       }`}
     >
-      {LANGUAGES.map(({ code, label }) => {
+      {options.map(({ code, label }) => {
         const isActive = language === code;
         return (
           <button
