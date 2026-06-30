@@ -9,6 +9,7 @@ import { getSectionTypeName } from "../shared/renderSection";
 import type { Product } from "../../../types/product";
 import { localizedCategoryField } from "../../../lib/product/localizedCategory";
 import { useLanguage } from "../../../i18n/LanguageContext";
+import { getLocalized } from "../../../lib/page/localizedContent";
 
 const PAGE_SIZE = 12;
 
@@ -24,8 +25,9 @@ export function ProductsPage() {
   });
 
   const heroSection = cmsPage?.sections.find((s) => getSectionTypeName(s.sectionType) === "Hero" && s.isEnabled);
-  const heroTitle = heroSection?.content.title as string | undefined;
-  const heroSubtitle = heroSection?.content.subtitle as string | undefined;
+  const heroContent = heroSection ? getLocalized(heroSection.content, language) : null;
+  const heroTitle = heroContent?.title as string | undefined;
+  const heroSubtitle = heroContent?.subtitle as string | undefined;
 
   const { data: categories } = useQuery({
     queryKey: ["product-categories", "public"],

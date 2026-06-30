@@ -552,10 +552,24 @@ function SectionEditor({
 }) {
   if (typeName === "Hero") {
     const banners = (content.banners as Record<string, unknown>[] | undefined) ?? [];
+    const heroFields = SECTION_FIELD_SCHEMAS["Hero"] ?? [];
     return (
-      <div>
-        <h2 className="mb-3 text-lg font-semibold text-admin-primary">Bosh banner (slayder)</h2>
-        <HeroBannerManager banners={banners} onChange={(next) => onChange("banners", next)} />
+      <div className="space-y-6">
+        <div>
+          <h2 className="mb-3 text-lg font-semibold text-admin-primary">Sahifa sarlavhasi</h2>
+          <div className="space-y-4">
+            {heroFields.filter((f) => f.key !== "imageStats" && f.key !== "checklist").map((field) => (
+              <div key={field.key}>
+                <label className="mb-2 block text-sm font-semibold text-admin-primary">{field.label}</label>
+                <FieldControl field={field} value={content[field.key]} onChange={(value) => onChange(field.key, value)} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h2 className="mb-3 text-lg font-semibold text-admin-primary">Bosh banner (slayder)</h2>
+          <HeroBannerManager banners={banners} onChange={(next) => onChange("banners", next)} />
+        </div>
       </div>
     );
   }
