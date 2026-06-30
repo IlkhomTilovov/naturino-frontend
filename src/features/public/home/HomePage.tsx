@@ -8,7 +8,7 @@ import { getLocalized, type ContentLanguage } from "../../../lib/page/localizedC
 
 export function HomePage() {
   const { language } = useLanguage();
-  const lang: ContentLanguage = language === "ru" ? "ru" : "uz";
+  const lang: ContentLanguage = language;
 
   const { data: page, isLoading } = useQuery({
     queryKey: ["page", "by-slug", ""],

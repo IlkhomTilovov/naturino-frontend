@@ -7,7 +7,7 @@ import type { ContentLanguage } from "../../../lib/page/localizedContent";
 
 export function DynamicPage({ slug, fallbackTitle }: { slug: string; fallbackTitle: string }) {
   const { language } = useLanguage();
-  const lang: ContentLanguage = language === "ru" ? "ru" : "uz";
+  const lang: ContentLanguage = language;
 
   const { data: page, isLoading, isError } = useQuery({
     queryKey: ["page", "by-slug", slug],
