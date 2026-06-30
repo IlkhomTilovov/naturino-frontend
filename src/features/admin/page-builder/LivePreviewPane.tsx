@@ -81,8 +81,7 @@ export function LivePreviewPane({
           const typeName = SECTION_TYPE_NAMES[Number(section.sectionType)] ?? String(section.sectionType);
           const isActive = activeSectionId === section.id;
           const localContent = getLocalized(section.content, activeLang);
-          const hasBanners = Array.isArray((section.content as Record<string, unknown>).banners)
-            && ((section.content as Record<string, unknown>).banners as unknown[]).length > 0;
+          const hasBanners = Array.isArray(localContent.banners) && (localContent.banners as unknown[]).length > 0;
           const EditableComponent = typeName === "Hero" ? null : EDITABLE_SECTIONS[typeName];
           const isInlineEditable = isActive && Boolean(onFieldChange) && (typeName === "Hero" || Boolean(EditableComponent));
 

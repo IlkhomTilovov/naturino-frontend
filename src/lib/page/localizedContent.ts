@@ -4,10 +4,13 @@ import type { PageSectionContent } from "../../types/page";
 // default/base slot that flat (pre-localization) legacy content migrates into.
 export type ContentLanguage = string;
 
-const LEGACY_LANG_KEYS = ["uz", "ru"];
-
 function isLocalizedShape(content: PageSectionContent): boolean {
-  return LEGACY_LANG_KEYS.some((lang) => typeof content[lang] === "object" && content[lang] !== null);
+  // A localized shape has at least one key whose value is a non-null object AND
+  // whose key looks like a short language code (2-5 lowercase letters). This avoids
+  // false-positives on flat content that happens to have an object-valued field.
+  return Object.keys(content).some(
+    (key) => /^[a-z]{2,5}$/.test(key) && typeof content[key] === "object" && content[key] !== null,
+  );
 }
 
 /** Reads a section's content for the given language, falling back to the flat legacy shape (treated as "uz") when the section hasn't been migrated to per-language content yet. */
