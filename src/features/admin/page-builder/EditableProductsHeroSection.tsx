@@ -8,6 +8,8 @@ export function EditableProductsHeroSection({
   content: PageSectionContent;
   onFieldChange: (key: string, value: unknown) => void;
 }) {
+  const breadcrumbHome = content.breadcrumbHome as string | undefined;
+  const breadcrumbCurrent = content.breadcrumbCurrent as string | undefined;
   const title = content.title as string | undefined;
   const subtitle = content.subtitle as string | undefined;
 
@@ -25,9 +27,13 @@ export function EditableProductsHeroSection({
       />
       <div className="relative z-10 mx-auto max-w-3xl">
         <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "#c8a84b" }}>
-          <span className="text-white/50">Bosh sahifa</span>
+          <span className="text-white/50">
+            <InlineText value={breadcrumbHome} placeholder="Bosh sahifa" onCommit={(v) => onFieldChange("breadcrumbHome", v)} />
+          </span>
           <span className="text-white/30">/</span>
-          <span>PRODUCTS</span>
+          <span>
+            <InlineText value={breadcrumbCurrent} placeholder="PRODUCTS" onCommit={(v) => onFieldChange("breadcrumbCurrent", v)} />
+          </span>
         </p>
         <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">
           <InlineText

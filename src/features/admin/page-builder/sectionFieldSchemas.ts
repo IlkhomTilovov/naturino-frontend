@@ -13,6 +13,8 @@ export interface FieldDef {
 
 export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
   Hero: [
+    { key: "breadcrumbHome", label: "Breadcrumb: Bosh sahifa matni", type: "text" },
+    { key: "breadcrumbCurrent", label: "Breadcrumb: Joriy sahifa matni", type: "text" },
     { key: "badge", label: "Badge matni", type: "text" },
     { key: "title", label: "Sarlavha", type: "text" },
     { key: "highlight", label: "Sarlavhadagi ajratilgan qism (yashil)", type: "text" },

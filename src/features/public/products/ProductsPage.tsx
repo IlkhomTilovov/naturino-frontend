@@ -28,6 +28,8 @@ export function ProductsPage() {
   const heroContent = heroSection ? getLocalized(heroSection.content, language) : null;
   const heroTitle = heroContent?.title as string | undefined;
   const heroSubtitle = heroContent?.subtitle as string | undefined;
+  const breadcrumbHome = heroContent?.breadcrumbHome as string | undefined;
+  const breadcrumbCurrent = heroContent?.breadcrumbCurrent as string | undefined;
 
   const { data: categories } = useQuery({
     queryKey: ["product-categories", "public"],
@@ -80,9 +82,9 @@ export function ProductsPage() {
 
         <div className="relative z-10 mx-auto max-w-3xl">
           <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-accent)]">
-            <span className="text-white/50">Bosh sahifa</span>
+            <span className="text-white/50">{breadcrumbHome ?? "Bosh sahifa"}</span>
             <span aria-hidden className="text-white/30">/</span>
-            {(cmsPage?.title ?? "Mahsulotlar katalogi").toLocaleUpperCase("uz")}
+            {(breadcrumbCurrent ?? cmsPage?.title ?? "Mahsulotlar katalogi").toLocaleUpperCase("uz")}
           </p>
           <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">{heroTitle ?? "Naturino mahsulotlari"}</h1>
           <p className="mx-auto mt-4 max-w-xl text-white/70">
