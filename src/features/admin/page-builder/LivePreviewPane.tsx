@@ -18,6 +18,7 @@ import { EditableFeatureCardsSection } from "./EditableFeatureCardsSection";
 import { EditableProductRangeSection } from "./EditableProductRangeSection";
 import { EditableGallerySection } from "./EditableGallerySection";
 import { EditableFaqSection } from "./EditableFaqSection";
+import { EditableProductsHeroSection } from "./EditableProductsHeroSection";
 
 export type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -79,6 +80,9 @@ export function LivePreviewPane({
         {visible.map((section) => {
           const typeName = SECTION_TYPE_NAMES[Number(section.sectionType)] ?? String(section.sectionType);
           const isActive = activeSectionId === section.id;
+          const localContent = getLocalized(section.content, activeLang);
+          const hasBanners = Array.isArray((section.content as Record<string, unknown>).banners)
+            && ((section.content as Record<string, unknown>).banners as unknown[]).length > 0;
           const EditableComponent = typeName === "Hero" ? null : EDITABLE_SECTIONS[typeName];
           const isInlineEditable = isActive && Boolean(onFieldChange) && (typeName === "Hero" || Boolean(EditableComponent));
 
@@ -98,15 +102,25 @@ export function LivePreviewPane({
                     : "cursor-pointer hover:outline hover:outline-1 hover:outline-offset-[-1px] hover:outline-admin-accent"
               }`}
             >
-              {isInlineEditable && typeName === "Hero" ? (
+              {isInlineEditable && typeName === "Hero" && hasBanners ? (
                 <EditableHeroSection
-                  banners={(getLocalized(section.content, activeLang).banners as HeroBanner[] | undefined) ?? []}
+                  banners={(localContent.banners as HeroBanner[] | undefined) ?? []}
                   onChange={(banners) => onFieldChange!(section.id, "banners", banners)}
+                />
+              ) : isInlineEditable && typeName === "Hero" && !hasBanners ? (
+                <EditableProductsHeroSection
+                  content={localContent}
+                  onFieldChange={(key, value) => onFieldChange!(section.id, key, value)}
                 />
               ) : isInlineEditable && EditableComponent ? (
                 <EditableComponent
                   content={getLocalized(section.content, activeLang)}
                   onFieldChange={(key, value) => onFieldChange!(section.id, key, value)}
+                />
+              ) : typeName === "Hero" && !hasBanners ? (
+                <EditableProductsHeroSection
+                  content={localContent}
+                  onFieldChange={() => {}}
                 />
               ) : (
                 renderSection(section, activeLang)
