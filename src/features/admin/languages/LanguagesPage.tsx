@@ -215,15 +215,23 @@ export function LanguagesPage() {
                       disabled={language.isDefault}
                       title={language.isDefault ? "Standart tilni faolsizlantirib bo'lmaydi" : undefined}
                       onClick={() => toggleStatus.mutate(language.id)}
-                      className={`relative h-5 w-9 rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-                        language.isActive ? "bg-admin-primary" : "bg-slate-300"
+                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400/50 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 ${
+                        language.isActive
+                          ? "bg-green-500 shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]"
+                          : "bg-slate-400 shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)]"
                       }`}
                     >
                       <span
-                        className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
-                          language.isActive ? "translate-x-4" : "translate-x-0.5"
+                        className={`relative flex size-4 items-center justify-center rounded-full bg-gradient-to-b from-white to-slate-100 shadow-[0_2px_6px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.9)] transition-transform duration-300 ease-in-out ${
+                          language.isActive ? "translate-x-4" : "translate-x-0"
                         }`}
-                      />
+                      >
+                        <span className="flex gap-[1.5px]">
+                          {[0, 1, 2].map((i) => (
+                            <span key={i} className="block h-2 w-px rounded-full bg-slate-400/60" />
+                          ))}
+                        </span>
+                      </span>
                     </button>
                   </td>
                   <td className="px-4 py-3">

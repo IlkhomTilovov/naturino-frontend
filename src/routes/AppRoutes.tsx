@@ -10,6 +10,7 @@ import { PagesListPage } from "../features/admin/page-builder/PagesListPage";
 import { PageDetailPage } from "../features/admin/page-builder/PageDetailPage";
 import { LiveEditPage } from "../features/admin/page-builder/LiveEditPage";
 import { LanguagesPage } from "../features/admin/languages/LanguagesPage";
+import { CertificatesPage } from "../features/admin/certificates/CertificatesPage";
 import { ThemesPage } from "../features/admin/appearance/ThemesPage";
 import { ThemeEditorPage } from "../features/admin/appearance/ThemeEditorPage";
 import { HomePage } from "../features/public/home/HomePage";
@@ -79,6 +80,7 @@ export function AppRoutes() {
         <Route path="content" element={<ContentHubPage />} />
         <Route path="pages" element={<PagesListPage />} />
         <Route path="languages" element={<LanguagesPage />} />
+        <Route path="certificates" element={<CertificatesPage />} />
         <Route path="appearance/themes" element={<ThemesPage />} />
         <Route path="appearance/themes/new" element={<ThemeEditorPage />} />
         <Route path="appearance/themes/:id" element={<ThemeEditorPage />} />

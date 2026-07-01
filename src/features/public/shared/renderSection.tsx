@@ -16,6 +16,7 @@ import { ProductRangeSection } from "../home/sections/ProductRangeSection";
 import { GallerySection } from "../home/sections/GallerySection";
 import { FaqSection } from "../home/sections/FaqSection";
 import { ContentSection } from "./ContentSection";
+import { CertificatesSection } from "../home/sections/CertificatesSection";
 
 export const SECTION_TYPE_NAMES = [
   "Hero",
@@ -88,8 +89,9 @@ export function renderSection(section: PageSection, lang?: ContentLanguage) {
       return <GallerySection key={section.id} content={content} />;
     case "FAQ":
       return <FaqSection key={section.id} content={content} />;
-    case "About":
     case "Certificates":
+      return <CertificatesSection key={section.id} content={content} />;
+    case "About":
     case "Contact":
       return <ContentSection key={section.id} content={content} />;
     default:

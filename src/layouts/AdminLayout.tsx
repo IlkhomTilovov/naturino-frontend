@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
+  Award,
   Bell,
   ChevronsLeft,
   ChevronsRight,
@@ -31,6 +32,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/admin/products", label: "Mahsulotlar", end: false, icon: Package },
       { to: "/admin/categories", label: "Kategoriyalar", end: false, icon: FolderTree },
+      { to: "/admin/certificates", label: "Sertifikatlar", end: false, icon: Award },
       { to: "/admin/content", label: "Sayt kontenti", end: false, icon: PenTool },
     ],
   },
