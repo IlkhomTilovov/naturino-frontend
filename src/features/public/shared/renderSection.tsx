@@ -17,6 +17,13 @@ import { GallerySection } from "../home/sections/GallerySection";
 import { FaqSection } from "../home/sections/FaqSection";
 import { ContentSection } from "./ContentSection";
 import { CertificatesSection } from "../home/sections/CertificatesSection";
+import { CategoryTabsSection } from "../home/sections/CategoryTabsSection";
+import { PageBannerSection } from "../home/sections/PageBannerSection";
+import { BackgroundHeroSection } from "../home/sections/BackgroundHeroSection";
+import { StatsHeroSection } from "../home/sections/StatsHeroSection";
+import { MinimalHeroSection } from "../home/sections/MinimalHeroSection";
+import { BadgeListHeroSection } from "../home/sections/BadgeListHeroSection";
+import { BreadcrumbHeroSection } from "../home/sections/BreadcrumbHeroSection";
 
 export const SECTION_TYPE_NAMES = [
   "Hero",
@@ -39,6 +46,13 @@ export const SECTION_TYPE_NAMES = [
   "ExportCapabilities",
   "Gallery",
   "FAQ",
+  "CategoryTabs",
+  "PageBanner",
+  "BackgroundHero",
+  "StatsHero",
+  "MinimalHero",
+  "BadgeListHero",
+  "BreadcrumbHero",
 ];
 
 export function getSectionTypeName(sectionType: number | string): string {
@@ -91,6 +105,20 @@ export function renderSection(section: PageSection, lang?: ContentLanguage) {
       return <FaqSection key={section.id} content={content} />;
     case "Certificates":
       return <CertificatesSection key={section.id} content={content} />;
+    case "CategoryTabs":
+      return <CategoryTabsSection key={section.id} content={content} />;
+    case "PageBanner":
+      return <PageBannerSection key={section.id} content={content} />;
+    case "BackgroundHero":
+      return <BackgroundHeroSection key={section.id} content={content} />;
+    case "StatsHero":
+      return <StatsHeroSection key={section.id} content={content} />;
+    case "MinimalHero":
+      return <MinimalHeroSection key={section.id} content={content} />;
+    case "BadgeListHero":
+      return <BadgeListHeroSection key={section.id} content={content} />;
+    case "BreadcrumbHero":
+      return <BreadcrumbHeroSection key={section.id} content={content} />;
     case "About":
     case "Contact":
       return <ContentSection key={section.id} content={content} />;

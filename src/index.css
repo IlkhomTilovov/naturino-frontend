@@ -3,36 +3,58 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
+/* Self-hosted Manrope (variable, weights 200–800). License: public/fonts/manrope/OFL.txt */
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope/Manrope-Variable.ttf") format("truetype");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Brand palette (Public Website) */
-  --color-brand-50: #f3f9ee;
-  --color-brand-100: #e3f0d6;
-  --color-brand-500: #5a9c2f;
-  --color-brand-600: #487d25;
-  --color-brand-700: #386120;
+  /* Brand palette (Public Website) — Naturino Pantone, base Oil Green */
+  --color-brand-50: #eff2e9;
+  --color-brand-100: #cbd8c0; /* toward Herb Green 14-0210 */
+  --color-brand-500: #7f9773; /* Oil Green 17-0115 */
+  --color-brand-600: #5e7658;
+  --color-brand-700: #294a34; /* Forest Green 19-6026 */
 
   /* Deep green used for full-bleed dark sections */
-  --color-ink-50: #eaf3ef;
-  --color-ink-600: #14523f;
-  --color-ink-700: #0e3d2f;
-  --color-ink-800: #0a3024;
+  --color-ink-50: #eaf0e7;
+  --color-ink-600: #3a5b45;
+  --color-ink-700: #2f4c39;
+  --color-ink-800: #294a34; /* Forest Green */
 
-  /* Orange accent used for primary CTAs */
-  --color-accent-50: #fef3e2;
-  --color-accent-500: #f7a83b;
-  --color-accent-600: #f0922a;
-  --color-accent-700: #d97f1f;
+  /* Accent — palette has no orange, so accent is Oil Green (was #f7a83b) */
+  --color-accent-50: #eff2e9;
+  --color-accent-500: #7f9773; /* Oil Green */
+  --color-accent-600: #5e7658;
+  --color-accent-700: #294a34;
 
-  /* Admin panel palette — premium SaaS look, independent from public brand colors */
+  /* Full Naturino Pantone palette as named tokens, so every brand hue is usable
+     as a utility (bg-*, text-*, border-*). Forest/Oil/Snow also live in the
+     brand/ink scales above; herb, sand and taupe are only expressed here. */
+  --color-forest: #294a34;   /* 19-6026 Forest Green — headings, brand */
+  --color-oil: #7f9773;      /* 17-0115 Oil Green — accent, icons, links */
+  --color-herb: #b3c3a6;     /* 14-0210 Herb Green — soft borders, badges, washes */
+  --color-herb-50: #eef2e9;  /* tint for subtle fills */
+  --color-sand: #ddcbb0;     /* 13-1106 Sand Dollar — warm panels, alt sections */
+  --color-sand-50: #f4ece0;  /* softer sand for large surfaces */
+  --color-snow: #f3ede1;     /* 11-0602 Snow White — airy background */
+  --color-taupe: #9f8a6c;    /* 16-1105 Plaza Taupe — secondary / muted text */
+
+  /* Admin panel palette — premium SaaS look, now on the Naturino brand greens
+     (primary = Forest Green, accent = Oil Green) instead of neutral slate. */
   --color-admin-bg: #f8fafc;
   --color-admin-card: #ffffff;
   --color-admin-border: #e5e7eb;
-  --color-admin-primary: #1f2937;
-  --color-admin-primary-600: #111827;
-  --color-admin-accent: #16a34a;
-  --color-admin-accent-50: #f0fdf4;
+  --color-admin-primary: #294a34;     /* Forest Green 19-6026 */
+  --color-admin-primary-600: #1f3a2a; /* darker Forest — hover/pressed */
+  --color-admin-accent: #7f9773;      /* Oil Green 17-0115 */
+  --color-admin-accent-50: #eff2e9;   /* light herb tint */
   --color-admin-warning: #f59e0b;
   --color-admin-warning-50: #fffbeb;
   --color-admin-danger: #ef4444;
@@ -72,17 +94,17 @@ body {
    so they can't be repainted by changing a CSS variable at runtime. Defaults here
    match today's hardcoded brand colors as a safe fallback. */
 :root {
-  --rt-brand-primary: #0A4B3A;
-  --rt-brand-secondary: #487d25;
-  --rt-accent: #f7a83b;
-  --rt-surface-bg: #FAFAF7;
+  --rt-brand-primary: #294A34;   /* Forest Green 19-6026 */
+  --rt-brand-secondary: #7F9773; /* Oil Green 17-0115 */
+  --rt-accent: #7F9773;          /* Oil Green (palette has no orange) */
+  --rt-surface-bg: #F3EDE1;      /* Snow White 11-0602 */
   --rt-surface-card: #FFFFFF;
-  --rt-text-heading: #0F172A;
-  --rt-text-body: #334155;
+  --rt-text-heading: #294A34;    /* Forest Green */
+  --rt-text-body: #57503F;       /* warm dark, toward Plaza Taupe */
   --rt-radius-lg: 24px;
   --rt-shadow-md: 0 12px 32px rgba(15,23,42,.10);
-  --rt-font-heading: 'Geist Variable', sans-serif;
-  --rt-font-body: 'Geist Variable', sans-serif;
+  --rt-font-heading: 'Manrope', sans-serif;
+  --rt-font-body: 'Manrope', sans-serif;
 }
 
 .input {
@@ -132,7 +154,7 @@ body {
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-sans: 'Manrope', 'Geist Variable', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

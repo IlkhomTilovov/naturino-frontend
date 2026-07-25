@@ -83,7 +83,7 @@ export function FeatureCardsSection({ content }: { content: PageSectionContent }
         <h2
           style={{ transitionDelay: inView ? "100ms" : "0ms" }}
           className={`mt-4 max-w-xl text-3xl font-bold leading-tight transition-all duration-700 sm:text-4xl lg:text-5xl ${
-            isDark ? "text-white" : "text-[#0F172A]"
+            isDark ? "text-white" : "text-[#294A34]"
           } ${inView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"} ${showImage ? "" : "mx-auto text-center"}`}
         >
           {title}
@@ -119,9 +119,9 @@ export function FeatureCardsSection({ content }: { content: PageSectionContent }
               >
                 <Icon className="h-5 w-5" strokeWidth={1.75} />
               </div>
-              <h3 className={`mt-4 font-semibold ${isDark ? "text-white" : "text-[#0F172A]"}`}>{card.title}</h3>
+              <h3 className={`mt-4 font-semibold ${isDark ? "text-white" : "text-[#294A34]"}`}>{card.title}</h3>
               {card.description && (
-                <p className={`mt-1.5 text-sm leading-relaxed ${isDark ? "text-white/60" : "text-slate-500"}`}>{card.description}</p>
+                <p className={`mt-1.5 text-sm leading-relaxed ${isDark ? "text-white/60" : "text-taupe"}`}>{card.description}</p>
               )}
             </div>
           );
@@ -131,7 +131,7 @@ export function FeatureCardsSection({ content }: { content: PageSectionContent }
   );
 
   return (
-    <section className={`overflow-hidden px-4 py-16 sm:px-6 sm:py-24 ${isDark ? "bg-[var(--rt-brand-primary)]" : "bg-[#F8F9F4]"}`}>
+    <section className={`overflow-hidden px-4 py-16 sm:px-6 sm:py-24 ${isDark ? "bg-[var(--rt-brand-primary)]" : "bg-[#F3EDE1]"}`}>
       <div
         ref={ref}
         className={showImage ? "mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16" : "mx-auto max-w-6xl"}
@@ -146,7 +146,7 @@ export function FeatureCardsSection({ content }: { content: PageSectionContent }
             }`}
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-2xl sm:aspect-square lg:aspect-[4/5]">
-              <img src={resolveMediaUrl(imageUrl) ?? imageUrl} alt={title ?? ""} className="h-full w-full object-cover" />
+              <img src={resolveMediaUrl(imageUrl) ?? imageUrl} alt={title ?? ""} loading="lazy" decoding="async" className="h-full w-full object-cover" />
               {imageStats && imageStats.length > 0 && (
                 <>
                   <div className="absolute inset-0 bg-gradient-to-t from-[color-mix(in_srgb,var(--rt-brand-primary),black_30%)]/70 via-transparent to-transparent" />

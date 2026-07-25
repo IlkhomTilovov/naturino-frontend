@@ -89,7 +89,7 @@ function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavig
                       } ${
                         isActive
                           ? "bg-admin-primary text-white shadow-sm"
-                          : "text-admin-muted hover:-translate-y-px hover:bg-slate-100 hover:text-admin-primary"
+                          : "text-admin-muted hover:-translate-y-px hover:bg-[#E9E1D0] hover:text-admin-primary"
                       }`
                     }
                   >
@@ -147,7 +147,7 @@ export function AdminLayout() {
         <button
           type="button"
           onClick={() => setCollapsed((c) => !c)}
-          className="flex items-center justify-center gap-2 border-t border-admin-border py-3 text-xs font-medium text-admin-muted transition-colors hover:bg-slate-100 hover:text-admin-primary"
+          className="flex items-center justify-center gap-2 border-t border-admin-border py-3 text-xs font-medium text-admin-muted transition-colors hover:bg-[#E9E1D0] hover:text-admin-primary"
         >
           {collapsed ? <ChevronsRight strokeWidth={1.8} className="h-4 w-4" /> : (
             <>
@@ -170,7 +170,7 @@ export function AdminLayout() {
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-admin-muted hover:bg-slate-100 lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-admin-muted hover:bg-[#E9E1D0] lg:hidden"
             >
               <Menu strokeWidth={1.8} className="h-[18px] w-[18px]" />
             </button>

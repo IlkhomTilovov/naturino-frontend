@@ -81,7 +81,7 @@ export function ComparisonSection({ content }: { content: PageSectionContent }) 
             }`}
           >
             {rightBadge && (
-              <span className="absolute -top-3 left-7 rounded-full bg-[var(--rt-accent)] px-3 py-1 text-xs font-semibold tracking-wide text-slate-900">
+              <span className="absolute -top-3 left-7 rounded-full bg-[var(--rt-accent)] px-3 py-1 text-xs font-semibold tracking-wide text-[#294A34]">
                 {rightBadge}
               </span>
             )}
@@ -109,9 +109,9 @@ export function ComparisonSection({ content }: { content: PageSectionContent }) 
           {TRUST_BADGES.map((badge) => (
             <span
               key={badge}
-              className="group flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 shadow-sm transition-all duration-300 hover:border-[var(--rt-accent)] hover:bg-[var(--rt-accent)] hover:text-slate-900"
+              className="group flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 shadow-sm transition-all duration-300 hover:border-[var(--rt-accent)] hover:bg-[var(--rt-accent)] hover:text-[#294A34]"
             >
-              <span className="text-[var(--rt-accent)] group-hover:text-slate-900">✓</span>
+              <span className="text-[var(--rt-accent)] group-hover:text-[#294A34]">✓</span>
               {badge}
             </span>
           ))}

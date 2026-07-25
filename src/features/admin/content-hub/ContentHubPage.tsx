@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { ExternalLink, Eye, GitBranch, Globe, MonitorSmartphone, PenTool, Info } from "lucide-react";
 import { pagesApi } from "../../../api/endpoints/pages";
 import { PageHeader } from "../../../components/admin/PageHeader";
-import { Button } from "../../../components/ui/button";
+import { Button, buttonVariants } from "../../../components/ui/button";
+import { cn } from "../../../lib/utils";
 
 const EDITABLE_PAGE_PILLS = [
   "Bosh sahifa",
@@ -36,10 +37,10 @@ export function ContentHubPage() {
         title="Sayt kontenti"
         description="Saytdagi barcha matnlar, sahifalar va bo'limlarni vizual tahrirlang."
         actions={
-          <Button render={<Link to={editorHref} />} className="bg-admin-primary hover:bg-admin-primary-600">
+          <Link to={editorHref} className={cn(buttonVariants(), "bg-admin-primary hover:bg-admin-primary-600")}>
             <PenTool strokeWidth={1.8} className="h-4 w-4" />
             Vizual tahrirlashni boshlash
-          </Button>
+          </Link>
         }
       />
 
@@ -84,19 +85,20 @@ export function ContentHubPage() {
           </ul>
 
           <div className="mt-6 flex items-center gap-2">
-            <Button render={<Link to={editorHref} />} className="flex-1 bg-admin-primary hover:bg-admin-primary-600">
+            <Link to={editorHref} className={cn(buttonVariants(), "flex-1 bg-admin-primary hover:bg-admin-primary-600")}>
               <PenTool strokeWidth={1.8} className="h-4 w-4" />
               Tahrirlashni boshlash
-            </Button>
-            <Button
-              render={<a href={editorHref} target="_blank" rel="noreferrer" />}
-              variant="outline"
-              size="icon"
+            </Link>
+            <a
+              href={editorHref}
+              target="_blank"
+              rel="noreferrer"
               title="Open in new tab"
               aria-label="Open in new tab"
+              className={cn(buttonVariants({ variant: "outline", size: "icon" }))}
             >
               <ExternalLink strokeWidth={1.8} className="h-4 w-4" />
-            </Button>
+            </a>
           </div>
         </div>
 
@@ -120,10 +122,15 @@ export function ContentHubPage() {
             </div>
           </div>
 
-          <Button render={<a href="/" target="_blank" rel="noreferrer" />} variant="outline" className="mt-6">
+          <a
+            href="/"
+            target="_blank"
+            rel="noreferrer"
+            className={cn(buttonVariants({ variant: "outline" }), "mt-6")}
+          >
             <Eye strokeWidth={1.8} className="h-4 w-4" />
             Saytni ko'rish
-          </Button>
+          </a>
         </div>
       </div>
 

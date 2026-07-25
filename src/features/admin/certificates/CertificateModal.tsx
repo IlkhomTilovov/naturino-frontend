@@ -7,7 +7,6 @@ import { languagesApi } from "../../../api/endpoints/languages";
 import { Button } from "../../../components/ui/button";
 import { resolveMediaUrl } from "../../../lib/utils/media";
 import {
-  certificatesApi,
   CERTIFICATE_CATEGORIES,
   CERTIFICATE_SCOPES,
   type Certificate,

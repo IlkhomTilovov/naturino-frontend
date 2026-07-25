@@ -15,7 +15,7 @@ export function DynamicPage({ slug, fallbackTitle }: { slug: string; fallbackTit
   });
 
   if (isLoading) {
-    return <div className="px-6 py-24 text-center text-slate-400">Yuklanmoqda...</div>;
+    return <div className="px-6 py-24 text-center text-taupe">Yuklanmoqda...</div>;
   }
 
   const sections = (page?.sections ?? []).filter((s) => s.isEnabled).sort((a, b) => a.sortOrder - b.sortOrder);
@@ -29,7 +29,7 @@ export function DynamicPage({ slug, fallbackTitle }: { slug: string; fallbackTit
       {sections.map((section) => renderSection(section, lang))}
 
       {(isError || sections.length === 0) && (
-        <div className="px-6 py-24 text-center text-slate-400">
+        <div className="px-6 py-24 text-center text-taupe">
           "{fallbackTitle}" sahifasi bo'limlari admin panelda hali to'ldirilmagan.
         </div>
       )}

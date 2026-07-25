@@ -25,7 +25,7 @@ export function PartnersSection({ content }: { content: PageSectionContent }) {
   if (!title) return null;
 
   return (
-    <section className="bg-[#F8F9F4] px-4 py-16 sm:px-6 sm:py-24">
+    <section className="bg-[#F3EDE1] px-4 py-16 sm:px-6 sm:py-24">
       <div ref={ref} className="mx-auto max-w-6xl text-center">
         {eyebrow && (
           <p
@@ -38,7 +38,7 @@ export function PartnersSection({ content }: { content: PageSectionContent }) {
         )}
         <h2
           style={{ transitionDelay: inView ? "80ms" : "0ms" }}
-          className={`mt-4 text-3xl font-bold leading-tight text-slate-900 transition-all duration-700 sm:text-4xl ${
+          className={`mt-4 text-3xl font-bold leading-tight text-[#294A34] transition-all duration-700 sm:text-4xl ${
             inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           }`}
         >
@@ -47,7 +47,7 @@ export function PartnersSection({ content }: { content: PageSectionContent }) {
         {subtitle && (
           <p
             style={{ transitionDelay: inView ? "160ms" : "0ms" }}
-            className={`mx-auto mt-4 max-w-2xl text-base text-slate-500 transition-all duration-700 ${
+            className={`mx-auto mt-4 max-w-2xl text-base text-taupe transition-all duration-700 ${
               inView ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
             }`}
           >
@@ -63,15 +63,15 @@ export function PartnersSection({ content }: { content: PageSectionContent }) {
                 <div
                   key={card.title}
                   style={{ transitionDelay: inView ? `${i * 100}ms` : "0ms" }}
-                  className={`group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[var(--rt-accent)] hover:shadow-[0_18px_40px_-15px_rgba(77,124,47,0.25)] ${
+                  className={`group rounded-2xl border border-herb/50 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[var(--rt-accent)] hover:shadow-[0_18px_40px_-15px_rgba(77,124,47,0.25)] ${
                     inView ? "translate-y-0 opacity-100 duration-700" : "translate-y-4 opacity-0 duration-700"
                   }`}
                 >
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--rt-brand-primary)]/10 text-[var(--rt-brand-primary)] transition-colors duration-300 group-hover:bg-[var(--rt-accent)]/10 group-hover:text-[var(--rt-accent)]">
                     <Icon className="h-5 w-5" strokeWidth={1.75} />
                   </div>
-                  <h3 className="mt-4 font-semibold text-slate-900">{card.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-500">{card.description}</p>
+                  <h3 className="mt-4 font-semibold text-[#294A34]">{card.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-taupe">{card.description}</p>
                 </div>
               );
             })}

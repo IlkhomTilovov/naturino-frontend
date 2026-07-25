@@ -5,9 +5,11 @@ import { pagesApi } from "../../../api/endpoints/pages";
 import { PageHeader } from "../../../components/admin/PageHeader";
 import { EmptyState } from "../../../components/admin/EmptyState";
 import { SearchIcon } from "../../../components/admin/icons";
-import { FileText } from "lucide-react";
+import { Button } from "../../../components/ui/button";
+import { FileText, Plus } from "lucide-react";
 import { timeAgo } from "../../../lib/utils/timeAgo";
 import type { Page } from "../../../types/page";
+import { CreatePageModal } from "./CreatePageModal";
 
 type StatusFilter = "all" | "published" | "draft";
 type SortOption = "updated" | "name";
@@ -17,6 +19,7 @@ export function PagesListPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sort, setSort] = useState<SortOption>("updated");
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const pages = data ?? [];
   const publishedCount = pages.filter((p) => p.isPublished).length;
@@ -46,7 +49,14 @@ export function PagesListPage() {
             <span className="ml-2 text-admin-warning">{draftCount} qoralama</span>
           </>
         }
+        actions={
+          <Button className="bg-admin-primary hover:bg-admin-primary-600" onClick={() => setShowCreateModal(true)}>
+            <Plus className="h-4 w-4" /> Yangi sahifa
+          </Button>
+        }
       />
+
+      <CreatePageModal open={showCreateModal} onOpenChange={setShowCreateModal} />
 
       {isError && <p className="text-sm text-admin-danger">Sahifalarni yuklashda xatolik.</p>}
 

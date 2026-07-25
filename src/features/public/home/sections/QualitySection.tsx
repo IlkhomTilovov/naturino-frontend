@@ -14,7 +14,7 @@ export function QualitySection({ content }: { content: PageSectionContent }) {
   if (!title) return null;
 
   return (
-    <section className={`px-4 py-16 sm:px-6 sm:py-24 ${isDark ? "bg-[var(--rt-brand-primary)]" : "bg-[#F8F9F4]"}`}>
+    <section className={`px-4 py-16 sm:px-6 sm:py-24 ${isDark ? "bg-[var(--rt-brand-primary)]" : "bg-[#F3EDE1]"}`}>
       <div ref={ref} className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
         <div
           style={{ transitionDelay: inView ? "100ms" : "0ms" }}
@@ -22,7 +22,7 @@ export function QualitySection({ content }: { content: PageSectionContent }) {
             inView ? "translate-y-0 scale-100 opacity-100" : "translate-y-4 scale-[0.98] opacity-0"
           }`}
         >
-          <img src={imageSrc} alt={title} className="h-80 w-full object-cover sm:h-96" />
+          <img src={imageSrc} alt={title} loading="lazy" decoding="async" className="h-80 w-full object-cover sm:h-96" />
         </div>
 
         <div>
@@ -38,7 +38,7 @@ export function QualitySection({ content }: { content: PageSectionContent }) {
           <h2
             style={{ transitionDelay: inView ? "100ms" : "0ms" }}
             className={`mt-4 text-2xl font-bold leading-tight transition-all duration-700 sm:text-3xl ${
-              isDark ? "text-white" : "text-[#0F172A]"
+              isDark ? "text-white" : "text-[#294A34]"
             } ${inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
           >
             {title}
@@ -67,7 +67,7 @@ export function QualitySection({ content }: { content: PageSectionContent }) {
                   className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold shadow-sm ${
                     isDark
                       ? "border border-white/15 bg-white/10 text-white"
-                      : "border border-[var(--rt-brand-secondary)]/20 bg-white text-[#0F172A]"
+                      : "border border-[var(--rt-brand-secondary)]/20 bg-white text-[#294A34]"
                   }`}
                 >
                   <span className={isDark ? "text-[var(--rt-accent)]" : "text-[var(--rt-brand-secondary)]"}>✓</span>

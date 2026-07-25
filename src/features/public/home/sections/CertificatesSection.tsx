@@ -43,7 +43,7 @@ function formatDate(d?: string | null) {
 
 function CertCard({ cert, lang }: { cert: Certificate; lang: string }) {
   const Icon = ICON_MAP[cert.icon ?? "shield"] ?? ShieldCheck;
-  const color = CATEGORY_COLORS[cert.category ?? ""] ?? { bg: "bg-slate-50", text: "text-slate-600", dot: "bg-slate-400" };
+  const color = CATEGORY_COLORS[cert.category ?? ""] ?? { bg: "bg-[#F3EDE1]", text: "text-slate-600", dot: "bg-slate-400" };
 
   const translation = cert.translations?.[lang];
   const title = translation?.title || cert.title;
@@ -57,7 +57,7 @@ function CertCard({ cert, lang }: { cert: Certificate; lang: string }) {
     : null;
 
   return (
-    <div className="group relative flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+    <div className="group relative flex flex-col rounded-2xl border border-herb/50 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
       {/* header row */}
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${color.bg}`}>
@@ -72,36 +72,36 @@ function CertCard({ cert, lang }: { cert: Certificate; lang: string }) {
       </div>
 
       {/* title */}
-      <h3 className="mb-2 text-base font-semibold leading-snug text-slate-900">{title}</h3>
+      <h3 className="mb-2 text-base font-semibold leading-snug text-[#294A34]">{title}</h3>
 
       {/* description */}
       {description && (
-        <p className="mb-4 flex-1 text-sm leading-relaxed text-slate-500 line-clamp-3">{description}</p>
+        <p className="mb-4 flex-1 text-sm leading-relaxed text-taupe line-clamp-3">{description}</p>
       )}
 
       {/* meta */}
-      <div className="mt-auto space-y-2 border-t border-slate-100 pt-4 text-xs text-slate-500">
+      <div className="mt-auto space-y-2 border-t border-slate-100 pt-4 text-xs text-taupe">
         {cert.issuedBy && (
           <div className="flex items-center gap-1.5">
-            <Building2 className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+            <Building2 className="h-3.5 w-3.5 shrink-0 text-taupe" />
             <span className="truncate">{cert.issuedBy}</span>
           </div>
         )}
         {cert.certificateNumber && (
           <div className="flex items-center gap-1.5">
-            <FileText className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+            <FileText className="h-3.5 w-3.5 shrink-0 text-taupe" />
             <span className="font-mono">{cert.certificateNumber}</span>
           </div>
         )}
         {expiresLabel && (
-          <div className={`flex items-center gap-1.5 ${isExpired ? "text-red-500" : "text-slate-500"}`}>
+          <div className={`flex items-center gap-1.5 ${isExpired ? "text-red-500" : "text-taupe"}`}>
             <CalendarDays className="h-3.5 w-3.5 shrink-0" />
             <span>{expiresLabel}</span>
           </div>
         )}
         {cert.scope && (
           <div className="flex items-center gap-1.5">
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600">
+            <span className="rounded-full bg-[#E9E1D0] px-2 py-0.5 text-slate-600">
               {SCOPE_LABELS[cert.scope] ?? cert.scope}
             </span>
           </div>
@@ -145,7 +145,7 @@ export function CertificatesSection({ content }: Props) {
   const active = certs.filter((c) => c.isActive);
 
   return (
-    <section className="bg-[#FAFAF7] py-20">
+    <section className="bg-[#F3EDE1] py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* section header */}
         <div className="mb-12 text-center">
@@ -154,11 +154,11 @@ export function CertificatesSection({ content }: Props) {
               {content.eyebrow ?? "SERTIFIKATLAR"}
             </p>
           )}
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-[#294A34] sm:text-4xl">
             {content.title ?? "Sertifikatlar va muvofiqlik"}
           </h2>
           {content.subtitle && (
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-500">{content.subtitle}</p>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-taupe">{content.subtitle}</p>
           )}
         </div>
 
@@ -179,7 +179,7 @@ export function CertificatesSection({ content }: Props) {
 
         {/* trust line */}
         {active.length > 0 && (
-          <p className="mt-10 text-center text-sm text-slate-400">
+          <p className="mt-10 text-center text-sm text-taupe">
             Barcha sertifikatlar joriy va amal qilmoqda · Tekshirish uchun sertifikat raqamiga murojaat qiling
           </p>
         )}

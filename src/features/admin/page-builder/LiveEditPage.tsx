@@ -23,6 +23,11 @@ import { EditableFeatureCardsSection } from "./EditableFeatureCardsSection";
 import { EditableProductRangeSection } from "./EditableProductRangeSection";
 import { EditableGallerySection } from "./EditableGallerySection";
 import { EditableFaqSection } from "./EditableFaqSection";
+import { EditableBackgroundHeroSection } from "./EditableBackgroundHeroSection";
+import { EditableStatsHeroSection } from "./EditableStatsHeroSection";
+import { EditableMinimalHeroSection } from "./EditableMinimalHeroSection";
+import { EditableBadgeListHeroSection } from "./EditableBadgeListHeroSection";
+import { EditableBreadcrumbHeroSection } from "./EditableBreadcrumbHeroSection";
 import { useLiveEditStore } from "../../../store/liveEditStore";
 
 const EDITABLE_COMPONENTS = {
@@ -45,6 +50,11 @@ const EDITABLE_COMPONENTS = {
   ProductRange: EditableProductRangeSection,
   Gallery: EditableGallerySection,
   FAQ: EditableFaqSection,
+  BackgroundHero: EditableBackgroundHeroSection,
+  StatsHero: EditableStatsHeroSection,
+  MinimalHero: EditableMinimalHeroSection,
+  BadgeListHero: EditableBadgeListHeroSection,
+  BreadcrumbHero: EditableBreadcrumbHeroSection,
 } as const;
 
 const EDITABLE_TYPES = new Set(["Hero", ...Object.keys(EDITABLE_COMPONENTS)]);

@@ -67,6 +67,8 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
         <img
           src={imageSrc}
           alt={name ?? product.name}
+          loading="lazy"
+          decoding="async"
           className="animate-float h-full w-full object-contain"
           style={{ filter: "drop-shadow(0 30px 50px rgba(0,0,0,0.18))" }}
           onError={(e) => {
@@ -93,10 +95,10 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
             ))}
           </div>
 
-          <h3 className="mt-2 pb-0.5 text-xl font-bold leading-[1.35] text-slate-900 sm:text-2xl">{name}</h3>
+          <h3 className="mt-2 pb-0.5 text-xl font-bold leading-[1.35] text-[#294A34] sm:text-2xl">{name}</h3>
 
           {shortDescription && (
-            <p className="mt-1.5 line-clamp-1 max-w-md text-sm text-slate-500">{shortDescription}</p>
+            <p className="mt-1.5 line-clamp-1 max-w-md text-sm text-taupe">{shortDescription}</p>
           )}
         </>
       )}
@@ -171,7 +173,7 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
   return (
     <section
       className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-24"
-      style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F8FAF5 100%)" }}
+      style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F3EDE1 100%)" }}
     >
       {/* Soft brand-green glow behind the active product — barely visible, just enough
           to lift the packaging off the background without competing for attention. */}
@@ -185,8 +187,8 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
 
       <div className="relative mx-auto max-w-6xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-brand-primary)]">{eyebrow}</p>
-        <h2 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">{title}</h2>
-        <p className="mx-auto mt-3 max-w-2xl text-slate-500">{subtitle}</p>
+        <h2 className="mt-3 text-3xl font-bold text-[#294A34] sm:text-4xl">{title}</h2>
+        <p className="mx-auto mt-3 max-w-2xl text-taupe">{subtitle}</p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <button
@@ -195,7 +197,7 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
             className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               categoryId === null
                 ? "bg-[var(--rt-brand-primary)] text-white"
-                : "border border-slate-200 text-slate-600 hover:border-[var(--rt-accent)] hover:text-[var(--rt-accent)]"
+                : "border border-herb/50 text-slate-600 hover:border-[var(--rt-accent)] hover:text-[var(--rt-accent)]"
             }`}
           >
             Barchasi
@@ -208,7 +210,7 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
               className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 categoryId === category.id
                   ? "bg-[var(--rt-brand-primary)] text-white"
-                  : "border border-slate-200 text-slate-600 hover:border-[var(--rt-accent)] hover:text-[var(--rt-accent)]"
+                  : "border border-herb/50 text-slate-600 hover:border-[var(--rt-accent)] hover:text-[var(--rt-accent)]"
               }`}
             >
               {localizedCategoryField(category, language, "name")}
@@ -217,10 +219,10 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
         </div>
 
         {isLoading && (
-          <div className="mx-auto mt-16 h-[26rem] max-w-[520px] animate-pulse rounded-[32px] bg-slate-100" />
+          <div className="mx-auto mt-16 h-[26rem] max-w-[520px] animate-pulse rounded-[32px] bg-[#E9E1D0]" />
         )}
 
-        {!isLoading && len === 0 && <p className="mt-16 text-center text-slate-400">Bu kategoriyada mahsulotlar topilmadi.</p>}
+        {!isLoading && len === 0 && <p className="mt-16 text-center text-taupe">Bu kategoriyada mahsulotlar topilmadi.</p>}
 
         {!isLoading && len > 0 && (
           <>
@@ -278,7 +280,7 @@ export function ProductsSection({ content }: { content: PageSectionContent }) {
           <div className="mt-12">
             <Link
               to={buttonUrl}
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--rt-accent)] px-6 py-3 font-semibold text-slate-900 transition-colors hover:brightness-110"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[#294A34] transition-colors hover:brightness-110"
             >
               {buttonText} <span aria-hidden>→</span>
             </Link>

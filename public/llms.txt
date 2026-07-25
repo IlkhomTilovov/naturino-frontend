@@ -1,0 +1,15 @@
+# Naturino / Cibo Reale
+
+> Premium pet food ekspertlari. Naturino — mushuk va itlar uchun tabiiy,
+> sifatli ozuqa ishlab chiqaruvchi brend. Sayt korporativ ma'lumot, mahsulot
+> katalogi, sertifikatlar va hamkorlik imkoniyatlarini taqdim etadi.
+
+## Asosiy sahifalar
+
+- [Bosh sahifa](https://ciboreale.com/): Kompaniya va mahsulotlar haqida umumiy ma'lumot
+- [Mahsulotlar](https://ciboreale.com/products): Pet food mahsulotlari katalogi
+- [Biz haqimizda](https://ciboreale.com/about): Kompaniya tarixi va qadriyatlari
+- [Sertifikatlar](https://ciboreale.com/certificates): Sifat va xavfsizlik sertifikatlari
+- [Hamkorlik](https://ciboreale.com/partnership): Private label va distributorlik
+- [Blog](https://ciboreale.com/blog): Yangiliklar va maqolalar
+- [Aloqa](https://ciboreale.com/contact): Bog'lanish ma'lumotlari

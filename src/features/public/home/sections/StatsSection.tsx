@@ -62,11 +62,11 @@ function StatCard({ item, index, inView }: { item: StatItem; index: number; inVi
         <Icon className="h-6 w-6" strokeWidth={1.75} />
       </div>
 
-      <p className={`mt-5 w-full break-words font-bold tracking-tight text-slate-900 ${valueSizeClass(displayValue)}`}>
+      <p className={`mt-5 w-full break-words font-bold tracking-tight text-[#294A34] ${valueSizeClass(displayValue)}`}>
         {displayValue}
       </p>
       <p className="mt-3 text-sm font-semibold text-slate-600">{item.label}</p>
-      {item.supportingText && <p className="mt-1 text-xs text-slate-400">{item.supportingText}</p>}
+      {item.supportingText && <p className="mt-1 text-xs text-taupe">{item.supportingText}</p>}
     </div>
   );
 }
@@ -84,7 +84,7 @@ export function StatsSection({ content }: { content: PageSectionContent }) {
   if (items.length === 0) return null;
 
   return (
-    <section className="bg-[#FAFAF7] px-4 py-16 sm:px-6 sm:py-24">
+    <section className="bg-[#F3EDE1] px-4 py-16 sm:px-6 sm:py-24">
       <div ref={ref} className="mx-auto max-w-6xl">
         <div
           className={`mx-auto max-w-2xl text-center transition-all duration-700 ${
@@ -92,8 +92,8 @@ export function StatsSection({ content }: { content: PageSectionContent }) {
           }`}
         >
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--rt-brand-primary)]">{eyebrow}</p>
-          <h2 className="mt-4 text-3xl font-bold leading-tight text-slate-900 sm:text-4xl lg:text-5xl">{title}</h2>
-          <p className="mt-3 text-slate-500">{subtitle}</p>
+          <h2 className="mt-4 text-3xl font-bold leading-tight text-[#294A34] sm:text-4xl lg:text-5xl">{title}</h2>
+          <p className="mt-3 text-taupe">{subtitle}</p>
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-4">
@@ -104,7 +104,7 @@ export function StatsSection({ content }: { content: PageSectionContent }) {
 
         {certifications.length > 0 && (
           <div className="mt-16">
-            <p className="text-center text-sm font-semibold text-slate-400">Sertifikatlar va standartlar</p>
+            <p className="text-center text-sm font-semibold text-taupe">Sertifikatlar va standartlar</p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
               {certifications.map((cert, i) => (
                 <span

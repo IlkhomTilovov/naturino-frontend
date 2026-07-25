@@ -33,10 +33,10 @@ export function ContentSection({ content }: { content: PageSectionContent }) {
 
   return (
     <section id={anchorId} className="mx-auto max-w-4xl px-6 py-16 text-center scroll-mt-32">
-      {title && <h2 className="text-3xl font-bold text-slate-900">{title}</h2>}
-      {subtitle && <p className="mt-2 text-lg text-slate-500">{subtitle}</p>}
+      {title && <h2 className="text-3xl font-bold text-[#294A34]">{title}</h2>}
+      {subtitle && <p className="mt-2 text-lg text-taupe">{subtitle}</p>}
       {imageSrc && (
-        <img src={imageSrc} alt={title ?? ""} className="mx-auto mt-6 max-h-80 w-full max-w-md object-contain" />
+        <img src={imageSrc} alt={title ?? ""} loading="lazy" decoding="async" className="mx-auto mt-6 max-h-80 w-full max-w-md object-contain" />
       )}
       {body && <p className="mx-auto mt-6 whitespace-pre-line text-slate-600">{body}</p>}
 
@@ -48,8 +48,8 @@ export function ContentSection({ content }: { content: PageSectionContent }) {
 
             if (imageSrc) {
               return (
-                <div key={i} className="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
-                  <img src={imageSrc} alt={item.name ?? ""} className="aspect-square w-full rounded-lg object-contain" />
+                <div key={i} className="rounded-2xl border border-herb/50 bg-white p-4 text-center shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
+                  <img src={imageSrc} alt={item.name ?? ""} loading="lazy" decoding="async" className="aspect-square w-full rounded-lg object-contain" />
                   {item.name && <p className="mt-3 text-sm font-medium text-slate-700">{item.name}</p>}
                 </div>
               );
@@ -59,13 +59,13 @@ export function ContentSection({ content }: { content: PageSectionContent }) {
               <a
                 key={i}
                 href={item.downloadUrl ?? "#"}
-                className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.1)]"
+                className="group flex flex-col rounded-2xl border border-herb/50 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.1)]"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--rt-brand-primary)]/10 text-[var(--rt-brand-primary)]">
                   <Icon className="h-6 w-6" strokeWidth={1.8} />
                 </span>
-                {item.name && <p className="mt-4 text-base font-semibold text-slate-900">{item.name}</p>}
-                {item.description && <p className="mt-1.5 flex-1 text-sm text-slate-500">{item.description}</p>}
+                {item.name && <p className="mt-4 text-base font-semibold text-[#294A34]">{item.name}</p>}
+                {item.description && <p className="mt-1.5 flex-1 text-sm text-taupe">{item.description}</p>}
                 <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--rt-brand-primary)] transition-colors group-hover:text-[var(--rt-accent)]">
                   Hujjatni ko'rish <span aria-hidden>→</span>
                 </span>

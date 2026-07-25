@@ -32,8 +32,8 @@ export function ProductCard({ product }: { product: Product }) {
       to={`/products/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-[28px] border border-black/[0.06] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]"
     >
-      {/* Showcase area */}
-      <div className="relative flex h-56 items-center justify-center bg-[#F7F8F5] px-4 pt-4 sm:h-64">
+      {/* Showcase area — warm Sand Dollar base gives products a premium, natural stage. */}
+      <div className="relative flex h-56 items-center justify-center bg-sand-50 px-4 pt-4 sm:h-64">
         {product.isFeatured && (
           <span className="absolute left-4 top-4 z-10 rounded-full bg-[var(--rt-brand-secondary)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
             Tavsiya etiladi
@@ -42,6 +42,8 @@ export function ProductCard({ product }: { product: Product }) {
         <img
           src={imageSrc}
           alt={name ?? product.name}
+          loading="lazy"
+          decoding="async"
           className="mx-auto h-full w-auto max-w-[85%] object-contain transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
@@ -64,24 +66,24 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         )}
 
-        <h3 className="mt-3 line-clamp-2 text-base font-bold leading-snug text-slate-900">{name}</h3>
+        <h3 className="mt-3 line-clamp-2 text-base font-bold leading-snug text-[#294A34]">{name}</h3>
 
         {shortDescription && (
-          <p className="mt-1.5 line-clamp-1 text-sm text-slate-500">{shortDescription}</p>
+          <p className="mt-1.5 line-clamp-1 text-sm text-taupe">{shortDescription}</p>
         )}
 
         {specs.length > 0 && (
-          <dl className="mt-4 grid grid-cols-2 gap-y-1.5 border-t border-slate-100 pt-4 text-xs">
+          <dl className="mt-4 grid grid-cols-2 gap-y-1.5 border-t border-herb/40 pt-4 text-xs">
             {specs.map((spec) => (
               <div key={spec.label} className="flex items-center justify-between gap-2 pr-2">
-                <dt className="text-slate-400">{spec.label}</dt>
-                <dd className="font-semibold text-slate-700">{spec.value}</dd>
+                <dt className="text-taupe">{spec.label}</dt>
+                <dd className="font-semibold text-[#294A34]">{spec.value}</dd>
               </div>
             ))}
           </dl>
         )}
 
-        <span className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[var(--rt-brand-primary)] py-2.5 text-sm font-semibold text-white transition-colors duration-300 group-hover:bg-[var(--rt-accent)] group-hover:text-slate-900">
+        <span className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[var(--rt-brand-primary)] py-2.5 text-sm font-semibold text-white transition-colors duration-300 group-hover:bg-[var(--rt-accent)] group-hover:text-[#294A34]">
           Batafsil <span aria-hidden>→</span>
         </span>
 

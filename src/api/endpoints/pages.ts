@@ -4,6 +4,8 @@ import type { Page, PageSection, PageSectionContent, UpdatePageInput } from "../
 export const pagesApi = {
   getAll: () => apiClient.get<Page[]>("/pages").then((r) => r.data),
 
+  create: (dto: { slug: string; title: string }) => apiClient.post<Page>("/pages", dto).then((r) => r.data),
+
   getBySlug: (slug: string) => apiClient.get<Page>(`/pages/by-slug/${slug}`).then((r) => r.data),
 
   getById: (id: string) => apiClient.get<Page>(`/pages/${id}`).then((r) => r.data),

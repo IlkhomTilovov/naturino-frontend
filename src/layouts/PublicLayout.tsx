@@ -11,14 +11,22 @@ import { pagesApi } from "../api/endpoints/pages";
 import { languagesApi } from "../api/endpoints/languages";
 import { ROUTE_TO_SLUG } from "../lib/page/publicPath";
 
-const NAV_LINKS = [
+// Primary links — the money pages, shown large in the main (light) bar.
+const PRIMARY_LINKS = [
   { to: "/about-us", key: "nav.company" },
   { to: "/products", key: "nav.products" },
+  { to: "/partnership", key: "nav.export" },
+];
+
+// Secondary links — informational pages, shown small in the slim top bar.
+const SECONDARY_LINKS = [
   { to: "/ishlab-chiqarish", key: "nav.production" },
   { to: "/quality", key: "nav.quality" },
-  { to: "/partnership", key: "nav.export" },
-  { to: "/contact", key: "nav.contact" },
+  { to: "/certificates", key: "nav.certificates" },
 ];
+
+// Full list for the mobile drawer, which flattens both tiers.
+const NAV_LINKS = [...PRIMARY_LINKS, ...SECONDARY_LINKS, { to: "/contact", key: "nav.contact" }];
 
 const FOOTER_TRUST = ["ISO 22000 sertifikatlangan", "HACCP standartlari", "20+ eksport bozori", "12 000+ tonna/yil ishlab chiqarish quvvati"];
 
@@ -79,7 +87,7 @@ function LanguageSwitcher({ glass = false }: { glass?: boolean }) {
   return (
     <div
       className={`flex items-center gap-0.5 rounded-full p-1 text-xs font-semibold ${
-        glass ? "bg-transparent" : "bg-[#F8F9F4]"
+        glass ? "bg-transparent" : "bg-[#F3EDE1]"
       }`}
     >
       {options.map(({ code, label }) => {
@@ -142,84 +150,81 @@ export function PublicLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <div
-        className={`fixed inset-x-0 top-0 z-[60] px-4 transition-all duration-300 ${
-          scrolled
-            ? "bg-[color-mix(in_srgb,var(--rt-brand-primary),black_12%)]/85 pb-3 pt-3 shadow-[0_8px_30px_rgba(0,0,0,0.16)] backdrop-blur-lg"
-            : "bg-transparent pt-5"
-        }`}
-      >
-        <header
-          aria-label="Asosiy navigatsiya"
-          className={`mx-auto flex max-w-[1400px] items-center gap-3 transition-all duration-300 ${
-            scrolled ? "h-14" : "h-[76px]"
+      {/* Single fixed navbar — logo, all nav links (primary + secondary + contact)
+          and language switcher/CTA in one row. Gains a shadow once scrolled. */}
+      <div className="fixed inset-x-0 top-0 z-[60]">
+        <div
+          className={`border-b bg-white/95 backdrop-blur-md transition-all duration-300 ${
+            scrolled ? "border-[#E7EBDD] shadow-[0_6px_24px_rgba(41,74,52,0.08)]" : "border-[#E7EBDD]/60"
           }`}
         >
-          {/* 1 — Logo */}
-          <Link to={resolveNavTo("/")} className="flex h-full items-center gap-2.5 px-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--rt-brand-primary)] text-white">🌿</span>
-            <span className="flex flex-col leading-none">
-              <span className="text-lg font-semibold text-[#0F172A]">Naturino</span>
-              <span
-                className={`hidden text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--rt-brand-primary)]/70 transition-opacity duration-300 md:block ${
-                  scrolled ? "opacity-0" : "opacity-100"
-                }`}
-              >
-                {t("logo.subtitle")}
+          <header
+            aria-label="Asosiy navigatsiya"
+            className="mx-auto flex h-[68px] max-w-[1400px] items-center gap-3 px-4 sm:px-6"
+          >
+            {/* Logo */}
+            <Link to={resolveNavTo("/")} className="flex h-full items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--rt-brand-primary)] text-white">🌿</span>
+              <span className="flex flex-col leading-none">
+                <span className="text-lg font-semibold text-[#294A34]">Naturino</span>
+                <span className="hidden text-[11px] font-medium uppercase tracking-[0.08em] text-[#7F9773] md:block">
+                  {t("logo.subtitle")}
+                </span>
               </span>
-            </span>
-          </Link>
-
-          {/* 2 — Nav links — centered in the space between logo and the right-side group, so it stays balanced regardless of how wide either side is. */}
-          <div className="flex flex-1 items-center justify-center">
-            <nav
-              aria-label="Asosiy menyu"
-              className="hidden h-11 items-center gap-1 rounded-full border border-white/10 bg-[var(--rt-brand-primary)]/50 px-2 text-sm font-medium text-white shadow-[0_8px_32px_rgba(15,23,42,0.08)] backdrop-blur-md lg:flex"
-            >
-              {NAV_LINKS.map((link) => (
-                <NavLink
-                  key={link.key}
-                  to={resolveNavTo(link.to)}
-                  className={({ isActive }) =>
-                    `rounded-full px-4 py-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rt-accent)] ${
-                      isActive ? "bg-white/15 text-white" : "text-white/90 hover:bg-white/10 hover:text-white"
-                    }`
-                  }
-                >
-                  {t(link.key)}
-                </NavLink>
-              ))}
-            </nav>
-          </div>
-
-          <div className="flex h-full items-center gap-5">
-            {/* 3 — Til */}
-            <div className="hidden h-10 items-center rounded-full border border-white/10 bg-[var(--rt-brand-primary)]/50 px-1 shadow-[0_8px_32px_rgba(15,23,42,0.08)] backdrop-blur-md sm:flex">
-              <LanguageSwitcher glass />
-            </div>
-
-            {/* 4 — CTA */}
-            <Link
-              to={resolveNavTo("/partnership")}
-              className="hidden h-10 items-center gap-2 rounded-full bg-[var(--rt-brand-primary)] px-5 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-90 hover:shadow-[0_10px_25px_-8px_rgba(77,124,47,0.5)] lg:flex"
-            >
-              {t("nav.partnership")} <span aria-hidden>→</span>
             </Link>
 
-            <button
-              type="button"
-              aria-label={t("menu.open")}
-              onClick={() => setMobileNavOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-white/60 text-[#0F172A] shadow-[0_8px_32px_rgba(15,23,42,0.08)] backdrop-blur-md transition-colors hover:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rt-brand-primary)] lg:hidden"
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-          </div>
-        </header>
+            {/* Full nav — centered between logo and the right-side group. */}
+            <div className="flex flex-1 items-center justify-center">
+              <nav aria-label="Asosiy menyu" className="hidden items-center gap-1 text-sm font-medium lg:flex">
+                {NAV_LINKS.map((link) => (
+                  <NavLink
+                    key={link.key}
+                    to={resolveNavTo(link.to)}
+                    className={({ isActive }) =>
+                      `rounded-full px-3 py-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rt-brand-primary)] ${
+                        isActive
+                          ? "bg-[#EFF2E9] text-[var(--rt-brand-primary)]"
+                          : "text-[#294A34]/70 hover:bg-[#EFF2E9] hover:text-[var(--rt-brand-primary)]"
+                      }`
+                    }
+                  >
+                    {t(link.key)}
+                  </NavLink>
+                ))}
+              </nav>
+            </div>
+
+            <div className="flex h-full items-center gap-3">
+              <div className="hidden lg:block">
+                <LanguageSwitcher />
+              </div>
+
+              {/* CTA */}
+              <Link
+                to={resolveNavTo("/partnership")}
+                className="hidden h-10 items-center gap-2 rounded-full bg-[var(--rt-brand-primary)] px-5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_10px_25px_-8px_rgba(41,74,52,0.55)] lg:flex"
+              >
+                {t("nav.partnership")} <span aria-hidden>→</span>
+              </Link>
+
+              <button
+                type="button"
+                aria-label={t("menu.open")}
+                onClick={() => setMobileNavOpen(true)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E7EBDD] bg-white text-[#294A34] transition-colors hover:bg-[#EFF2E9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rt-brand-primary)] lg:hidden"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
+          </header>
+        </div>
       </div>
 
+      {/* Spacer so page content clears the fixed navbar. */}
+      <div className="h-[68px]" aria-hidden />
+
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
-        <SheetContent side="right" className="flex w-3/4 flex-col bg-[#F8F9F4] px-4 py-4">
+        <SheetContent side="right" className="flex w-3/4 flex-col bg-[#F3EDE1] px-4 py-4">
           <SheetHeader>
             <SheetTitle>Naturino</SheetTitle>
           </SheetHeader>
@@ -258,7 +263,7 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="bg-[#F8F9F4]">
+      <footer className="bg-[#F3EDE1]">
         <div className="mx-auto max-w-6xl px-6 pt-16 sm:pt-20">
           {/* Pre-footer CTA card */}
           <div className="grid gap-10 rounded-[2rem] bg-[var(--rt-brand-primary)] p-8 shadow-2xl sm:p-12 lg:grid-cols-2 lg:items-center lg:p-16">

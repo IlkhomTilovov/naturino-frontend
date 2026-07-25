@@ -347,6 +347,8 @@ function ImageCard({
         src={resolveMediaUrl(image.url) ?? FALLBACK_IMAGE}
         alt={image.altText ?? ""}
         onClick={onPreview}
+        loading="lazy"
+        decoding="async"
         className="h-full w-full cursor-pointer object-cover transition-transform group-hover:scale-105"
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;

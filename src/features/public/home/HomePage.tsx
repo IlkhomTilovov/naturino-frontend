@@ -16,7 +16,7 @@ export function HomePage() {
   });
 
   if (isLoading) {
-    return <div className="px-6 py-24 text-center text-slate-400">Yuklanmoqda...</div>;
+    return <div className="px-6 py-24 text-center text-taupe">Yuklanmoqda...</div>;
   }
 
   const sections = (page?.sections ?? [])
@@ -37,7 +37,7 @@ export function HomePage() {
       })}
 
       {sections.length === 0 && (
-        <div className="px-6 py-24 text-center text-slate-400">
+        <div className="px-6 py-24 text-center text-taupe">
           Bosh sahifa bo'limlari admin panelda hali sozlanmagan.
         </div>
       )}

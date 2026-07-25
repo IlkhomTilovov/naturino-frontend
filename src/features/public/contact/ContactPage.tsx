@@ -131,7 +131,7 @@ export function ContactPage() {
       </Helmet>
 
       {/* SECTION 01 — HERO */}
-      <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-32 text-center text-white sm:pb-16 sm:pt-36">
+      <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-16 text-center text-white sm:pb-16 sm:pt-20">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -155,7 +155,7 @@ export function ContactPage() {
       </section>
 
       {/* SECTION 02 — CONTACT INFO CARDS */}
-      <section className="bg-[#F8F9F4] px-4 py-16 sm:px-6">
+      <section className="bg-[#F3EDE1] px-4 py-16 sm:px-6">
         <div ref={infoRef.ref} className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {CONTACT_CARDS.map((card, i) => (
             <div
@@ -166,10 +166,10 @@ export function ContactPage() {
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--rt-brand-secondary)]/10 text-[var(--rt-brand-secondary)]">
                 <card.Icon className="h-5 w-5" strokeWidth={1.75} />
               </div>
-              <h3 className="mt-4 font-semibold text-[#0F172A]">{card.title}</h3>
+              <h3 className="mt-4 font-semibold text-[#294A34]">{card.title}</h3>
               <div className="mt-1.5 space-y-0.5">
                 {card.lines.map((line) => (
-                  <p key={line} className="text-sm text-slate-500">{line}</p>
+                  <p key={line} className="text-sm text-taupe">{line}</p>
                 ))}
               </div>
             </div>
@@ -181,7 +181,7 @@ export function ContactPage() {
       <section className="bg-white px-4 py-16 sm:px-6 sm:py-24">
         <div ref={formRef.ref} className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:gap-16">
           <div {...fadeUp(formRef.inView)}>
-            <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">Hamkorlik bo'yicha so'rov yuboring</h2>
+            <h2 className="text-2xl font-bold text-[#294A34] sm:text-3xl">Hamkorlik bo'yicha so'rov yuboring</h2>
 
             <form onSubmit={onSubmit} className="mt-7 space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -233,17 +233,17 @@ export function ContactPage() {
           </div>
 
           <div {...fadeUp(formRef.inView, 150)}>
-            <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">Nega Naturino bilan ishlashadi?</h2>
+            <h2 className="text-2xl font-bold text-[#294A34] sm:text-3xl">Nega Naturino bilan ishlashadi?</h2>
             <div className="mt-7 grid gap-5 sm:grid-cols-2">
               {WHY_CARDS.map((card) => (
                 <div
                   key={card.title}
-                  className="rounded-2xl border border-[#E7EBDD] bg-[#F8F9F4] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                  className="rounded-2xl border border-[#E7EBDD] bg-[#F3EDE1] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
                 >
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--rt-brand-secondary)]/10 text-[var(--rt-brand-secondary)]">
                     <card.Icon className="h-5 w-5" strokeWidth={1.75} />
                   </div>
-                  <p className="mt-4 font-semibold text-[#0F172A]">{card.title}</p>
+                  <p className="mt-4 font-semibold text-[#294A34]">{card.title}</p>
                 </div>
               ))}
             </div>
@@ -252,10 +252,10 @@ export function ContactPage() {
       </section>
 
       {/* SECTION 04 — MAP */}
-      <section className="bg-[#F8F9F4] px-4 py-16 sm:px-6">
+      <section className="bg-[#F3EDE1] px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-6xl text-center">
-          <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">Bizning manzilimiz</h2>
-          <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-slate-500">
+          <h2 className="text-2xl font-bold text-[#294A34] sm:text-3xl">Bizning manzilimiz</h2>
+          <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-taupe">
             <MapPin className="h-4 w-4 text-[var(--rt-brand-secondary)]" /> Toshkent, O'zbekiston
           </p>
           <div className="mt-8 overflow-hidden rounded-[28px] border border-black/5 shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
@@ -273,8 +273,8 @@ export function ContactPage() {
       {/* SECTION 05 — EXPORT INFORMATION */}
       <section className="bg-white px-4 py-16 sm:px-6 sm:py-24">
         <div ref={exportRef.ref} className="mx-auto max-w-6xl text-center">
-          <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">Eksport va distribyutorlik bo'yicha</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-500">
+          <h2 className="text-2xl font-bold text-[#294A34] sm:text-3xl">Eksport va distribyutorlik bo'yicha</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-taupe">
             Naturino xalqaro hamkorlar uchun eksport hujjatlari, logistika qo'llab-quvvatlashi va barqaror ta'minotni taqdim etadi.
           </p>
 
@@ -283,12 +283,12 @@ export function ContactPage() {
               <div
                 key={item.title}
                 {...fadeUp(exportRef.inView, i * 80)}
-                className={`flex items-center gap-3 rounded-2xl border border-[#E7EBDD] bg-[#F8F9F4] px-5 py-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${fadeUp(exportRef.inView, i * 80).className}`}
+                className={`flex items-center gap-3 rounded-2xl border border-[#E7EBDD] bg-[#F3EDE1] px-5 py-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${fadeUp(exportRef.inView, i * 80).className}`}
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--rt-brand-secondary)]/10 text-[var(--rt-brand-secondary)]">
                   <item.Icon className="h-5 w-5" strokeWidth={1.75} />
                 </span>
-                <p className="font-medium text-[#0F172A]">{item.title}</p>
+                <p className="font-medium text-[#294A34]">{item.title}</p>
               </div>
             ))}
           </div>
@@ -296,11 +296,11 @@ export function ContactPage() {
       </section>
 
       {/* SECTION 06 — FAQ */}
-      <section className="bg-[#F8F9F4] px-4 py-16 sm:px-6 sm:py-24">
+      <section className="bg-[#F3EDE1] px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-center text-2xl font-bold text-[#0F172A] sm:text-3xl">Ko'p beriladigan savollar</h2>
+          <h2 className="text-center text-2xl font-bold text-[#294A34] sm:text-3xl">Ko'p beriladigan savollar</h2>
 
-          <div className="mt-10 divide-y divide-slate-200 overflow-hidden rounded-[28px] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+          <div className="mt-10 divide-y divide-herb/50 overflow-hidden rounded-[28px] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
             {FAQ_ITEMS.map((item, i) => {
               const isOpen = openFaq === i;
               return (
@@ -308,16 +308,16 @@ export function ContactPage() {
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : i)}
-                    className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-[#F8F9F4]"
+                    className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-[#F3EDE1]"
                   >
-                    <span className="font-semibold text-[#0F172A]">{item.q}</span>
+                    <span className="font-semibold text-[#294A34]">{item.q}</span>
                     <ChevronDown className={`h-5 w-5 shrink-0 text-[var(--rt-brand-secondary)] transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
                   </button>
                   <div
                     className="overflow-hidden transition-all duration-300 ease-out"
                     style={{ maxHeight: isOpen ? "200px" : "0px" }}
                   >
-                    <p className="px-6 pb-5 text-sm leading-relaxed text-slate-500">{item.a}</p>
+                    <p className="px-6 pb-5 text-sm leading-relaxed text-taupe">{item.a}</p>
                   </div>
                 </div>
               );
@@ -329,16 +329,16 @@ export function ContactPage() {
       {/* SECTION 07 — WORKING HOURS */}
       <section className="bg-white px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-6xl text-center">
-          <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">Ish vaqti</h2>
+          <h2 className="text-2xl font-bold text-[#294A34] sm:text-3xl">Ish vaqti</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {WORKING_HOURS.map((item) => (
               <div
                 key={item.day}
-                className="rounded-2xl border border-[#E7EBDD] bg-[#F8F9F4] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                className="rounded-2xl border border-[#E7EBDD] bg-[#F3EDE1] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
               >
                 <Clock className="mx-auto h-6 w-6 text-[var(--rt-brand-secondary)]" strokeWidth={1.75} />
-                <p className="mt-3 font-semibold text-[#0F172A]">{item.day}</p>
-                <p className="mt-1 text-sm text-slate-500">{item.hours}</p>
+                <p className="mt-3 font-semibold text-[#294A34]">{item.day}</p>
+                <p className="mt-1 text-sm text-taupe">{item.hours}</p>
               </div>
             ))}
           </div>
@@ -379,7 +379,7 @@ export function ContactPage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-[#0F172A]">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-[#294A34]">{label}</span>
       {children}
     </label>
   );

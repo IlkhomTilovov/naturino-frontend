@@ -19,6 +19,11 @@ import { EditableProductRangeSection } from "./EditableProductRangeSection";
 import { EditableGallerySection } from "./EditableGallerySection";
 import { EditableFaqSection } from "./EditableFaqSection";
 import { EditableProductsHeroSection } from "./EditableProductsHeroSection";
+import { EditableBackgroundHeroSection } from "./EditableBackgroundHeroSection";
+import { EditableStatsHeroSection } from "./EditableStatsHeroSection";
+import { EditableMinimalHeroSection } from "./EditableMinimalHeroSection";
+import { EditableBadgeListHeroSection } from "./EditableBadgeListHeroSection";
+import { EditableBreadcrumbHeroSection } from "./EditableBreadcrumbHeroSection";
 
 export type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -50,6 +55,11 @@ const EDITABLE_SECTIONS: Record<string, ComponentType<FieldEditableProps>> = {
   ProductRange: EditableProductRangeSection,
   Gallery: EditableGallerySection,
   FAQ: EditableFaqSection,
+  BackgroundHero: EditableBackgroundHeroSection,
+  StatsHero: EditableStatsHeroSection,
+  MinimalHero: EditableMinimalHeroSection,
+  BadgeListHero: EditableBadgeListHeroSection,
+  BreadcrumbHero: EditableBreadcrumbHeroSection,
 };
 
 export function LivePreviewPane({

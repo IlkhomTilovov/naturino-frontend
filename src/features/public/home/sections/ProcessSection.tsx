@@ -46,7 +46,7 @@ export function ProcessSection({ content }: { content: PageSectionContent }) {
   if (!title) return null;
 
   return (
-    <section className="px-4 py-20 text-center sm:px-6 sm:py-28">
+    <section className="bg-sand-50 px-4 py-20 text-center sm:px-6 sm:py-28">
       <div ref={ref} className="mx-auto max-w-4xl">
         {eyebrow && (
           <p
@@ -59,7 +59,7 @@ export function ProcessSection({ content }: { content: PageSectionContent }) {
         )}
         <h2
           style={{ transitionDelay: inView ? "80ms" : "0ms" }}
-          className={`mt-4 text-3xl font-bold leading-tight text-slate-900 transition-all duration-700 sm:text-4xl lg:text-5xl ${
+          className={`mt-4 text-3xl font-bold leading-tight text-[#294A34] transition-all duration-700 sm:text-4xl lg:text-5xl ${
             inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           }`}
         >
@@ -68,7 +68,7 @@ export function ProcessSection({ content }: { content: PageSectionContent }) {
         {subtitle && (
           <p
             style={{ transitionDelay: inView ? "160ms" : "0ms" }}
-            className={`mx-auto mt-4 max-w-2xl text-base text-slate-500 transition-all duration-700 sm:text-lg ${
+            className={`mx-auto mt-4 max-w-2xl text-base text-taupe transition-all duration-700 sm:text-lg ${
               inView ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
             }`}
           >
@@ -99,7 +99,7 @@ export function ProcessSection({ content }: { content: PageSectionContent }) {
                           inView ? "translate-y-0 opacity-100 duration-700" : "translate-y-5 opacity-0 duration-700"
                         }`}
                       >
-                        <span className="relative z-10 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-slate-200 bg-white text-3xl font-bold text-slate-900 shadow-sm transition-all duration-300 group-hover:border-[var(--rt-accent)] group-hover:shadow-[0_0_0_6px_rgba(127,191,63,0.12)] sm:h-[5.5rem] sm:w-[5.5rem] sm:text-5xl">
+                        <span className="relative z-10 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-herb/50 bg-white text-3xl font-bold text-[#294A34] shadow-sm transition-all duration-300 group-hover:border-[var(--rt-accent)] group-hover:shadow-[0_0_0_6px_rgba(127,191,63,0.12)] sm:h-[5.5rem] sm:w-[5.5rem] sm:text-5xl">
                           {step.number}
                         </span>
 
@@ -107,8 +107,8 @@ export function ProcessSection({ content }: { content: PageSectionContent }) {
                           <Icon className="h-5 w-5" strokeWidth={1.75} />
                         </div>
 
-                        <h3 className="mt-3 font-semibold text-slate-900">{step.title}</h3>
-                        <p className="mt-1.5 text-sm text-slate-500">{step.description}</p>
+                        <h3 className="mt-3 font-semibold text-[#294A34]">{step.title}</h3>
+                        <p className="mt-1.5 text-sm text-taupe">{step.description}</p>
                       </div>
                     );
                   })}
@@ -123,13 +123,13 @@ export function ProcessSection({ content }: { content: PageSectionContent }) {
             style={{ transitionDelay: inView ? `${300 + steps.length * 150 + 100}ms` : "0ms" }}
             className={`mt-14 transition-all duration-700 ${inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
           >
-            {ctaTitle && <h3 className="text-xl font-bold text-slate-900 sm:text-2xl">{ctaTitle}</h3>}
-            {ctaSubtitle && <p className="mx-auto mt-2 max-w-xl text-sm text-slate-500 sm:text-base">{ctaSubtitle}</p>}
+            {ctaTitle && <h3 className="text-xl font-bold text-[#294A34] sm:text-2xl">{ctaTitle}</h3>}
+            {ctaSubtitle && <p className="mx-auto mt-2 max-w-xl text-sm text-taupe sm:text-base">{ctaSubtitle}</p>}
 
             {buttonText && (
               <Link
                 to={buttonUrl}
-                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-slate-900 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[#294A34] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
               >
                 {buttonText} <span aria-hidden>→</span>
               </Link>

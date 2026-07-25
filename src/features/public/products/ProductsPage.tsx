@@ -71,7 +71,7 @@ export function ProductsPage() {
         <title>{heroTitle ?? "Mahsulotlar"} — Naturino</title>
       </Helmet>
 
-      <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-32 text-center text-white sm:pb-16 sm:pt-36">
+      <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-16 text-center text-white sm:pb-16 sm:pt-20">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -101,7 +101,7 @@ export function ProductsPage() {
             className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               categoryId === null
                 ? "bg-[var(--rt-brand-primary)] text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                : "bg-[#E9E1D0] text-slate-600 hover:bg-slate-200"
             }`}
           >
             Barchasi
@@ -114,7 +114,7 @@ export function ProductsPage() {
               className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 categoryId === category.id
                   ? "bg-[var(--rt-brand-primary)] text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  : "bg-[#E9E1D0] text-slate-600 hover:bg-slate-200"
               }`}
             >
               {localizedCategoryField(category, language, "name")}
@@ -126,13 +126,13 @@ export function ProductsPage() {
           {isLoading && pageNum === 1 && (
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="aspect-square animate-pulse rounded-2xl bg-slate-100" />
+                <div key={i} className="aspect-square animate-pulse rounded-2xl bg-[#E9E1D0]" />
               ))}
             </div>
           )}
 
           {!isLoading && accumulated.length === 0 && (
-            <p className="py-16 text-center text-slate-400">Bu kategoriyada mahsulotlar topilmadi.</p>
+            <p className="py-16 text-center text-taupe">Bu kategoriyada mahsulotlar topilmadi.</p>
           )}
 
           {accumulated.length > 0 && (

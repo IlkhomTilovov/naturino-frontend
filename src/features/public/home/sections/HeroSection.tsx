@@ -1,373 +1,213 @@
 import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import type { PageSectionContent } from "../../../../types/page";
-import { ScrollFrameAnimation } from "../../../../components/shared/ScrollFrameAnimation";
-import { useScrollProgress } from "../../../../lib/hooks/useScrollProgress";
-import { useIsMobile } from "../../../../lib/hooks/useIsMobile";
 import { useInView } from "../../../../lib/hooks/useInView";
-import { resolveMediaUrl } from "../../../../lib/utils/media";
+import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../../lib/utils/media";
+import { productCategoriesApi } from "../../../../api/endpoints/products";
+import { localizedCategoryField } from "../../../../lib/product/localizedCategory";
+import { useLanguage } from "../../../../i18n/LanguageContext";
 
-function fadeUpClass(inView: boolean) {
-  return `transition-all duration-700 ease-out ${inView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`;
-}
+// Naturino Pantone palette (base: Oil Green). Hard-coded so the light hero keeps
+// its intended brand look regardless of the theme editor's runtime tokens.
+const NAT = {
+  forest: "#294A34", // 19-6026 Forest Green — headings, brand, button outline
+  oil: "#7F9773", //    17-0115 Oil Green — accent, icons
+  herb: "#B3C3A6", //   14-0210 Herb Green — soft lines / fills
+  sand: "#DDCBB0", //   13-1106 Sand Dollar — card panels
+  snow: "#F3EDE1", //   11-0602 Snow White — airy background
+  taupe: "#9F8A6C", //  16-1105 Plaza Taupe — secondary text
+} as const;
 
-function fadeUpStyle(inView: boolean, delayMs: number): CSSProperties {
-  return { transitionDelay: inView ? `${delayMs}ms` : "0ms" };
-}
-
-interface HeroStat {
-  value: string;
-  label: string;
-}
-
-interface HeroBanner {
-  isActive?: boolean;
-  badge?: string;
-  title?: string;
-  highlight?: string;
-  subtitle?: string;
-  primaryButtonText?: string;
-  primaryButtonUrl?: string;
-  secondaryButtonText?: string;
-  secondaryButtonUrl?: string;
-  imageUrl?: string;
-  mobileImageUrl?: string;
-  imageStats?: HeroStat[];
-  checklist?: string[];
-  framePattern?: string;
-  frameCount?: number;
-}
-
-function legacyBanner(content: PageSectionContent): HeroBanner {
+function fadeUp(inView: boolean, delayMs: number): CSSProperties {
   return {
-    isActive: true,
-    badge: content.badge as string | undefined,
-    title: content.title as string | undefined,
-    highlight: content.highlight as string | undefined,
-    subtitle: content.subtitle as string | undefined,
-    primaryButtonText: content.primaryButtonText as string | undefined,
-    primaryButtonUrl: content.primaryButtonUrl as string | undefined,
-    secondaryButtonText: content.secondaryButtonText as string | undefined,
-    secondaryButtonUrl: content.secondaryButtonUrl as string | undefined,
-    imageUrl: content.imageUrl as string | undefined,
-    mobileImageUrl: content.mobileImageUrl as string | undefined,
-    imageStats: content.imageStats as HeroStat[] | undefined,
-    checklist: content.checklist as string[] | undefined,
-    framePattern: content.framePattern as string | undefined,
-    frameCount: content.frameCount as number | undefined,
+    transitionDelay: inView ? `${delayMs}ms` : "0ms",
+    transform: inView ? "translateY(0)" : "translateY(1rem)",
+    opacity: inView ? 1 : 0,
   };
 }
 
-export function HeroSection({ content, enableScrollFrames }: { content: PageSectionContent; enableScrollFrames?: boolean }) {
-  const rawBanners = content.banners as HeroBanner[] | undefined;
-  const banners = (rawBanners && rawBanners.length > 0 ? rawBanners : [legacyBanner(content)]).filter(
-    (b) => b.isActive !== false,
-  );
-  const [activeIndex, setActiveIndex] = useState(0);
-  const { ref: scrollWrapperRef, progress: scrollProgress } = useScrollProgress<HTMLDivElement>();
-  const isMobile = useIsMobile();
-  const { ref: heroInViewRef, inView: heroInView } = useInView<HTMLDivElement>();
+const fadeBase = "transition-all duration-700 ease-out";
 
-  if (banners.length === 0) return null;
-  const banner = banners[Math.min(activeIndex, banners.length - 1)];
-  const checklist = banner.checklist ?? [];
+function firstBanner(content: PageSectionContent) {
+  const banners = content.banners as Array<Record<string, unknown>> | undefined;
+  const active = (banners ?? []).filter((b) => b.isActive !== false);
+  return active[0] ?? (content as Record<string, unknown>);
+}
 
-  if (enableScrollFrames && isMobile) {
-    return (
-      <div ref={scrollWrapperRef} className="relative h-[280vh]">
-        <section className="sticky top-0 isolate h-[100vh] min-h-[32rem] overflow-hidden bg-slate-900">
-          <ScrollFrameAnimation
-            framePattern="/hero-frames-mobile/frame-{n}.webp"
-            frameCount={207}
-            progress={scrollProgress}
-            className="absolute inset-0 h-full w-full"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
-        </section>
-      </div>
-    );
-  }
+export function HeroSection({ content }: { content: PageSectionContent; enableScrollFrames?: boolean }) {
+  const { language } = useLanguage();
+  const banner = firstBanner(content);
 
-  if (enableScrollFrames && !isMobile) {
-    return (
-      <div ref={scrollWrapperRef} className="relative h-[400vh]">
-        <section className="sticky top-0 isolate h-screen overflow-hidden bg-slate-900">
-          <ScrollFrameAnimation
-            framePattern={banner.framePattern ?? "/hero-frames/frame-{n}.webp"}
-            frameCount={banner.frameCount ?? 221}
-            progress={scrollProgress}
-            className="absolute inset-0 h-full w-full"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
+  const brand = (banner.title as string | undefined) ?? "NATURINO";
+  const highlight = banner.highlight as string | undefined;
+  const tagline =
+    (banner.subtitle as string | undefined) ??
+    "Naturino mushuk va itlar uchun premium ozuqa ishlab chiqaradi va xalqaro bozorlarga eksport qiladi.";
 
-        <div ref={heroInViewRef} className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
-          {banner.badge && (
-            <p
-              style={fadeUpStyle(heroInView, 0)}
-              className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/80 ${fadeUpClass(heroInView)}`}
-            >
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--rt-accent)]" />
-              {banner.badge}
-            </p>
-          )}
+  const { ref: inViewRef, inView } = useInView<HTMLDivElement>();
 
-          {banner.title && (
-            <h1
-              style={fadeUpStyle(heroInView, 100)}
-              className={`mt-4 max-w-2xl text-4xl font-bold leading-tight text-white md:text-5xl ${fadeUpClass(heroInView)}`}
-            >
-              {banner.title}
-              {banner.highlight && <span className="text-[var(--rt-accent)]">{banner.highlight}</span>}
-            </h1>
-          )}
+  const { data: categories } = useQuery({
+    queryKey: ["product-categories", "public"],
+    queryFn: productCategoriesApi.getAll,
+  });
 
-          {banner.subtitle && (
-            <p style={fadeUpStyle(heroInView, 200)} className={`mt-5 max-w-xl text-lg text-white/80 ${fadeUpClass(heroInView)}`}>
-              {banner.subtitle}
-            </p>
-          )}
+  // Carousel over the active categories — one card visible at a time.
+  const slides = (categories ?? []).filter((c) => c.isActive);
+  const count = slides.length;
+  const [active, setActive] = useState(0);
+  const clamped = Math.min(active, Math.max(0, count - 1));
+  const goPrev = () => setActive((i) => (i - 1 + count) % count);
+  const goNext = () => setActive((i) => (i + 1) % count);
 
-          <div style={fadeUpStyle(heroInView, 300)} className={`mt-8 flex flex-wrap items-center gap-3 ${fadeUpClass(heroInView)}`}>
-            {banner.primaryButtonText && (
-              <Link
-                to={banner.primaryButtonUrl ?? "/products"}
-                className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-slate-900 transition-colors hover:brightness-110"
-              >
-                {banner.primaryButtonText} <span aria-hidden>→</span>
-              </Link>
-            )}
-            {banner.secondaryButtonText && (
-              <Link
-                to={banner.secondaryButtonUrl ?? "/contact"}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/15"
-              >
-                {banner.secondaryButtonText}
-              </Link>
-            )}
-          </div>
-
-          {checklist.length > 0 && (
-            <ul
-              style={fadeUpStyle(heroInView, 400)}
-              className={`mt-7 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 ${fadeUpClass(heroInView)}`}
-            >
-              {checklist.map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-white/85">
-                  <span className="mt-0.5 text-[var(--rt-accent)]">✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {banners.length > 1 && (
-            <div className="mt-6 flex gap-2">
-              {banners.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Banner ${i + 1}`}
-                  onClick={() => setActiveIndex(i)}
-                  className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[var(--rt-accent)]" : "w-2 bg-white/30"}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-        </section>
-      </div>
-    );
-  }
-
-  // Static-image hero — same layout as the scroll-frame hero, but with a fixed
-  // background photo instead of frame-by-frame scroll animation.
-  if (!enableScrollFrames && banner.imageUrl) {
-    return (
-      <section className="relative isolate h-screen min-h-[32rem] overflow-hidden bg-[var(--rt-brand-primary)]">
-        {/* Desktop uses a landscape crop close to the hero's own aspect ratio, so object-cover
-            fills it edge-to-edge without zooming in awkwardly. Mobile gets its own portrait
-            crop via mobileImageUrl. */}
-        <img
-          src={(() => {
-            const src = isMobile && banner.mobileImageUrl ? banner.mobileImageUrl : banner.imageUrl;
-            return resolveMediaUrl(src) ?? src;
-          })()}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        {/* Mobile: single column over the photo needs a flat, even-darker scrim for the text to stay readable. */}
-        <div className="absolute inset-0 bg-black/60 sm:hidden" />
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-black/70 via-black/35 to-transparent sm:block" />
-
-        <div ref={heroInViewRef} className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
-          {banner.badge && (
-            <p
-              style={fadeUpStyle(heroInView, 0)}
-              className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/80 ${fadeUpClass(heroInView)}`}
-            >
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--rt-accent)]" />
-              {banner.badge}
-            </p>
-          )}
-
-          {banner.title && (
-            <h1
-              style={fadeUpStyle(heroInView, 100)}
-              className={`mt-4 max-w-2xl text-4xl font-bold leading-tight text-white md:text-5xl ${fadeUpClass(heroInView)}`}
-            >
-              {banner.title}
-              {banner.highlight && <span className="text-[var(--rt-accent)]">{banner.highlight}</span>}
-            </h1>
-          )}
-
-          {banner.subtitle && (
-            <p style={fadeUpStyle(heroInView, 200)} className={`mt-5 max-w-xl text-lg text-white/80 ${fadeUpClass(heroInView)}`}>
-              {banner.subtitle}
-            </p>
-          )}
-
-          <div style={fadeUpStyle(heroInView, 300)} className={`mt-8 flex flex-wrap items-center gap-3 ${fadeUpClass(heroInView)}`}>
-            {banner.primaryButtonText && (
-              <Link
-                to={banner.primaryButtonUrl ?? "/products"}
-                className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-slate-900 transition-colors hover:brightness-110"
-              >
-                {banner.primaryButtonText} <span aria-hidden>→</span>
-              </Link>
-            )}
-            {banner.secondaryButtonText && (
-              <Link
-                to={banner.secondaryButtonUrl ?? "/contact"}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/15"
-              >
-                {banner.secondaryButtonText}
-              </Link>
-            )}
-          </div>
-
-          {checklist.length > 0 && (
-            <ul
-              style={fadeUpStyle(heroInView, 400)}
-              className={`mt-7 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 ${fadeUpClass(heroInView)}`}
-            >
-              {checklist.map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-white/85">
-                  <span className="mt-0.5 text-[var(--rt-accent)]">✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {banners.length > 1 && (
-            <div className="mt-6 flex gap-2">
-              {banners.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Banner ${i + 1}`}
-                  onClick={() => setActiveIndex(i)}
-                  className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[var(--rt-accent)]" : "w-2 bg-white/30"}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-    );
-  }
-
-  // Inner-page hero banner (no scroll-jacking, no image column) — used for every
-  // non-Home page so navigation always lands on a proper hero, not bare text.
   return (
-    <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-32 text-center text-white sm:pb-16 sm:pt-36">
+    <section
+      className="relative overflow-hidden px-6 pb-16 pt-14 sm:pb-24 sm:pt-20"
+      style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F3EDE1 100%)" }}
+    >
+      {/* Soft brand-green glow behind the product. Contained to an ellipse around
+          the packaging (≈68% x, 50% y) that fully fades by ~80% height, so the
+          section's bottom edge stays pure #F3EDE1 and blends seamlessly into the
+          next section instead of leaving a tinted seam. */}
       <div
         className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--rt-accent) 12%, transparent) 0%, transparent 55%), radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--rt-brand-secondary) 25%, transparent) 0%, transparent 55%)",
-        }}
+        style={{ background: "radial-gradient(35% 30% at 68% 50%, rgba(46,107,62,0.09) 0%, transparent 100%)" }}
       />
 
-      <div ref={heroInViewRef} className="relative z-10 mx-auto max-w-3xl">
-        {banner.badge && (
-          <p
-            style={fadeUpStyle(heroInView, 0)}
-            className={`text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-accent)] ${fadeUpClass(heroInView)}`}
-          >
-            {banner.badge}
-          </p>
-        )}
+      <div ref={inViewRef} style={fadeUp(inView, 0)} className={`relative mx-auto max-w-6xl ${fadeBase}`}>
+        {count > 0 ? (
+          // The whole slide (text + image) cross-fades as one unit — no horizontal
+          // sliding, so the two-column layout never briefly shows a mismatched
+          // "image | text" arrangement mid-transition; both sides change together.
+          <div className="relative">
+            {slides.map((category, i) => {
+              const name = localizedCategoryField(category, language, "name") ?? category.name;
+              const desc = localizedCategoryField(category, language, "description") || tagline;
+              const img = resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE;
+              const isActive = i === clamped;
+              return (
+                <div
+                  key={category.id}
+                  className={`transition-opacity duration-500 ease-out ${
+                    isActive ? "relative opacity-100" : "pointer-events-none absolute inset-0 opacity-0"
+                  }`}
+                >
+                  <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+                      {/* LEFT — this category's text */}
+                      <div className="text-center lg:text-left">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: NAT.oil }}>
+                          {brand}
+                          {highlight ? ` ${highlight}` : ""}
+                        </p>
+                        <h1
+                          style={{ color: NAT.forest }}
+                          className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
+                        >
+                          {name}
+                        </h1>
+                        <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed sm:text-lg lg:mx-0" style={{ color: NAT.taupe }}>
+                          {desc}
+                        </p>
+                        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                          <Link
+                            to={`/categories/${category.slug}`}
+                            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
+                            style={{ background: NAT.forest }}
+                          >
+                            Batafsil <span aria-hidden>→</span>
+                          </Link>
+                          <Link
+                            to="/partnership"
+                            className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition-colors hover:bg-[#EFF2E9]"
+                            style={{ borderColor: NAT.forest, color: NAT.forest }}
+                          >
+                            Hamkorlik <span aria-hidden>→</span>
+                          </Link>
+                        </div>
+                      </div>
 
-        {banner.title && (
-          <h1
-            style={fadeUpStyle(heroInView, 100)}
-            className={`mt-4 text-3xl font-bold leading-tight sm:text-4xl ${fadeUpClass(heroInView)}`}
-          >
-            {banner.title}
-            {banner.highlight && <span className="text-[var(--rt-accent)]">{banner.highlight}</span>}
-          </h1>
-        )}
-
-        {banner.subtitle && (
-          <p style={fadeUpStyle(heroInView, 200)} className={`mx-auto mt-4 max-w-xl text-white/70 ${fadeUpClass(heroInView)}`}>
-            {banner.subtitle}
-          </p>
-        )}
-
-        <div
-          style={fadeUpStyle(heroInView, 300)}
-          className={`mt-7 flex flex-wrap items-center justify-center gap-3 ${fadeUpClass(heroInView)}`}
-        >
-          {banner.primaryButtonText && (
-            <Link
-              to={banner.primaryButtonUrl ?? "/products"}
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
+                      {/* RIGHT — this category's image */}
+                      <div className="flex h-80 w-full items-center justify-center sm:h-[34rem]">
+                        <img
+                          src={img}
+                          alt={name ?? category.name}
+                          loading={i === 0 ? "eager" : "lazy"}
+                          decoding="async"
+                          className="max-h-80 w-auto max-w-full object-contain drop-shadow-[0_25px_45px_rgba(41,74,52,0.18)] sm:max-h-[34rem]"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        ) : (
+          // No categories yet — plain brand hero.
+          <div className="text-center lg:text-left">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: NAT.oil }}>
+              Naturino
+            </p>
+            <h1
+              style={{ color: NAT.forest }}
+              className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
             >
-              {banner.primaryButtonText} <span aria-hidden>→</span>
-            </Link>
-          )}
-          {banner.secondaryButtonText && (
-            <Link
-              to={banner.secondaryButtonUrl ?? "/contact"}
-              className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/15"
-            >
-              {banner.secondaryButtonText}
-            </Link>
-          )}
-        </div>
-
-        {checklist.length > 0 && (
-          <ul
-            style={fadeUpStyle(heroInView, 400)}
-            className={`mt-7 flex flex-wrap items-center justify-center gap-2.5 ${fadeUpClass(heroInView)}`}
-          >
-            {checklist.map((item) => (
-              <li
-                key={item}
-                className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white/80"
-              >
-                <span className="text-[var(--rt-accent)]">✓</span>
-                {item}
-              </li>
-            ))}
-          </ul>
+              {brand}
+              {highlight && (
+                <span className="mt-1 block" style={{ color: NAT.oil }}>
+                  {highlight}
+                </span>
+              )}
+            </h1>
+            <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed sm:text-lg lg:mx-0" style={{ color: NAT.taupe }}>
+              {tagline}
+            </p>
+          </div>
         )}
+      </div>
 
-        {banners.length > 1 && (
-          <div className="mt-7 flex justify-center gap-2">
-            {banners.map((_, i) => (
+      {/* Navigation — arrows flanking the dots, centred BELOW the whole hero
+          (under both the text and the image). */}
+      {count > 1 && (
+        <div className="relative mt-12 flex items-center justify-center gap-5">
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label="Oldingi"
+            className="flex h-11 w-11 items-center justify-center rounded-full border bg-white shadow-sm transition-colors hover:bg-[#EFF2E9]"
+            style={{ borderColor: NAT.herb, color: NAT.forest }}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <div className="flex items-center gap-2">
+            {slides.map((category, i) => (
               <button
-                key={i}
+                key={category.id}
                 type="button"
-                aria-label={`Banner ${i + 1}`}
-                onClick={() => setActiveIndex(i)}
-                className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[var(--rt-accent)]" : "w-2 bg-white/30"}`}
+                onClick={() => setActive(i)}
+                aria-label={`${i + 1}-toifa`}
+                aria-current={i === clamped}
+                className="h-2 rounded-full transition-all duration-300"
+                style={{ width: i === clamped ? 22 : 8, background: i === clamped ? NAT.forest : NAT.herb }}
               />
             ))}
           </div>
-        )}
-      </div>
+
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label="Keyingi"
+            className="flex h-11 w-11 items-center justify-center rounded-full border bg-white shadow-sm transition-colors hover:bg-[#EFF2E9]"
+            style={{ borderColor: NAT.herb, color: NAT.forest }}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      )}
     </section>
   );
 }

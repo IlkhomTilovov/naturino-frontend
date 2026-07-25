@@ -19,6 +19,13 @@ export const SECTION_TYPE_LABELS: Record<string, string> = {
   ExportCapabilities: "Eksport imkoniyatlari",
   Gallery: "Galereya",
   FAQ: "Savol-javoblar",
+  CategoryTabs: "Kategoriya tablari",
+  PageBanner: "Sahifa banneri",
+  BackgroundHero: "Fon-rasmli banner",
+  StatsHero: "Statistikali banner",
+  MinimalHero: "Minimal banner",
+  BadgeListHero: "Belgilar bilan banner",
+  BreadcrumbHero: "Breadcrumb banner",
 };
 
 export function sectionTypeLabel(typeName: string): string {

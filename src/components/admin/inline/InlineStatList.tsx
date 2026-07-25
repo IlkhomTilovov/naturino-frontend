@@ -13,12 +13,14 @@ export function InlineStatList({
   itemClassName,
   valueClassName,
   labelClassName,
+  addButtonClassName,
 }: {
   items: Stat[];
   onChange: (items: Stat[]) => void;
   itemClassName?: string;
   valueClassName?: string;
   labelClassName?: string;
+  addButtonClassName?: string;
 }) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
@@ -89,7 +91,10 @@ export function InlineStatList({
           e.stopPropagation();
           add();
         }}
-        className="flex h-fit items-center gap-1 self-center rounded-md border border-dashed border-white/40 px-2 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-white hover:text-white"
+        className={
+          addButtonClassName ??
+          "flex h-fit items-center gap-1 self-center rounded-md border border-dashed border-white/40 px-2 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-white hover:text-white"
+        }
       >
         <PlusIcon className="h-3 w-3" /> Qo'shish
       </button>

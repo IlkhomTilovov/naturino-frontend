@@ -194,6 +194,8 @@ export function ProductCategoriesPage() {
                         <img
                           src={resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE}
                           alt=""
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover"
                           onError={(e) => {
                             (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;

@@ -248,6 +248,8 @@ export function ProductsListPage() {
                         <img
                           src={thumb ?? FALLBACK_IMAGE}
                           alt={product.name}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover"
                           onError={(e) => {
                             (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;

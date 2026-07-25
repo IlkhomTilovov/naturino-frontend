@@ -25,12 +25,12 @@ export function ProductRangeSection({ content }: { content: PageSectionContent }
   if (!title && visible.length === 0) return null;
 
   return (
-    <section className="bg-slate-50 px-6 py-16">
+    <section className="bg-[#F3EDE1] px-6 py-16">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           {eyebrow && <p className="text-xs font-semibold uppercase tracking-wide text-[var(--rt-brand-primary)]">{eyebrow}</p>}
-          {title && <h2 className="mt-3 text-3xl font-bold text-slate-900">{title}</h2>}
-          {subtitle && <p className="mt-3 text-slate-500">{subtitle}</p>}
+          {title && <h2 className="mt-3 text-3xl font-bold text-[#294A34]">{title}</h2>}
+          {subtitle && <p className="mt-3 text-taupe">{subtitle}</p>}
         </div>
 
         {visible.length > 0 && (
@@ -41,18 +41,20 @@ export function ProductRangeSection({ content }: { content: PageSectionContent }
                 <Link
                   key={category.id}
                   to={`/products?category=${category.slug}`}
-                  className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
+                  className="group overflow-hidden rounded-2xl border border-herb/50 bg-white transition-shadow hover:shadow-lg"
                 >
-                  <div className="aspect-square bg-slate-100">
+                  <div className="aspect-square bg-[#E9E1D0]">
                     <img
                       src={resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE}
                       alt={name ?? category.name}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold text-slate-900">{name}</h3>
-                    <p className="mt-1 text-xs text-slate-400">{category.productCount} mahsulot</p>
+                    <h3 className="font-semibold text-[#294A34]">{name}</h3>
+                    <p className="mt-1 text-xs text-taupe">{category.productCount} mahsulot</p>
                   </div>
                 </Link>
               );

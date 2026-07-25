@@ -200,6 +200,79 @@ export const SECTION_THUMBNAILS: Record<string, React.ReactNode> = {
       <rect x="84" y="67" width="30" height="8" rx="4" fill="none" stroke={LINE} strokeWidth="1.5" />
     </Frame>
   ),
+  PageBanner: (
+    <Frame>
+      <rect x="55" y="14" width="50" height="4" rx="2" fill={LINE} />
+      <rect x="30" y="26" width="100" height="8" rx="2" fill={DARK} />
+      <rect x="42" y="38" width="76" height="8" rx="2" fill={DARK} />
+      <rect x="50" y="54" width="26" height="3" rx="1.5" fill={LINE_SOFT} />
+      <rect x="55" y="65" width="22" height="10" rx="5" fill={ACCENT} />
+      <rect x="83" y="65" width="22" height="10" rx="5" fill="none" stroke={LINE} strokeWidth="1.5" />
+    </Frame>
+  ),
+  BackgroundHero: (
+    <Frame>
+      <rect x="0" y="0" width="160" height="90" fill={DARK} />
+      <rect x="55" y="24" width="50" height="4" rx="2" fill="#94A3B8" />
+      <rect x="34" y="36" width="92" height="8" rx="2" fill="#fff" fillOpacity="0.9" />
+      <rect x="50" y="50" width="60" height="3" rx="1.5" fill="#fff" fillOpacity="0.5" />
+      <rect x="62" y="62" width="36" height="10" rx="5" fill={ACCENT} />
+    </Frame>
+  ),
+  StatsHero: (
+    <Frame>
+      <rect x="55" y="10" width="50" height="4" rx="2" fill={LINE} />
+      <rect x="34" y="20" width="92" height="8" rx="2" fill={DARK} />
+      <rect x="50" y="33" width="60" height="3" rx="1.5" fill={LINE_SOFT} />
+      <rect x="62" y="42" width="36" height="9" rx="4.5" fill={ACCENT} />
+      <line x1="20" y1="62" x2="140" y2="62" stroke={LINE_SOFT} strokeWidth="1.5" />
+      {[30, 65, 100, 135].map((x) => (
+        <g key={x}>
+          <rect x={x - 12} y={68} width="24" height="7" rx="2" fill={DARK} />
+          <rect x={x - 10} y={78} width="20" height="3" rx="1.5" fill={LINE_SOFT} />
+        </g>
+      ))}
+    </Frame>
+  ),
+  MinimalHero: (
+    <Frame>
+      <rect x="60" y="30" width="40" height="3" rx="1.5" fill={LINE} />
+      <rect x="42" y="40" width="76" height="7" rx="2" fill={DARK} />
+      <rect x="52" y="52" width="56" height="3" rx="1.5" fill={LINE_SOFT} />
+      <rect x="64" y="62" width="32" height="9" rx="4.5" fill={ACCENT} />
+    </Frame>
+  ),
+  BadgeListHero: (
+    <Frame>
+      <rect x="14" y="16" width="30" height="3" rx="1.5" fill={LINE} />
+      <rect x="14" y="24" width="58" height="7" rx="2" fill={DARK} />
+      <rect x="14" y="36" width="50" height="3" rx="1.5" fill={LINE_SOFT} />
+      <rect x="14" y="46" width="26" height="8" rx="4" fill="none" stroke={ACCENT} strokeWidth="1.5" />
+      <rect x="44" y="46" width="26" height="8" rx="4" fill="none" stroke={ACCENT} strokeWidth="1.5" />
+      <rect x="14" y="60" width="30" height="9" rx="4.5" fill={ACCENT} />
+      <rect x="90" y="16" width="56" height="58" rx="6" fill={LINE_SOFT} />
+    </Frame>
+  ),
+  BreadcrumbHero: (
+    <Frame>
+      <rect x="0" y="0" width="160" height="90" fill={DARK} />
+      <rect x="58" y="26" width="18" height="3" rx="1.5" fill="#fff" fillOpacity="0.4" />
+      <rect x="80" y="26" width="22" height="3" rx="1.5" fill={ACCENT} />
+      <rect x="40" y="38" width="80" height="8" rx="2" fill="#fff" fillOpacity="0.9" />
+      <rect x="52" y="52" width="56" height="3" rx="1.5" fill="#fff" fillOpacity="0.5" />
+    </Frame>
+  ),
+  CategoryTabs: (
+    <Frame>
+      <rect x="14" y="16" width="30" height="10" rx="5" fill={ACCENT} />
+      <rect x="50" y="16" width="30" height="10" rx="5" fill="none" stroke={LINE} strokeWidth="1.5" />
+      <rect x="86" y="16" width="30" height="10" rx="5" fill="none" stroke={LINE} strokeWidth="1.5" />
+      <rect x="122" y="16" width="24" height="10" rx="5" fill="none" stroke={LINE} strokeWidth="1.5" />
+      <rect x="20" y="42" width="120" height="3" rx="1.5" fill={LINE_SOFT} />
+      <rect x="20" y="50" width="120" height="3" rx="1.5" fill={LINE_SOFT} />
+      <rect x="20" y="58" width="80" height="3" rx="1.5" fill={LINE_SOFT} />
+    </Frame>
+  ),
   Contact: (
     <Frame>
       <rect x="20" y="16" width="120" height="10" rx="3" fill="none" stroke={LINE} strokeWidth="1.5" />
