@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ExternalLink, Eye, GitBranch, Globe, MonitorSmartphone, PenTool, Info } from "lucide-react";
 import { pagesApi } from "../../../api/endpoints/pages";
 import { PageHeader } from "../../../components/admin/PageHeader";
-import { Button, buttonVariants } from "../../../components/ui/button";
+import { buttonVariants } from "../../../components/ui/button";
 import { cn } from "../../../lib/utils";
 
 const EDITABLE_PAGE_PILLS = [
