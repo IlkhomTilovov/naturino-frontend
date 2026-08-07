@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { pagesApi } from "../../../api/endpoints/pages";
+import { productCategoriesApi } from "../../../api/endpoints/products";
 import { languagesApi } from "../../../api/endpoints/languages";
 import { Button } from "../../../components/ui/button";
+import { Select, SelectContent, SelectGroup, SelectGroupLabel, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { useToastStore } from "../../../store/toastStore";
-import type { PageSection, PageSectionContent } from "../../../types/page";
+import type { Page, PageSection, PageSectionContent } from "../../../types/page";
 import { SECTION_TYPE_NAMES } from "../../public/shared/renderSection";
 import { sectionTypeLabel } from "./sectionLabels";
 import { SECTION_FIELD_SCHEMAS, type FieldDef } from "./sectionFieldSchemas";
@@ -18,6 +20,39 @@ import { AddSectionModal, type InsertPosition } from "./AddSectionModal";
 import { SeoPanel, type SeoDraft } from "./SeoPanel";
 import { getLocalized, setLocalized, type ContentLanguage } from "../../../lib/page/localizedContent";
 import { publicPathForSlug } from "../../../lib/page/publicPath";
+
+// Category page groups are just plain Pages whose titles happen to mention a
+// Toifa's name (e.g. "It - Quruq ozuqa", "It - Quruq ozuqa – Itlar uchun", and
+// the Toifa's own "Quruq ozuqa" page) — nothing in the data model marks them
+// as related, and the naming convention isn't consistent enough to group by
+// title-prefix alone (the Toifa's own page has no "It - " prefix at all). So
+// group by which real Toifa name (from ProductCategories) each title
+// contains — anything that matches none of them is a standalone page.
+function groupPagesForSelector(pages: Page[], toifaNames: string[]): { standalone: Page[]; families: [string, Page[]][] } {
+  const groups = new Map<string, Page[]>();
+  const standalone: Page[] = [];
+  for (const p of pages) {
+    const matchedToifa = toifaNames.find((t) => p.title.includes(t));
+    if (!matchedToifa) {
+      standalone.push(p);
+      continue;
+    }
+    const list = groups.get(matchedToifa) ?? [];
+    if (p.title === matchedToifa) list.unshift(p);
+    else list.push(p);
+    groups.set(matchedToifa, list);
+  }
+  return { standalone, families: Array.from(groups.entries()) };
+}
+
+// The base page keeps its full title (shown as the collapsed trigger's label
+// when it's the active page, so it stays meaningful on its own); only the
+// sub-tab siblings shorten to their tab name since the group label already
+// gives them their parent's context when the list is open.
+function pageSelectorLabel(page: Page): string {
+  const sepIndex = page.title.indexOf(" – ");
+  return sepIndex === -1 ? page.title : page.title.slice(sepIndex + 3);
+}
 
 interface HistorySnapshot {
   draftContent: Record<string, PageSectionContent>;
@@ -50,6 +85,8 @@ export function PageDetailPage() {
   // ever leaving this route — switching `id` here re-runs the query above but
   // never unmounts this editor shell (toolbar/sidebar/inspector stay mounted).
   const { data: allPages } = useQuery({ queryKey: ["pages"], queryFn: pagesApi.getAll });
+  const { data: productCategories } = useQuery({ queryKey: ["product-categories", "public"], queryFn: productCategoriesApi.getAll });
+  const toifaNames = (productCategories ?? []).filter((c) => !c.parentCategoryId).map((c) => c.name);
 
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [draftContent, setDraftContent] = useState<Record<string, PageSectionContent>>({});
@@ -325,18 +362,40 @@ export function PageDetailPage() {
           >
             ←
           </button>
-          <select
-            value={page.id}
-            onChange={(e) => navigate(`/admin/pages/${e.target.value}`)}
-            title="Sahifa tanlash"
-            className="max-w-[220px] rounded-lg border border-admin-border bg-white px-2.5 py-1.5 text-sm font-semibold text-admin-primary focus:border-admin-primary focus:outline-none"
-          >
-            {(allPages ?? [page]).map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.title}
-              </option>
-            ))}
-          </select>
+          <Select value={page.id} onValueChange={(val) => navigate(`/admin/pages/${val}`)}>
+            <SelectTrigger className="max-w-[220px] font-semibold" title="Sahifa tanlash">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {(() => {
+                const { standalone, families } = groupPagesForSelector(allPages ?? [page], toifaNames);
+                return (
+                  <>
+                    {standalone.length > 0 && (
+                      <SelectGroup>
+                        <SelectGroupLabel>Sahifalar</SelectGroupLabel>
+                        {standalone.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.title}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    )}
+                    {families.map(([base, list]) => (
+                      <SelectGroup key={base}>
+                        <SelectGroupLabel>{base}</SelectGroupLabel>
+                        {list.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {pageSelectorLabel(p)}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}
+                  </>
+                );
+              })()}
+            </SelectContent>
+          </Select>
           <p className="text-xs text-admin-muted">{page.slug ? `/${page.slug}` : "/"}</p>
         </div>
 
@@ -598,6 +657,28 @@ function FieldControl({ field, value, onChange }: { field: FieldDef; value: unkn
     return <MediaUploaderField imageUrl={value as string | undefined} onChange={(url) => onChange(url)} />;
   }
 
+  if (field.type === "pagelink") {
+    return <PageLinkField value={value as string | undefined} onChange={onChange} />;
+  }
+
+  if (field.type === "select") {
+    const options = field.options ?? [];
+    return (
+      <Select value={(value as string) ?? ""} onValueChange={(val: string | null) => onChange(val ?? "")}>
+        <SelectTrigger>
+          <SelectValue placeholder="Tanlang" />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((opt) => (
+            <SelectItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  }
+
   if (field.type === "textarea") {
     return <textarea className="input" rows={3} value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} />;
   }
@@ -618,4 +699,60 @@ function FieldControl({ field, value, onChange }: { field: FieldDef; value: unkn
   }
 
   return <input className="input" value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} />;
+}
+
+const CUSTOM_LINK_VALUE = "__custom__";
+
+// Links into the category-tab route (/categories/:toifaSlug/:tab) rather than
+// the generic /products?category= catalog — that route already shows the
+// full product list for that Sub-toifa (via CategoryTabProducts) plus the
+// Ingredientlar/Itlar/Mushuklar/Zavodchilarga tab bar, and — critically —
+// its URL never starts with /products, so the navbar's "Mahsulotlar" link
+// doesn't falsely light up when a visitor is still inside a Toifa page.
+function PageLinkField({ value, onChange }: { value?: string; onChange: (value: string) => void }) {
+  const { data: categories } = useQuery({ queryKey: ["product-categories", "public"], queryFn: productCategoriesApi.getAll });
+  const options = (categories ?? [])
+    .filter((c) => c.isActive)
+    .map((c) => {
+      if (!c.parentCategoryId) return { label: c.name, path: `/categories/${c.slug}` };
+      const parent = categories?.find((p) => p.id === c.parentCategoryId);
+      const tab = c.slug.startsWith("mushuk-") ? "mushuklar-uchun" : "itlar-uchun";
+      const path = parent ? `/categories/${parent.slug}/${tab}` : `/categories/${c.slug}`;
+      return { label: parent ? `${parent.name} — ${c.name}` : c.name, path };
+    });
+  const matchedOption = options.find((o) => o.path === value);
+  const selectValue = value ? (matchedOption ? matchedOption.path : CUSTOM_LINK_VALUE) : "";
+
+  return (
+    <div className="space-y-2">
+      <Select
+        value={selectValue}
+        onValueChange={(val: string | null) => {
+          if (val === null || val === CUSTOM_LINK_VALUE) return;
+          onChange(val);
+        }}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Toifa tanlang..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">Toifa tanlang...</SelectItem>
+          {options.map((o) => (
+            <SelectItem key={o.path} value={o.path}>
+              {o.label} ({o.path})
+            </SelectItem>
+          ))}
+          <SelectItem value={CUSTOM_LINK_VALUE}>Boshqa (qo'lda kiritish)</SelectItem>
+        </SelectContent>
+      </Select>
+      {selectValue === CUSTOM_LINK_VALUE && (
+        <input
+          className="input"
+          placeholder="/manzil yoki https://..."
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
+    </div>
+  );
 }

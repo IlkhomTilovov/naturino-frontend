@@ -24,6 +24,22 @@ import { EditableStatsHeroSection } from "./EditableStatsHeroSection";
 import { EditableMinimalHeroSection } from "./EditableMinimalHeroSection";
 import { EditableBadgeListHeroSection } from "./EditableBadgeListHeroSection";
 import { EditableBreadcrumbHeroSection } from "./EditableBreadcrumbHeroSection";
+import { EditableQualityIconGridSection } from "./EditableQualityIconGridSection";
+import { EditableQualityMetricsSection } from "./EditableQualityMetricsSection";
+import { EditableQualityChecklistSection } from "./EditableQualityChecklistSection";
+import { EditableQualityBadgeWallSection } from "./EditableQualityBadgeWallSection";
+import { EditableQualityPledgeSection } from "./EditableQualityPledgeSection";
+import { EditableProcessTimelineVerticalSection } from "./EditableProcessTimelineVerticalSection";
+import { EditableProcessCardGridSection } from "./EditableProcessCardGridSection";
+import { EditableProcessSplitImageSection } from "./EditableProcessSplitImageSection";
+import { EditableProcessFlowSection } from "./EditableProcessFlowSection";
+import { EditableProcessAccordionSection } from "./EditableProcessAccordionSection";
+import { EditableWhyPartnerIconGridSection } from "./EditableWhyPartnerIconGridSection";
+import { EditableWhyPartnerMetricsSection } from "./EditableWhyPartnerMetricsSection";
+import { EditableWhyPartnerSplitImageSection } from "./EditableWhyPartnerSplitImageSection";
+import { EditableWhyPartnerQuoteSection } from "./EditableWhyPartnerQuoteSection";
+import { EditableWhyPartnerCtaBandSection } from "./EditableWhyPartnerCtaBandSection";
+import { EditableExportCapabilitiesSection } from "./EditableExportCapabilitiesSection";
 
 export type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -51,7 +67,7 @@ const EDITABLE_SECTIONS: Record<string, ComponentType<FieldEditableProps>> = {
   Contact: EditableContentSection,
   WhyPartner: EditableFeatureCardsSection,
   WhoWeWorkWith: EditableFeatureCardsSection,
-  ExportCapabilities: EditableFeatureCardsSection,
+  ExportCapabilities: EditableExportCapabilitiesSection,
   ProductRange: EditableProductRangeSection,
   Gallery: EditableGallerySection,
   FAQ: EditableFaqSection,
@@ -60,6 +76,21 @@ const EDITABLE_SECTIONS: Record<string, ComponentType<FieldEditableProps>> = {
   MinimalHero: EditableMinimalHeroSection,
   BadgeListHero: EditableBadgeListHeroSection,
   BreadcrumbHero: EditableBreadcrumbHeroSection,
+  QualityIconGrid: EditableQualityIconGridSection,
+  QualityMetrics: EditableQualityMetricsSection,
+  QualityChecklist: EditableQualityChecklistSection,
+  QualityBadgeWall: EditableQualityBadgeWallSection,
+  QualityPledge: EditableQualityPledgeSection,
+  ProcessTimelineVertical: EditableProcessTimelineVerticalSection,
+  ProcessCardGrid: EditableProcessCardGridSection,
+  ProcessSplitImage: EditableProcessSplitImageSection,
+  ProcessFlow: EditableProcessFlowSection,
+  ProcessAccordion: EditableProcessAccordionSection,
+  WhyPartnerIconGrid: EditableWhyPartnerIconGridSection,
+  WhyPartnerMetrics: EditableWhyPartnerMetricsSection,
+  WhyPartnerSplitImage: EditableWhyPartnerSplitImageSection,
+  WhyPartnerQuote: EditableWhyPartnerQuoteSection,
+  WhyPartnerCtaBand: EditableWhyPartnerCtaBandSection,
 };
 
 export function LivePreviewPane({

@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { productCategoriesApi, productsApi } from "../../../api/endpoints/products";
 import { languagesApi } from "../../../api/endpoints/languages";
 import { Button } from "../../../components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { ProductImageManager } from "./ProductImageManager";
 import { PageHeader } from "../../../components/admin/PageHeader";
 import { FormSectionCard } from "../../../components/admin/FormSectionCard";
@@ -77,6 +78,7 @@ export function ProductFormPage() {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
@@ -217,14 +219,22 @@ export function ProductFormPage() {
                   <input className="input" {...register("slug")} />
                 </Field>
                 <Field label="Toifa" error={errors.categoryId?.message}>
-                  <select className="input" {...register("categoryId")}>
-                    <option value="">Tanlang</option>
-                    {categories?.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    value={formValues.categoryId ?? ""}
+                    onValueChange={(val) => setValue("categoryId", val ?? "", { shouldValidate: true })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Tanlang</SelectItem>
+                      {categories?.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </Field>
               </div>
             </FormSectionCard>

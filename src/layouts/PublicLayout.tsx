@@ -173,7 +173,10 @@ export function PublicLayout() {
               </span>
             </Link>
 
-            {/* Full nav — centered between logo and the right-side group. */}
+            {/* Primary nav — centered between logo and the right-side group.
+                On inner pages, secondary links live in the slim top bar above,
+                so only the primary set repeats here. The home page has no top
+                bar, so its single navbar carries the full flattened set. */}
             <div className="flex flex-1 items-center justify-center">
               <nav aria-label="Asosiy menyu" className="hidden items-center gap-1 text-sm font-medium lg:flex">
                 {NAV_LINKS.map((link) => (

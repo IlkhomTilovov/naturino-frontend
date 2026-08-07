@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Award, Hash, Scale, User, type LucideIcon } from "lucide-react";
 import type { Product } from "../../types/product";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../lib/utils/media";
 import { localizedProductField } from "../../lib/product/localizedProduct";
@@ -12,28 +13,31 @@ function categoryBadges(categoryName: string): string[] {
     .slice(0, 2);
 }
 
-export function ProductCard({ product }: { product: Product }) {
+// basePath lets a category's own product listing route detail pages under its
+// own URL (e.g. /categories/it-quruq-ozuqa/itlar-uchun/{slug}) instead of the
+// generic /products/{slug} — otherwise the navbar's "Mahsulotlar" link lights
+// up as active even though the visitor never left the category section.
+export function ProductCard({ product, basePath = "/products" }: { product: Product; basePath?: string }) {
   const { language } = useLanguage();
   const primaryImage = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const imageSrc = resolveMediaUrl(primaryImage?.url) ?? FALLBACK_IMAGE;
   const badges = categoryBadges(product.categoryName);
   const name = localizedProductField(product, language, "name");
-  const shortDescription = localizedProductField(product, language, "shortDescription");
 
   const specs = [
-    product.sku && { label: "SKU", value: product.sku },
-    product.weight != null && { label: "Qadoq", value: `${product.weight} kg` },
-    product.ageGroup && { label: "Yosh guruhi", value: product.ageGroup },
-    product.brand && { label: "Brend", value: product.brand },
-  ].filter(Boolean) as { label: string; value: string }[];
+    product.sku && { label: "SKU", value: product.sku, Icon: Hash },
+    product.weight != null && { label: "Qadoq", value: `${product.weight} kg`, Icon: Scale },
+    product.ageGroup && { label: "Yosh guruhi", value: product.ageGroup, Icon: User },
+    product.brand && { label: "Brend", value: product.brand, Icon: Award },
+  ].filter(Boolean) as { label: string; value: string; Icon: LucideIcon }[];
 
   return (
     <Link
-      to={`/products/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-[28px] border border-black/[0.06] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]"
+      to={`${basePath}/${product.slug}`}
+      className="group flex flex-col overflow-hidden rounded-[28px] border border-black/[0.06] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]"
     >
       {/* Showcase area — warm Sand Dollar base gives products a premium, natural stage. */}
-      <div className="relative flex h-56 items-center justify-center bg-sand-50 px-4 pt-4 sm:h-64">
+      <div className="relative flex h-56 items-center justify-center bg-sand-50 px-2.5 pt-2.5 sm:h-64">
         {product.isFeatured && (
           <span className="absolute left-4 top-4 z-10 rounded-full bg-[var(--rt-brand-secondary)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
             Tavsiya etiladi
@@ -44,7 +48,7 @@ export function ProductCard({ product }: { product: Product }) {
           alt={name ?? product.name}
           loading="lazy"
           decoding="async"
-          className="mx-auto h-full w-auto max-w-[85%] object-contain transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+          className="mx-auto h-full w-auto max-w-[94%] object-contain transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
           }}
@@ -55,10 +59,14 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="relative z-10 -mt-5 flex flex-1 flex-col rounded-[20px] bg-white p-5 shadow-[0_8px_20px_rgba(0,0,0,0.05)]">
         {badges.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {badges.map((badge) => (
+            {badges.map((badge, i) => (
               <span
                 key={badge}
-                className="rounded-full bg-[var(--rt-brand-secondary)]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--rt-brand-secondary)] transition-colors duration-300 group-hover:bg-[var(--rt-accent)]/15 group-hover:text-[var(--rt-accent)]"
+                className={
+                  i === 0
+                    ? "rounded-full bg-[var(--rt-brand-secondary)]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--rt-brand-secondary)] transition-colors duration-300 group-hover:bg-[var(--rt-accent)]/15 group-hover:text-[var(--rt-accent)]"
+                    : "rounded-full border border-[var(--rt-brand-secondary)]/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--rt-brand-secondary)]/80 transition-colors duration-300 group-hover:border-[var(--rt-accent)]/50 group-hover:text-[var(--rt-accent)]"
+                }
               >
                 {badge}
               </span>
@@ -66,25 +74,27 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         )}
 
-        <h3 className="mt-3 line-clamp-2 text-base font-bold leading-snug text-[#294A34]">{name}</h3>
-
-        {shortDescription && (
-          <p className="mt-1.5 line-clamp-1 text-sm text-taupe">{shortDescription}</p>
-        )}
+        <h3 className="mt-2.5 line-clamp-2 text-base font-extrabold leading-snug text-[#294A34]">{name}</h3>
 
         {specs.length > 0 && (
-          <dl className="mt-4 grid grid-cols-2 gap-y-1.5 border-t border-herb/40 pt-4 text-xs">
+          <dl className="mt-4 flex flex-col gap-y-2 border-t border-herb/40 pt-4 text-xs">
             {specs.map((spec) => (
-              <div key={spec.label} className="flex items-center justify-between gap-2 pr-2">
-                <dt className="text-taupe">{spec.label}</dt>
+              <div key={spec.label} className="flex items-center justify-between gap-2">
+                <dt className="flex items-center gap-1.5 text-taupe">
+                  <spec.Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  {spec.label}
+                </dt>
                 <dd className="font-semibold text-[#294A34]">{spec.value}</dd>
               </div>
             ))}
           </dl>
         )}
 
-        <span className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[var(--rt-brand-primary)] py-2.5 text-sm font-semibold text-white transition-colors duration-300 group-hover:bg-[var(--rt-accent)] group-hover:text-[#294A34]">
-          Batafsil <span aria-hidden>→</span>
+        <span className="mx-auto mt-5 flex w-full max-w-[80%] items-center justify-center gap-1.5 rounded-xl bg-[var(--rt-brand-primary)] py-2.5 text-sm font-semibold text-white transition-colors duration-300 group-hover:bg-[var(--rt-accent)] group-hover:text-[#294A34]">
+          Batafsil
+          <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+            →
+          </span>
         </span>
 
         {product.stockQuantity <= 0 && (

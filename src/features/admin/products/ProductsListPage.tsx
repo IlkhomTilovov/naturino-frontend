@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { productCategoriesApi, productsApi } from "../../../api/endpoints/products";
 import { Button } from "../../../components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { PageHeader } from "../../../components/admin/PageHeader";
 import { ProductStatusBadge, SeoStatusBadge, StockBadge } from "../../../components/admin/Badges";
 import { EmptyState } from "../../../components/admin/EmptyState";
@@ -133,34 +134,42 @@ export function ProductsListPage() {
             />
           </div>
 
-          <select
+          <Select
             value={categoryId}
-            onChange={(e) => {
-              setCategoryId(e.target.value);
+            onValueChange={(val) => {
+              setCategoryId(val ?? "");
               setPage(1);
             }}
-            className="rounded-lg border border-admin-border px-3 py-2 text-sm focus:border-admin-primary focus:outline-none"
           >
-            <option value="">Barcha toifalar</option>
-            {categories?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Barcha toifalar" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Barcha toifalar</SelectItem>
+              {categories?.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          <select
+          <Select
             value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
+            onValueChange={(val) => {
+              setStatusFilter(val ?? "");
               setPage(1);
             }}
-            className="rounded-lg border border-admin-border px-3 py-2 text-sm focus:border-admin-primary focus:outline-none"
           >
-            <option value="">Barchasi</option>
-            <option value="active">Faol</option>
-            <option value="inactive">Faol emas</option>
-          </select>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Barchasi</SelectItem>
+              <SelectItem value="active">Faol</SelectItem>
+              <SelectItem value="inactive">Faol emas</SelectItem>
+            </SelectContent>
+          </Select>
 
           {selected.size > 0 && (
             <Button

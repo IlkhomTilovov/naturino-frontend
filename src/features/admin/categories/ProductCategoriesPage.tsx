@@ -16,7 +16,11 @@ import type { CategoryFormSchema } from "../../../lib/schemas/category";
 import type { CategoryTranslation, ProductCategory } from "../../../types/product";
 import { CategoryModal } from "./CategoryModal";
 
-export function ProductCategoriesPage() {
+// scope="top" (Toifalar) and scope="sub" (Sub-toifalar) are separate sidebar
+// pages over the same underlying ProductCategories table — sub-categories get
+// their own dedicated list because editors create/open them far more often
+// than top-level Toifa, and mixing both in one flat table buried that.
+export function ProductCategoriesPage({ scope }: { scope: "top" | "sub" }) {
   const queryClient = useQueryClient();
   const addToast = useToastStore((state) => state.addToast);
   const [search, setSearch] = useState("");
@@ -65,7 +69,9 @@ export function ProductCategoriesPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["product-categories"] }),
   });
 
-  const filtered = (categories ?? []).filter((c) => {
+  const scoped = (categories ?? []).filter((c) => (scope === "sub" ? Boolean(c.parentCategoryId) : !c.parentCategoryId));
+
+  const filtered = scoped.filter((c) => {
     const q = search.toLowerCase();
     return !q || c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q) || (c.translations.ru?.name ?? "").toLowerCase().includes(q);
   });
@@ -95,8 +101,12 @@ export function ProductCategoriesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Toifalar"
-        description={`Mahsulot toifalarini boshqaring va tartiblang — ${categories?.length ?? 0} ta kategoriya`}
+        title={scope === "sub" ? "Sub-toifalar" : "Toifalar"}
+        description={
+          scope === "sub"
+            ? `Toifalar ichidagi sub-toifalarni boshqaring — ${scoped.length} ta sub-toifa`
+            : `Asosiy mahsulot toifalarini boshqaring va tartiblang — ${scoped.length} ta toifa`
+        }
         actions={
           <>
             <a
@@ -114,7 +124,7 @@ export function ProductCategoriesPage() {
                 setShowModal(true);
               }}
             >
-              <PlusIcon className="mr-2 h-4 w-4" /> Yangi toifa
+              <PlusIcon className="mr-2 h-4 w-4" /> {scope === "sub" ? "Yangi sub-toifa" : "Yangi toifa"}
             </Button>
           </>
         }
@@ -135,7 +145,9 @@ export function ProductCategoriesPage() {
 
       <div className="overflow-hidden rounded-xl border border-admin-border bg-white">
         <div className="flex items-center justify-between border-b border-admin-border px-5 py-4">
-          <h2 className="text-base font-semibold text-admin-primary">Barcha toifalar ({filtered.length})</h2>
+          <h2 className="text-base font-semibold text-admin-primary">
+            {scope === "sub" ? "Barcha sub-toifalar" : "Barcha toifalar"} ({filtered.length})
+          </h2>
           <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-admin-muted">
             {filtered.filter((c) => c.isActive).length} faol
           </span>
@@ -148,6 +160,7 @@ export function ProductCategoriesPage() {
                 <th className="w-8 px-3 py-3"></th>
                 <th className="px-2 py-3">Rasm</th>
                 <th className="px-4 py-3">Nomi (UZ / RU)</th>
+                {scope === "sub" && <th className="px-4 py-3">Ota-toifa</th>}
                 <th className="px-4 py-3">Slug</th>
                 <th className="px-4 py-3">Mahsulotlar</th>
                 <th className="px-4 py-3">SEO</th>
@@ -156,14 +169,14 @@ export function ProductCategoriesPage() {
               </tr>
             </thead>
             <tbody>
-              {isLoading && <TableSkeleton columns={8} />}
+              {isLoading && <TableSkeleton columns={scope === "sub" ? 9 : 8} />}
 
               {!isLoading && filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8}>
+                  <td colSpan={scope === "sub" ? 9 : 8}>
                     <EmptyState
                       icon={FolderTree}
-                      title="Toifalar topilmadi"
+                      title={scope === "sub" ? "Sub-toifalar topilmadi" : "Toifalar topilmadi"}
                       description="Qidiruvni o'zgartiring yoki yangi toifa qo'shing."
                       action={
                         <Button size="sm" className="bg-admin-primary" onClick={() => setShowModal(true)}>
@@ -207,6 +220,13 @@ export function ProductCategoriesPage() {
                       <p className="font-medium text-admin-primary">{category.name}</p>
                       {category.translations.ru?.name && <p className="text-sm text-admin-muted">{category.translations.ru.name}</p>}
                     </td>
+                    {scope === "sub" && (
+                      <td className="px-4 py-3">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-admin-primary/10 px-2.5 py-1 text-xs font-medium text-admin-primary">
+                          {(categories ?? []).find((c) => c.id === category.parentCategoryId)?.name ?? "—"}
+                        </span>
+                      </td>
+                    )}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
                         <code className="rounded-md bg-slate-100 px-2 py-1 font-mono text-xs text-admin-primary">/{category.slug}</code>
@@ -237,6 +257,7 @@ export function ProductCategoriesPage() {
                               values: {
                                 name: category.name,
                                 slug: category.slug,
+                                parentCategoryId: category.parentCategoryId ?? null,
                                 description: category.description ?? "",
                                 sortOrder: category.sortOrder,
                                 isActive: !category.isActive,

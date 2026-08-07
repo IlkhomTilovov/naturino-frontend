@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
+  ArrowLeft,
   Award,
   Bone,
   ChevronLeft,
@@ -21,6 +22,7 @@ import { ProductCard } from "../../../components/shared/ProductCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
 import { StatsSection } from "../home/sections/StatsSection";
 import { CtaSection } from "../home/sections/CtaSection";
+import { CategoryTabsSection } from "../home/sections/CategoryTabsSection";
 import type { Product } from "../../../types/product";
 import { localizedProductField } from "../../../lib/product/localizedProduct";
 import { useLanguage } from "../../../i18n/LanguageContext";
@@ -64,7 +66,10 @@ function extractField(description: string | null | undefined, label: string): st
 }
 
 export function ProductDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
+  // catSlug/tab only exist when this page is reached via the category-scoped
+  // route (categories/:catSlug/:tab/:slug) — undefined for the plain
+  // /products/:slug route, which is how the two cases are told apart.
+  const { slug, catSlug, tab } = useParams<{ slug: string; catSlug?: string; tab?: string }>();
   const [activeImage, setActiveImage] = useState(0);
 
   const { data: product, isLoading } = useQuery({
@@ -94,7 +99,16 @@ export function ProductDetailPage() {
     );
   }
 
-  return <ProductDetailContent product={product} related={related ?? []} activeImage={activeImage} setActiveImage={setActiveImage} />;
+  return (
+    <ProductDetailContent
+      product={product}
+      related={related ?? []}
+      activeImage={activeImage}
+      setActiveImage={setActiveImage}
+      catSlug={catSlug}
+      tab={tab}
+    />
+  );
 }
 
 function NutritionBar({ label, percent }: { label: string; percent: number | null }) {
@@ -157,13 +171,19 @@ function ProductDetailContent({
   related,
   activeImage,
   setActiveImage,
+  catSlug,
+  tab,
 }: {
   product: Product;
   related: Product[];
   activeImage: number;
   setActiveImage: (i: number) => void;
+  catSlug?: string;
+  tab?: string;
 }) {
   const { language } = useLanguage();
+  const categoryBackPath = catSlug && tab ? `/categories/${catSlug}/${tab}` : null;
+  const categoryBackLabel = tab === "mushuklar-uchun" ? "Mushuklar uchun" : "Itlar uchun";
   const name = localizedProductField(product, language, "name");
   const shortDescription = localizedProductField(product, language, "shortDescription");
   const description = localizedProductField(product, language, "description");
@@ -218,12 +238,28 @@ function ProductDetailContent({
         {shortDescription && <meta name="description" content={shortDescription} />}
       </Helmet>
 
+      {categoryBackPath && <CategoryTabsSection categorySlug={catSlug} activeTab={tab} />}
+
       <div className="bg-[#F3EDE1] pt-8 pb-3 sm:pt-10">
-        <div className="mx-auto max-w-6xl px-4 text-xs font-medium text-taupe sm:px-6">
-          <Link to="/" className="hover:text-[var(--rt-brand-secondary)]">
-            Bosh sahifa
-          </Link>{" "}
-          / <Link to="/products" className="hover:text-[var(--rt-brand-secondary)]">Mahsulotlar</Link> / <span className="text-[#294A34]">{name}</span>
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+          <div className="text-xs font-medium text-taupe">
+            <Link to="/" className="hover:text-[var(--rt-brand-secondary)]">
+              Bosh sahifa
+            </Link>{" "}
+            /{" "}
+            <Link to={categoryBackPath ?? "/products"} className="hover:text-[var(--rt-brand-secondary)]">
+              {categoryBackPath ? categoryBackLabel : "Mahsulotlar"}
+            </Link>{" "}
+            / <span className="text-[#294A34]">{name}</span>
+          </div>
+          {categoryBackPath && (
+            <Link
+              to={categoryBackPath}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#E7EBDD] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#294A34] transition-colors hover:border-[var(--rt-brand-secondary)] hover:text-[var(--rt-brand-secondary)]"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Orqaga
+            </Link>
+          )}
         </div>
       </div>
 

@@ -5,8 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { mediaApi } from "../../../api/endpoints/media";
 import { languagesApi } from "../../../api/endpoints/languages";
+import { productCategoriesApi } from "../../../api/endpoints/products";
 import { Button } from "../../../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
 import { FormSectionCard } from "../../../components/admin/FormSectionCard";
 import { TagInput } from "../../../components/admin/TagInput";
@@ -40,6 +42,10 @@ export function CategoryModal({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: languages } = useQuery({ queryKey: ["languages"], queryFn: languagesApi.getAll });
+  const { data: allCategories } = useQuery({ queryKey: ["product-categories"], queryFn: productCategoriesApi.getAll });
+  // Only top-level categories (Toifa) can be picked as a parent — keeps the
+  // hierarchy at exactly two levels (Toifa / Sub-toifa) instead of unbounded nesting.
+  const parentOptions = (allCategories ?? []).filter((c) => !c.parentCategoryId && c.id !== category?.id);
   const activeLanguages = (languages ?? []).filter((l) => l.isActive);
   const defaultLangCode = activeLanguages.find((l) => l.isDefault)?.code ?? "uz";
   const [activeLang, setActiveLang] = useState(defaultLangCode);
@@ -65,6 +71,7 @@ export function CategoryModal({
     defaultValues: {
       name: category?.name ?? "",
       slug: category?.slug ?? "",
+      parentCategoryId: category?.parentCategoryId ?? "",
       description: category?.description ?? "",
       sortOrder: category?.sortOrder ?? 0,
       isActive: category?.isActive ?? true,
@@ -99,7 +106,7 @@ export function CategoryModal({
   const submit = handleSubmit(async (vals) => {
     setServerError(null);
     try {
-      await onSubmit({ ...vals, translations }, imageFileId);
+      await onSubmit({ ...vals, parentCategoryId: vals.parentCategoryId || null, translations }, imageFileId);
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 409) {
         setServerError("Shu nomdagi/slugdagi kategoriya allaqachon mavjud.");
@@ -259,6 +266,28 @@ export function CategoryModal({
               </FormSectionCard>
 
               <FormSectionCard title="Tashkillashtirish">
+                <div className="mb-4">
+                  <label className="mb-1 block text-sm font-medium text-admin-primary">Ota-toifa</label>
+                  <Select
+                    value={values.parentCategoryId ?? ""}
+                    onValueChange={(val: string | null) => setValue("parentCategoryId", val ?? "")}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Yo'q (bu — asosiy Toifa)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Yo'q (bu — asosiy Toifa)</SelectItem>
+                      {parentOptions.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="mt-1 text-xs text-admin-muted">
+                    Tanlansa, bu yozuv o'sha Toifaning Sub-toifasi bo'ladi (masalan "Quruq ozuqa" ostida "It uchun").
+                  </p>
+                </div>
                 <div className="flex items-center gap-6">
                   <div className="flex-1">
                     <label className="mb-1 block text-sm font-medium text-admin-primary">Tartib raqami</label>

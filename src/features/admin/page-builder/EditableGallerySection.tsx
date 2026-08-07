@@ -1,6 +1,7 @@
 import { InlineText } from "../../../components/admin/inline/InlineText";
 import { InlineImage } from "../../../components/admin/inline/InlineImage";
 import { DragHandleIcon, PlusIcon, TrashIcon } from "../../../components/admin/icons";
+import { bgVariantClasses } from "../../../lib/utils/sectionBgVariant";
 import type { PageSectionContent } from "../../../types/page";
 
 interface GalleryImage {
@@ -23,17 +24,19 @@ export function EditableGallerySection({
   const updateImage = (i: number, patch: Partial<GalleryImage>) => onFieldChange("images", images.map((img, idx) => (idx === i ? { ...img, ...patch } : img)));
   const removeImage = (i: number) => onFieldChange("images", images.filter((_, idx) => idx !== i));
   const addImage = () => onFieldChange("images", [...images, { category: "", caption: "" }]);
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "");
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16">
+    <section className={`${bg.section} px-4 py-20 sm:px-6`}>
+      <div className="mx-auto max-w-6xl">
       <div className="mx-auto max-w-2xl text-center">
         <InlineText
           value={eyebrow}
           placeholder="Eyebrow matni"
           onCommit={(v) => onFieldChange("eyebrow", v)}
-          className="text-xs font-semibold uppercase tracking-wide text-[var(--rt-brand-primary)]"
+          className={`text-xs font-semibold uppercase tracking-wide ${bg.eyebrow}`}
         />
-        <h2 className="mt-3 text-3xl font-bold text-slate-900">
+        <h2 className={`mt-3 text-3xl font-bold ${bg.heading}`}>
           <InlineText value={title} placeholder="Sarlavha" onCommit={(v) => onFieldChange("title", v)} />
         </h2>
       </div>
@@ -77,6 +80,7 @@ export function EditableGallerySection({
         >
           <PlusIcon className="h-3.5 w-3.5" /> Rasm qo'shish
         </button>
+      </div>
       </div>
     </section>
   );

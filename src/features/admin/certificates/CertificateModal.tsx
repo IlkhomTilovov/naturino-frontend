@@ -5,6 +5,7 @@ import { FileText, ShieldCheck, Stamp, Award, Upload, X, Globe, Link } from "luc
 import { mediaApi } from "../../../api/endpoints/media";
 import { languagesApi } from "../../../api/endpoints/languages";
 import { Button } from "../../../components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { resolveMediaUrl } from "../../../lib/utils/media";
 import {
   CERTIFICATE_CATEGORIES,
@@ -30,9 +31,10 @@ interface Props {
 }
 
 export function CertificateModal({ open, initialData, onSave, onClose, isSaving }: Props) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CertificateFormValues>({
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<CertificateFormValues>({
     defaultValues: { title: "", description: "", issuedBy: "", certificateNumber: "", issueDate: "", expiryDate: "", sortOrder: 0, isActive: true },
   });
+  const formValues = watch();
 
   const [fileId, setFileId] = useState<string | undefined>(undefined);
   const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
@@ -144,21 +146,35 @@ export function CertificateModal({ open, initialData, onSave, onClose, isSaving 
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-700">Kategoriya</label>
-                <select {...register("category")} className="input bg-white">
-                  <option value="">— Tanlang —</option>
-                  {CERTIFICATE_CATEGORIES.map((c) => (
-                    <option key={c.value} value={c.value}>{c.label}</option>
-                  ))}
-                </select>
+                <Select value={formValues.category ?? ""} onValueChange={(val) => setValue("category", val ?? "")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="— Tanlang —" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">— Tanlang —</SelectItem>
+                    {CERTIFICATE_CATEGORIES.map((c) => (
+                      <SelectItem key={c.value} value={c.value}>
+                        {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-700">Qo'llanish doirasi</label>
-                <select {...register("scope")} className="input bg-white">
-                  <option value="">— Tanlang —</option>
-                  {CERTIFICATE_SCOPES.map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
-                  ))}
-                </select>
+                <Select value={formValues.scope ?? ""} onValueChange={(val) => setValue("scope", val ?? "")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="— Tanlang —" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">— Tanlang —</SelectItem>
+                    {CERTIFICATE_SCOPES.map((s) => (
+                      <SelectItem key={s.value} value={s.value}>
+                        {s.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

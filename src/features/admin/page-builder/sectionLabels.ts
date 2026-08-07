@@ -26,6 +26,21 @@ export const SECTION_TYPE_LABELS: Record<string, string> = {
   MinimalHero: "Minimal banner",
   BadgeListHero: "Belgilar bilan banner",
   BreadcrumbHero: "Breadcrumb banner",
+  QualityIconGrid: "Sifat — ikonka grid",
+  QualityMetrics: "Sifat — ko'rsatkichlar",
+  QualityChecklist: "Sifat — nazorat ro'yxati",
+  QualityBadgeWall: "Sifat — sertifikat devori",
+  QualityPledge: "Sifat — va'da",
+  ProcessTimelineVertical: "Jarayon — vertikal timeline",
+  ProcessCardGrid: "Jarayon — rasmli kartalar",
+  ProcessSplitImage: "Jarayon — rasm va bosqichlar",
+  ProcessFlow: "Jarayon — ikonka oqimi",
+  ProcessAccordion: "Jarayon — ochiladigan ro'yxat",
+  WhyPartnerIconGrid: "Nega hamkor — ikonka grid",
+  WhyPartnerMetrics: "Nega hamkor — ko'rsatkichlar",
+  WhyPartnerSplitImage: "Nega hamkor — rasm va ro'yxat",
+  WhyPartnerQuote: "Nega hamkor — sharh",
+  WhyPartnerCtaBand: "Nega hamkor — chaqiriq banneri",
 };
 
 export function sectionTypeLabel(typeName: string): string {

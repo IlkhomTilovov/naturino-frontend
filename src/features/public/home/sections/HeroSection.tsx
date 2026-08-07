@@ -1,24 +1,12 @@
-import { useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import type { PageSectionContent } from "../../../../types/page";
+import type { ProductCategory } from "../../../../types/product";
 import { useInView } from "../../../../lib/hooks/useInView";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../../lib/utils/media";
 import { productCategoriesApi } from "../../../../api/endpoints/products";
 import { localizedCategoryField } from "../../../../lib/product/localizedCategory";
 import { useLanguage } from "../../../../i18n/LanguageContext";
-
-// Naturino Pantone palette (base: Oil Green). Hard-coded so the light hero keeps
-// its intended brand look regardless of the theme editor's runtime tokens.
-const NAT = {
-  forest: "#294A34", // 19-6026 Forest Green — headings, brand, button outline
-  oil: "#7F9773", //    17-0115 Oil Green — accent, icons
-  herb: "#B3C3A6", //   14-0210 Herb Green — soft lines / fills
-  sand: "#DDCBB0", //   13-1106 Sand Dollar — card panels
-  snow: "#F3EDE1", //   11-0602 Snow White — airy background
-  taupe: "#9F8A6C", //  16-1105 Plaza Taupe — secondary text
-} as const;
 
 function fadeUp(inView: boolean, delayMs: number): CSSProperties {
   return {
@@ -30,36 +18,117 @@ function fadeUp(inView: boolean, delayMs: number): CSSProperties {
 
 const fadeBase = "transition-all duration-700 ease-out";
 
-function firstBanner(content: PageSectionContent) {
-  const banners = content.banners as Array<Record<string, unknown>> | undefined;
-  const active = (banners ?? []).filter((b) => b.isActive !== false);
-  return active[0] ?? (content as Record<string, unknown>);
+// One card per top-level Toifa. Exactly one is always "active" (expanded) —
+// the middle one by default, or whichever card the visitor is hovering —
+// so the panel never sits in a neutral all-equal state; there's always a
+// clear focal Toifa, the way the reference design wanted it.
+function CategoryCard({
+  category,
+  name,
+  description,
+  active,
+  mobileVisible,
+  onHover,
+}: {
+  category: ProductCategory;
+  name: string;
+  description?: string | null;
+  active: boolean;
+  mobileVisible: boolean;
+  onHover: () => void;
+}) {
+  const img = resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE;
+  return (
+    <Link
+      to={`/categories/${category.slug}`}
+      onMouseEnter={onHover}
+      onFocus={onHover}
+      className={`relative h-[280px] min-w-0 overflow-hidden rounded-3xl transition-all duration-500 ease-in-out sm:block sm:h-auto ${
+        mobileVisible ? "block" : "hidden"
+      } ${active ? "sm:flex-[2.4]" : "sm:flex-1"}`}
+    >
+      <img
+        src={img}
+        alt={name}
+        loading="lazy"
+        decoding="async"
+        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out ${active ? "sm:scale-105" : ""}`}
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+      <p className="absolute left-0 top-0 p-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/70 sm:p-8">
+        Toifa
+      </p>
+      <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
+        <h3 className="truncate text-2xl font-extrabold leading-tight text-white sm:text-3xl">{name}</h3>
+        {description && (
+          <p
+            className={`mt-3 max-w-md overflow-hidden text-sm leading-relaxed text-white/80 transition-all duration-300 ${
+              active ? "sm:max-h-40 sm:opacity-100" : "sm:mt-0 sm:max-h-0 sm:opacity-0"
+            }`}
+          >
+            {description}
+          </p>
+        )}
+        <span
+          className={`mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#294A34] transition-all duration-300 ${
+            active ? "sm:gap-3 sm:opacity-100" : "sm:opacity-0"
+          }`}
+        >
+          Batafsil <span aria-hidden>→</span>
+        </span>
+      </div>
+    </Link>
+  );
 }
 
-export function HeroSection({ content }: { content: PageSectionContent; enableScrollFrames?: boolean }) {
+export function HeroSection() {
   const { language } = useLanguage();
-  const banner = firstBanner(content);
-
-  const brand = (banner.title as string | undefined) ?? "NATURINO";
-  const highlight = banner.highlight as string | undefined;
-  const tagline =
-    (banner.subtitle as string | undefined) ??
-    "Naturino mushuk va itlar uchun premium ozuqa ishlab chiqaradi va xalqaro bozorlarga eksport qiladi.";
-
   const { ref: inViewRef, inView } = useInView<HTMLDivElement>();
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
+  const [autoTick, setAutoTick] = useState(0);
+  const touchStartX = useRef<number | null>(null);
 
   const { data: categories } = useQuery({
     queryKey: ["product-categories", "public"],
     queryFn: productCategoriesApi.getAll,
   });
 
-  // Carousel over the active categories — one card visible at a time.
-  const slides = (categories ?? []).filter((c) => c.isActive);
-  const count = slides.length;
-  const [active, setActive] = useState(0);
-  const clamped = Math.min(active, Math.max(0, count - 1));
-  const goPrev = () => setActive((i) => (i - 1 + count) % count);
-  const goNext = () => setActive((i) => (i + 1) % count);
+  // Top-level Toifa only — Sub-toifa live one level down, inside their
+  // parent's own category browsing area, not on the homepage.
+  const slides = (categories ?? []).filter((c) => c.isActive && !c.parentCategoryId).slice(0, 3);
+  // The middle card reads as "active" until the visitor hovers a different
+  // one; leaving the whole row falls back to that same default.
+  const defaultActiveId = slides[1]?.id ?? slides[0]?.id;
+  const activeId = hoveredId ?? defaultActiveId;
+
+  // Mobile has no hover, so it gets its own auto-advancing carousel — one
+  // card shown at a time, switching every 5s. Desktop ignores this entirely
+  // (every card stays visible there via the sm:block override). autoTick
+  // lets a manual swipe restart the 5s countdown instead of fighting it.
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const id = setInterval(() => {
+      setMobileIndex((i) => (i + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, [slides.length, autoTick]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || slides.length <= 1) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(deltaX) < 40) return;
+    setMobileIndex((i) => (deltaX < 0 ? (i + 1) % slides.length : (i - 1 + slides.length) % slides.length));
+    setAutoTick((t) => t + 1);
+  };
 
   return (
     <section
@@ -75,139 +144,46 @@ export function HeroSection({ content }: { content: PageSectionContent; enableSc
         style={{ background: "radial-gradient(35% 30% at 68% 50%, rgba(46,107,62,0.09) 0%, transparent 100%)" }}
       />
 
-      <div ref={inViewRef} style={fadeUp(inView, 0)} className={`relative mx-auto max-w-6xl ${fadeBase}`}>
-        {count > 0 ? (
-          // The whole slide (text + image) cross-fades as one unit — no horizontal
-          // sliding, so the two-column layout never briefly shows a mismatched
-          // "image | text" arrangement mid-transition; both sides change together.
-          <div className="relative">
-            {slides.map((category, i) => {
-              const name = localizedCategoryField(category, language, "name") ?? category.name;
-              const desc = localizedCategoryField(category, language, "description") || tagline;
-              const img = resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE;
-              const isActive = i === clamped;
-              return (
-                <div
-                  key={category.id}
-                  className={`transition-opacity duration-500 ease-out ${
-                    isActive ? "relative opacity-100" : "pointer-events-none absolute inset-0 opacity-0"
-                  }`}
-                >
-                  <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-                      {/* LEFT — this category's text */}
-                      <div className="text-center lg:text-left">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: NAT.oil }}>
-                          {brand}
-                          {highlight ? ` ${highlight}` : ""}
-                        </p>
-                        <h1
-                          style={{ color: NAT.forest }}
-                          className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
-                        >
-                          {name}
-                        </h1>
-                        <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed sm:text-lg lg:mx-0" style={{ color: NAT.taupe }}>
-                          {desc}
-                        </p>
-                        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-                          <Link
-                            to={`/categories/${category.slug}`}
-                            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
-                            style={{ background: NAT.forest }}
-                          >
-                            Batafsil <span aria-hidden>→</span>
-                          </Link>
-                          <Link
-                            to="/partnership"
-                            className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition-colors hover:bg-[#EFF2E9]"
-                            style={{ borderColor: NAT.forest, color: NAT.forest }}
-                          >
-                            Hamkorlik <span aria-hidden>→</span>
-                          </Link>
-                        </div>
-                      </div>
-
-                      {/* RIGHT — this category's image */}
-                      <div className="flex h-80 w-full items-center justify-center sm:h-[34rem]">
-                        <img
-                          src={img}
-                          alt={name ?? category.name}
-                          loading={i === 0 ? "eager" : "lazy"}
-                          decoding="async"
-                          className="max-h-80 w-auto max-w-full object-contain drop-shadow-[0_25px_45px_rgba(41,74,52,0.18)] sm:max-h-[34rem]"
-                          onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-        ) : (
-          // No categories yet — plain brand hero.
-          <div className="text-center lg:text-left">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: NAT.oil }}>
-              Naturino
-            </p>
-            <h1
-              style={{ color: NAT.forest }}
-              className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
+      <div ref={inViewRef} style={fadeUp(inView, 0)} className={`relative mx-auto max-w-[1400px] ${fadeBase}`}>
+        {slides.length > 0 && (
+          <>
+            <div
+              className="flex flex-col gap-4 sm:h-[560px] sm:flex-row"
+              onMouseLeave={() => setHoveredId(null)}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             >
-              {brand}
-              {highlight && (
-                <span className="mt-1 block" style={{ color: NAT.oil }}>
-                  {highlight}
-                </span>
-              )}
-            </h1>
-            <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed sm:text-lg lg:mx-0" style={{ color: NAT.taupe }}>
-              {tagline}
-            </p>
-          </div>
+              {slides.map((category, i) => (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  name={localizedCategoryField(category, language, "name") ?? category.name}
+                  description={localizedCategoryField(category, language, "description") ?? category.description}
+                  active={category.id === activeId}
+                  mobileVisible={i === mobileIndex}
+                  onHover={() => setHoveredId(category.id)}
+                />
+              ))}
+            </div>
+
+            {slides.length > 1 && (
+              <div className="mt-4 flex items-center justify-center gap-2 sm:hidden">
+                {slides.map((category, i) => (
+                  <span
+                    key={category.id}
+                    aria-hidden
+                    className="h-1.5 rounded-full transition-all duration-300"
+                    style={{
+                      width: i === mobileIndex ? 22 : 8,
+                      background: i === mobileIndex ? "#294A34" : "#DDD3C2",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
-
-      {/* Navigation — arrows flanking the dots, centred BELOW the whole hero
-          (under both the text and the image). */}
-      {count > 1 && (
-        <div className="relative mt-12 flex items-center justify-center gap-5">
-          <button
-            type="button"
-            onClick={goPrev}
-            aria-label="Oldingi"
-            className="flex h-11 w-11 items-center justify-center rounded-full border bg-white shadow-sm transition-colors hover:bg-[#EFF2E9]"
-            style={{ borderColor: NAT.herb, color: NAT.forest }}
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-
-          <div className="flex items-center gap-2">
-            {slides.map((category, i) => (
-              <button
-                key={category.id}
-                type="button"
-                onClick={() => setActive(i)}
-                aria-label={`${i + 1}-toifa`}
-                aria-current={i === clamped}
-                className="h-2 rounded-full transition-all duration-300"
-                style={{ width: i === clamped ? 22 : 8, background: i === clamped ? NAT.forest : NAT.herb }}
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={goNext}
-            aria-label="Keyingi"
-            className="flex h-11 w-11 items-center justify-center rounded-full border bg-white shadow-sm transition-colors hover:bg-[#EFF2E9]"
-            style={{ borderColor: NAT.herb, color: NAT.forest }}
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-        </div>
-      )}
     </section>
   );
 }

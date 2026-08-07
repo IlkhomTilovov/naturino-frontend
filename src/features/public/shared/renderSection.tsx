@@ -17,13 +17,28 @@ import { GallerySection } from "../home/sections/GallerySection";
 import { FaqSection } from "../home/sections/FaqSection";
 import { ContentSection } from "./ContentSection";
 import { CertificatesSection } from "../home/sections/CertificatesSection";
-import { CategoryTabsSection } from "../home/sections/CategoryTabsSection";
 import { PageBannerSection } from "../home/sections/PageBannerSection";
 import { BackgroundHeroSection } from "../home/sections/BackgroundHeroSection";
 import { StatsHeroSection } from "../home/sections/StatsHeroSection";
 import { MinimalHeroSection } from "../home/sections/MinimalHeroSection";
 import { BadgeListHeroSection } from "../home/sections/BadgeListHeroSection";
 import { BreadcrumbHeroSection } from "../home/sections/BreadcrumbHeroSection";
+import { QualityIconGridSection } from "../home/sections/QualityIconGridSection";
+import { QualityMetricsSection } from "../home/sections/QualityMetricsSection";
+import { QualityChecklistSection } from "../home/sections/QualityChecklistSection";
+import { QualityBadgeWallSection } from "../home/sections/QualityBadgeWallSection";
+import { QualityPledgeSection } from "../home/sections/QualityPledgeSection";
+import { ProcessTimelineVerticalSection } from "../home/sections/ProcessTimelineVerticalSection";
+import { ProcessCardGridSection } from "../home/sections/ProcessCardGridSection";
+import { ProcessSplitImageSection } from "../home/sections/ProcessSplitImageSection";
+import { ProcessFlowSection } from "../home/sections/ProcessFlowSection";
+import { ProcessAccordionSection } from "../home/sections/ProcessAccordionSection";
+import { WhyPartnerIconGridSection } from "../home/sections/WhyPartnerIconGridSection";
+import { WhyPartnerMetricsSection } from "../home/sections/WhyPartnerMetricsSection";
+import { WhyPartnerSplitImageSection } from "../home/sections/WhyPartnerSplitImageSection";
+import { WhyPartnerQuoteSection } from "../home/sections/WhyPartnerQuoteSection";
+import { WhyPartnerCtaBandSection } from "../home/sections/WhyPartnerCtaBandSection";
+import { ExportCapabilitiesSection } from "../home/sections/ExportCapabilitiesSection";
 
 export const SECTION_TYPE_NAMES = [
   "Hero",
@@ -53,6 +68,21 @@ export const SECTION_TYPE_NAMES = [
   "MinimalHero",
   "BadgeListHero",
   "BreadcrumbHero",
+  "QualityIconGrid",
+  "QualityMetrics",
+  "QualityChecklist",
+  "QualityBadgeWall",
+  "QualityPledge",
+  "ProcessTimelineVertical",
+  "ProcessCardGrid",
+  "ProcessSplitImage",
+  "ProcessFlow",
+  "ProcessAccordion",
+  "WhyPartnerIconGrid",
+  "WhyPartnerMetrics",
+  "WhyPartnerSplitImage",
+  "WhyPartnerQuote",
+  "WhyPartnerCtaBand",
 ];
 
 export function getSectionTypeName(sectionType: number | string): string {
@@ -66,13 +96,7 @@ export function renderSection(section: PageSection, lang?: ContentLanguage) {
 
   switch (typeName) {
     case "Hero":
-      return (
-        <HeroSection
-          key={section.id}
-          content={content}
-          enableScrollFrames={Boolean(content.enableScrollFrames)}
-        />
-      );
+      return <HeroSection key={section.id} />;
     case "Features":
       return <FeaturesSection key={section.id} content={content} />;
     case "Products":
@@ -95,8 +119,9 @@ export function renderSection(section: PageSection, lang?: ContentLanguage) {
       return <PartnersSection key={section.id} content={content} />;
     case "WhyPartner":
     case "WhoWeWorkWith":
-    case "ExportCapabilities":
       return <FeatureCardsSection key={section.id} content={content} />;
+    case "ExportCapabilities":
+      return <ExportCapabilitiesSection key={section.id} content={content} />;
     case "ProductRange":
       return <ProductRangeSection key={section.id} content={content} />;
     case "Gallery":
@@ -105,8 +130,6 @@ export function renderSection(section: PageSection, lang?: ContentLanguage) {
       return <FaqSection key={section.id} content={content} />;
     case "Certificates":
       return <CertificatesSection key={section.id} content={content} />;
-    case "CategoryTabs":
-      return <CategoryTabsSection key={section.id} content={content} />;
     case "PageBanner":
       return <PageBannerSection key={section.id} content={content} />;
     case "BackgroundHero":
@@ -119,6 +142,36 @@ export function renderSection(section: PageSection, lang?: ContentLanguage) {
       return <BadgeListHeroSection key={section.id} content={content} />;
     case "BreadcrumbHero":
       return <BreadcrumbHeroSection key={section.id} content={content} />;
+    case "QualityIconGrid":
+      return <QualityIconGridSection key={section.id} content={content} />;
+    case "QualityMetrics":
+      return <QualityMetricsSection key={section.id} content={content} />;
+    case "QualityChecklist":
+      return <QualityChecklistSection key={section.id} content={content} />;
+    case "QualityBadgeWall":
+      return <QualityBadgeWallSection key={section.id} content={content} />;
+    case "QualityPledge":
+      return <QualityPledgeSection key={section.id} content={content} />;
+    case "ProcessTimelineVertical":
+      return <ProcessTimelineVerticalSection key={section.id} content={content} />;
+    case "ProcessCardGrid":
+      return <ProcessCardGridSection key={section.id} content={content} />;
+    case "ProcessSplitImage":
+      return <ProcessSplitImageSection key={section.id} content={content} />;
+    case "ProcessFlow":
+      return <ProcessFlowSection key={section.id} content={content} />;
+    case "ProcessAccordion":
+      return <ProcessAccordionSection key={section.id} content={content} />;
+    case "WhyPartnerIconGrid":
+      return <WhyPartnerIconGridSection key={section.id} content={content} />;
+    case "WhyPartnerMetrics":
+      return <WhyPartnerMetricsSection key={section.id} content={content} />;
+    case "WhyPartnerSplitImage":
+      return <WhyPartnerSplitImageSection key={section.id} content={content} />;
+    case "WhyPartnerQuote":
+      return <WhyPartnerQuoteSection key={section.id} content={content} />;
+    case "WhyPartnerCtaBand":
+      return <WhyPartnerCtaBandSection key={section.id} content={content} />;
     case "About":
     case "Contact":
       return <ContentSection key={section.id} content={content} />;

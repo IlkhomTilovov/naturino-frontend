@@ -106,7 +106,7 @@ export function FeatureCardsSection({ content }: { content: PageSectionContent }
           const Icon = ICONS[card.icon ?? ""] ?? Package;
           return (
             <div
-              key={card.title}
+              key={i}
               style={{ transitionDelay: inView ? `${320 + i * 100}ms` : "0ms" }}
               className={`rounded-2xl p-5 text-left shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-700 ${
                 isDark ? "border border-white/10 bg-white/5" : "border border-[#E7EBDD] bg-white"

@@ -5,13 +5,19 @@ import { ProductCard } from "../../../components/shared/ProductCard";
 // Auto-injected below the CMS content on a category's "Itlar uchun" / "Mushuklar
 // uchun" tab pages — shows that category's own products, no picker needed since
 // the category is already fixed by the URL.
-export function CategoryTabProducts({ categorySlug }: { categorySlug: string }) {
+export function CategoryTabProducts({ categorySlug, tab }: { categorySlug: string; tab: string }) {
+  const basePath = `/categories/${categorySlug}/${tab}`;
+
   const { data: categories } = useQuery({
     queryKey: ["product-categories", "public"],
     queryFn: productCategoriesApi.getAll,
   });
 
-  const category = categories?.find((c) => c.slug === categorySlug);
+  // categorySlug is the parent Toifa's slug (e.g. "quruq-ozuqa") — products are
+  // never attached to the Toifa itself, only to its "it-"/"mushuk-" Sub-toifa,
+  // so look up the sub-category that matches this tab's species instead.
+  const speciesPrefix = tab === "mushuklar-uchun" ? "mushuk" : "it";
+  const category = categories?.find((c) => c.slug === `${speciesPrefix}-${categorySlug}`);
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", "category-tab", category?.id],
@@ -36,7 +42,7 @@ export function CategoryTabProducts({ categorySlug }: { categorySlug: string }) 
       {!isLoading && products.length > 0 && (
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} basePath={basePath} />
           ))}
         </div>
       )}

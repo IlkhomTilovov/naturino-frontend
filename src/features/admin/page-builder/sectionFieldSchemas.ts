@@ -1,6 +1,7 @@
 import type { RepeaterFieldDef } from "../../../components/admin/RepeaterEditor";
+import { BG_VARIANT_FIELD } from "../../../lib/utils/sectionBgVariant";
 
-export type FieldType = "text" | "textarea" | "stringlist" | "repeater" | "image";
+export type FieldType = "text" | "textarea" | "stringlist" | "repeater" | "image" | "pagelink" | "select";
 
 export interface FieldDef {
   key: string;
@@ -9,6 +10,7 @@ export interface FieldDef {
   hint?: string;
   itemFields?: RepeaterFieldDef[];
   itemLabel?: string;
+  options?: { value: string; label: string }[];
 }
 
 export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
@@ -61,6 +63,7 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     { key: "subtitle", label: "Matn", type: "textarea" },
   ],
   Comparison: [
+    BG_VARIANT_FIELD,
     { key: "eyebrow", label: "Eyebrow matni", type: "text" },
     { key: "title", label: "Sarlavha", type: "text" },
     { key: "subtitle", label: "Matn", type: "textarea" },
@@ -147,6 +150,7 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     },
   ],
   CTA: [
+    BG_VARIANT_FIELD,
     { key: "title", label: "Sarlavha (boshlanishi)", type: "text" },
     { key: "highlight", label: "Ajratilgan qism", type: "text" },
     { key: "titleEnd", label: "Sarlavha (davomi)", type: "text" },
@@ -222,21 +226,19 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     { key: "imageUrl", label: "Rasm", type: "image" },
   ],
   ExportCapabilities: [
-    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "flag", label: "Bayroq (emoji)", type: "text", hint: "Masalan: 🇧🇪" },
     { key: "title", label: "Sarlavha", type: "text" },
-    { key: "subtitle", label: "Matn", type: "textarea" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
     {
-      key: "cards",
-      label: "Kartalar",
+      key: "logos",
+      label: "Sertifikat logotiplari",
       type: "repeater",
-      itemLabel: "Karta",
+      itemLabel: "Logotip",
       itemFields: [
-        { key: "icon", label: "Ikon" },
-        { key: "title", label: "Sarlavha" },
-        { key: "description", label: "Tavsif", type: "textarea" },
+        { key: "imageUrl", label: "Rasm", type: "image" },
+        { key: "name", label: "Nomi" },
       ],
     },
-    { key: "imageUrl", label: "Rasm", type: "image" },
   ],
   ProductRange: [
     { key: "eyebrow", label: "Eyebrow matni", type: "text" },
@@ -250,6 +252,7 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     },
   ],
   Gallery: [
+    BG_VARIANT_FIELD,
     { key: "eyebrow", label: "Eyebrow matni", type: "text" },
     { key: "title", label: "Sarlavha", type: "text" },
     {
@@ -265,6 +268,7 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     },
   ],
   FAQ: [
+    BG_VARIANT_FIELD,
     { key: "eyebrow", label: "Eyebrow matni", type: "text" },
     { key: "title", label: "Sarlavha", type: "text" },
     {
@@ -290,11 +294,22 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     { key: "imageUrl", label: "Rasm (ixtiyoriy)", type: "image" },
   ],
   BackgroundHero: [
+    {
+      key: "contentAlign",
+      label: "Matn joylashuvi",
+      type: "select",
+      options: [
+        { value: "left", label: "Chapda" },
+        { value: "center", label: "Markazda" },
+      ],
+    },
     { key: "eyebrow", label: "Eyebrow matni", type: "text" },
     { key: "title", label: "Sarlavha", type: "text" },
     { key: "subtitle", label: "Tasvir matni", type: "textarea" },
-    { key: "buttonText", label: "Tugma matni", type: "text" },
-    { key: "buttonUrl", label: "Tugma havolasi", type: "text" },
+    { key: "buttonText", label: "1-tugma matni", type: "text" },
+    { key: "buttonUrl", label: "1-tugma havolasi", type: "pagelink" },
+    { key: "buttonText2", label: "2-tugma matni", type: "text" },
+    { key: "buttonUrl2", label: "2-tugma havolasi", type: "pagelink" },
     { key: "backgroundImageUrl", label: "Fon rasmi", type: "image" },
   ],
   StatsHero: [
@@ -336,17 +351,231 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     { key: "title", label: "Sarlavha", type: "text" },
     { key: "subtitle", label: "Tasvir matni", type: "textarea" },
   ],
-  CategoryTabs: [
+  // Tabs (Ingredientlar / Itlar-Mushuklar uchun / Zavodchilarga / Qayerdan
+  // sotib olish) are derived automatically from the category slug — no
+  // editable fields, and no risk of a page ending up with a stale tab list.
+  CategoryTabs: [],
+  QualityIconGrid: [
+    BG_VARIANT_FIELD,
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
     {
-      key: "tabs",
-      label: "Tablar (navigatsiya)",
+      key: "items",
+      label: "Sifat mezonlari",
       type: "repeater",
-      itemLabel: "Tab",
-      hint: "Har bir tab alohida sahifaga (/categories/kategoriya-slug/tab-slug) olib boradi. Birinchi tab (odatda Ingredientlar) uchun URL qismini bo'sh qoldiring — u asosiy kategoriya sahifasiga (/categories/kategoriya-slug) mos keladi. Bu bo'limni kategoriyaning barcha 4 sahifasiga (Ingredientlar, Itlar/Mushuklar uchun, Zavodchilarga, Qayerdan sotib olish) bir xil sozlamalar bilan qo'shing — shunda navigatsiya panel har birida ko'rinadi.",
+      itemLabel: "Mezon",
       itemFields: [
-        { key: "label", label: "Tab nomi (masalan: Ingredientlar)" },
-        { key: "slug", label: "URL qismi (masalan: itlar-uchun; birinchi tab uchun bo'sh)" },
+        { key: "icon", label: "Ikonka (shield/badge/award/leaf/beaker/sparkles)" },
+        { key: "title", label: "Sarlavha" },
+        { key: "description", label: "Tavsif", type: "textarea" },
       ],
     },
+  ],
+  QualityMetrics: [
+    BG_VARIANT_FIELD,
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    {
+      key: "badgeTone",
+      label: "Eyebrow rangi",
+      type: "select",
+      options: [
+        { value: "default", label: "Standart (yashil)" },
+        { value: "warm", label: "Iliq (jigarrang)" },
+      ],
+    },
+    { key: "title", label: "Sarlavha", type: "text" },
+    {
+      key: "titleIcon",
+      label: "Sarlavha ikonkasi",
+      type: "select",
+      options: [
+        { value: "", label: "Yo'q" },
+        { value: "dog", label: "It" },
+        { value: "cat", label: "Mushuk" },
+      ],
+    },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "columns",
+      label: "Panjara ustunlari",
+      type: "select",
+      options: [
+        { value: "5", label: "5 ustunli qator" },
+        { value: "3", label: "3 ustunli (2 qator)" },
+      ],
+    },
+    {
+      key: "metrics",
+      label: "Ko'rsatkichlar",
+      type: "repeater",
+      itemLabel: "Ko'rsatkich",
+      itemFields: [
+        { key: "value", label: "Qiymat" },
+        { key: "label", label: "Yorlik" },
+      ],
+    },
+  ],
+  QualityChecklist: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    { key: "imageUrl", label: "Rasm", type: "image" },
+    { key: "checklist", label: "Nazorat ro'yxati (raqamlangan)", type: "stringlist" },
+    { key: "buttonText", label: "Tugma matni", type: "text" },
+    { key: "buttonUrl", label: "Tugma havolasi", type: "text" },
+  ],
+  QualityBadgeWall: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "badges",
+      label: "Sertifikatlar",
+      type: "repeater",
+      itemLabel: "Sertifikat",
+      itemFields: [
+        { key: "icon", label: "Ikonka (shield/badge/award/document/seal)" },
+        { key: "title", label: "Nomi" },
+        { key: "description", label: "Beruvchi tashkilot" },
+      ],
+    },
+  ],
+  QualityPledge: [
+    { key: "quote", label: "Va'da matni", type: "textarea" },
+    { key: "author", label: "Muallif", type: "text" },
+    { key: "role", label: "Lavozimi", type: "text" },
+  ],
+  ProcessTimelineVertical: [
+    BG_VARIANT_FIELD,
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "steps",
+      label: "Bosqichlar",
+      type: "repeater",
+      itemLabel: "Bosqich",
+      itemFields: [
+        { key: "title", label: "Sarlavha" },
+        { key: "description", label: "Tavsif", type: "textarea" },
+      ],
+    },
+  ],
+  ProcessCardGrid: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "steps",
+      label: "Bosqichlar",
+      type: "repeater",
+      itemLabel: "Bosqich",
+      itemFields: [
+        { key: "title", label: "Sarlavha" },
+        { key: "description", label: "Tavsif", type: "textarea" },
+        { key: "imageUrl", label: "Rasm", type: "image" },
+      ],
+    },
+  ],
+  ProcessSplitImage: [
+    BG_VARIANT_FIELD,
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    { key: "imageUrl", label: "Rasm", type: "image" },
+    {
+      key: "steps",
+      label: "Bosqichlar",
+      type: "repeater",
+      itemLabel: "Bosqich",
+      itemFields: [
+        { key: "title", label: "Sarlavha" },
+        { key: "description", label: "Tavsif", type: "textarea" },
+      ],
+    },
+  ],
+  ProcessFlow: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "steps",
+      label: "Bosqichlar",
+      type: "repeater",
+      itemLabel: "Bosqich",
+      itemFields: [
+        { key: "icon", label: "Ikonka (inquiry/agreement/quality/packaging/shipping)" },
+        { key: "title", label: "Sarlavha" },
+      ],
+    },
+  ],
+  ProcessAccordion: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "steps",
+      label: "Bosqichlar",
+      type: "repeater",
+      itemLabel: "Bosqich",
+      itemFields: [
+        { key: "title", label: "Sarlavha" },
+        { key: "description", label: "Tavsif", type: "textarea" },
+      ],
+    },
+  ],
+  WhyPartnerIconGrid: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "items",
+      label: "Afzalliklar",
+      type: "repeater",
+      itemLabel: "Afzallik",
+      itemFields: [
+        { key: "icon", label: "Ikonka (handshake/globe/shield/truck/package/trending)" },
+        { key: "title", label: "Sarlavha" },
+        { key: "description", label: "Tavsif", type: "textarea" },
+      ],
+    },
+  ],
+  WhyPartnerMetrics: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    {
+      key: "metrics",
+      label: "Ko'rsatkichlar",
+      type: "repeater",
+      itemLabel: "Ko'rsatkich",
+      itemFields: [
+        { key: "value", label: "Qiymat" },
+        { key: "label", label: "Yorlik" },
+      ],
+    },
+  ],
+  WhyPartnerSplitImage: [
+    { key: "eyebrow", label: "Eyebrow matni", type: "text" },
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    { key: "imageUrl", label: "Rasm", type: "image" },
+    { key: "checklist", label: "Afzalliklar ro'yxati", type: "stringlist" },
+    { key: "buttonText", label: "Tugma matni", type: "text" },
+    { key: "buttonUrl", label: "Tugma havolasi", type: "text" },
+  ],
+  WhyPartnerQuote: [
+    { key: "quote", label: "Sharh matni", type: "textarea" },
+    { key: "author", label: "Muallif", type: "text" },
+    { key: "role", label: "Lavozimi / kompaniyasi", type: "text" },
+    { key: "avatarUrl", label: "Rasm (ixtiyoriy)", type: "image" },
+  ],
+  WhyPartnerCtaBand: [
+    { key: "title", label: "Sarlavha", type: "text" },
+    { key: "subtitle", label: "Tasvir matni", type: "textarea" },
+    { key: "checklist", label: "Afzalliklar ro'yxati", type: "stringlist" },
+    { key: "buttonText", label: "Tugma matni", type: "text" },
+    { key: "buttonUrl", label: "Tugma havolasi", type: "text" },
   ],
 };

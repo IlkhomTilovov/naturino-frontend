@@ -6,6 +6,7 @@ import { PageHeader } from "../../../components/admin/PageHeader";
 import { EmptyState } from "../../../components/admin/EmptyState";
 import { SearchIcon } from "../../../components/admin/icons";
 import { Button } from "../../../components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { FileText, Plus } from "lucide-react";
 import { timeAgo } from "../../../lib/utils/timeAgo";
 import type { Page } from "../../../types/page";
@@ -72,23 +73,25 @@ export function PagesListPage() {
               className="w-full rounded-lg border border-admin-border py-2 pl-9 pr-3 text-sm focus:border-admin-primary focus:outline-none"
             />
           </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-            className="rounded-lg border border-admin-border px-3 py-2 text-sm focus:border-admin-primary focus:outline-none"
-          >
-            <option value="all">Barchasi</option>
-            <option value="published">Chop etilgan</option>
-            <option value="draft">Qoralama</option>
-          </select>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortOption)}
-            className="rounded-lg border border-admin-border px-3 py-2 text-sm focus:border-admin-primary focus:outline-none"
-          >
-            <option value="updated">So'nggi yangilangan</option>
-            <option value="name">Nomi bo'yicha</option>
-          </select>
+          <Select value={statusFilter} onValueChange={(val) => val && setStatusFilter(val as StatusFilter)}>
+            <SelectTrigger className="w-[170px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Barchasi</SelectItem>
+              <SelectItem value="published">Chop etilgan</SelectItem>
+              <SelectItem value="draft">Qoralama</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={sort} onValueChange={(val) => val && setSort(val as SortOption)}>
+            <SelectTrigger className="w-[190px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="updated">So'nggi yangilangan</SelectItem>
+              <SelectItem value="name">Nomi bo'yicha</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

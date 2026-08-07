@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { CategoryTabsSection } from "../home/sections/CategoryTabsSection";
 import {
   Clock,
   FileText,
@@ -83,6 +84,14 @@ function fadeUp(inView: boolean, delayMs = 0) {
 }
 
 export function ContactPage() {
+  // Reached via the "Qayerdan sotib olish" tab from within a category — keep
+  // that tab bar visible instead of the page's own hero, same treatment as
+  // DynamicPage gets for the "Zavodchilarga" tab.
+  const [searchParams] = useSearchParams();
+  const fromCategory = searchParams.get("fromCategory") ?? undefined;
+  const fromTab = searchParams.get("fromTab") || undefined;
+  const categoryBackPath = fromCategory ? (fromTab ? `/categories/${fromCategory}/${fromTab}` : `/categories/${fromCategory}`) : null;
+
   const addToast = useToastStore((s) => s.addToast);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -130,31 +139,48 @@ export function ContactPage() {
         <title>Aloqa — Naturino</title>
       </Helmet>
 
-      {/* SECTION 01 — HERO */}
-      <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-16 text-center text-white sm:pb-16 sm:pt-20">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--rt-accent) 12%, transparent) 0%, transparent 55%), radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--rt-brand-secondary) 25%, transparent) 0%, transparent 55%)",
-          }}
-        />
-        <div className="relative z-10 mx-auto max-w-3xl">
-          <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-            <Link to="/" className="transition-colors hover:text-white">
-              Bosh sahifa
-            </Link>
-            <span aria-hidden>/</span>
-            <span className="text-[var(--rt-accent)]">Aloqa</span>
-          </p>
-          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">Biz bilan bog'laning</h1>
-          <p className="mx-auto mt-4 max-w-xl text-white/70">
-            Distribyutorlik, eksport, mahsulot assortimenti va logistika bo'yicha savollaringiz uchun Naturino jamoasi bilan bog'laning.
-          </p>
-        </div>
-      </section>
+      {fromCategory && <CategoryTabsSection categorySlug={fromCategory} activeTab="qayerdan-sotib-olish" />}
 
-      {/* SECTION 02 — CONTACT INFO CARDS */}
+      <div className="relative">
+        {categoryBackPath && (
+          <div className="absolute inset-x-0 top-0 z-10 mx-auto max-w-[1400px] px-4 pt-4 sm:px-6">
+            <Link
+              to={categoryBackPath}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#294A34]/70 transition-colors hover:text-[var(--rt-brand-primary)]"
+            >
+              ← Orqaga
+            </Link>
+          </div>
+        )}
+
+        {/* SECTION 01 — HERO (skipped when reached from a category's tab bar, which already
+            shows where the visitor is — repeating it here would be redundant) */}
+        {!fromCategory && (
+          <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-16 text-center text-white sm:pb-16 sm:pt-20">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--rt-accent) 12%, transparent) 0%, transparent 55%), radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--rt-brand-secondary) 25%, transparent) 0%, transparent 55%)",
+              }}
+            />
+            <div className="relative z-10 mx-auto max-w-3xl">
+              <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
+                <Link to="/" className="transition-colors hover:text-white">
+                  Bosh sahifa
+                </Link>
+                <span aria-hidden>/</span>
+                <span className="text-[var(--rt-accent)]">Aloqa</span>
+              </p>
+              <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">Biz bilan bog'laning</h1>
+              <p className="mx-auto mt-4 max-w-xl text-white/70">
+                Distribyutorlik, eksport, mahsulot assortimenti va logistika bo'yicha savollaringiz uchun Naturino jamoasi bilan bog'laning.
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 02 — CONTACT INFO CARDS */}
       <section className="bg-[#F3EDE1] px-4 py-16 sm:px-6">
         <div ref={infoRef.ref} className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {CONTACT_CARDS.map((card, i) => (
@@ -372,6 +398,7 @@ export function ContactPage() {
           secondaryButtonText: "Hamkorlik bo'yicha bog'lanish",
         }}
       />
+      </div>
     </>
   );
 }

@@ -6,20 +6,25 @@ import {
   BarChart3,
   Building2,
   CheckCircle2,
+  ChevronsUpDown,
   GitCompare,
   Globe2,
+  Grid2x2,
   Handshake,
   HelpCircle,
   Image as ImageIcon,
   Images,
   LayoutGrid,
-  LayoutList,
   LayoutTemplate,
   ListChecks,
+  ListOrdered,
   Mail,
   Megaphone,
   Network,
   PanelTop,
+  Quote,
+  Rocket,
+  Route,
   Search,
   ShieldCheck,
   ShoppingBag,
@@ -71,7 +76,6 @@ const TEMPLATES: SectionTemplate[] = [
   { typeName: "TrustBar", label: "Ishonch paneli", description: "Sertifikat va ishonch belgilari qatori", icon: ShieldCheck, category: "Statistika" },
   { typeName: "Products", label: "Mahsulotlar carousel", description: "Mahsulotlarni aylanma karusel ko'rinishida ko'rsatish", icon: ShoppingBag, category: "Mahsulotlar" },
   { typeName: "ProductRange", label: "Mahsulotlar grid", description: "Mahsulot toifalarini katakli (grid) ko'rinishda ko'rsatish", icon: LayoutGrid, category: "Mahsulotlar" },
-  { typeName: "CategoryTabs", label: "Kategoriya tablari", description: "Ingredientlar, itlar/mushuklar uchun, zavodchilarga va h.k. tab-navigatsiyali matn bo'limi", icon: LayoutList, category: "Mahsulotlar" },
   { typeName: "WhyPartner", label: "Nega hamkor bo'lish", description: "Hamkorlik afzalliklari kartalari", icon: Handshake, category: "Nega hamkor bo'lish" },
   { typeName: "Features", label: "Nega biz", description: "Afzalliklar va xususiyatlar ro'yxati", icon: Sparkles, category: "Nega hamkor bo'lish" },
   { typeName: "Comparison", label: "Qiyoslash", description: "Ikki ustunli qiyoslash jadvali", icon: GitCompare, category: "Nega hamkor bo'lish" },
@@ -87,6 +91,27 @@ const TEMPLATES: SectionTemplate[] = [
   { typeName: "CTA", label: "Chaqiriq (CTA)", description: "Harakatga chaqiruv bandi", icon: Megaphone, category: "CTA" },
   { typeName: "About", label: "Kompaniya haqida", description: "Kompaniya haqida matn va rasm", icon: Building2, category: "Kontakt" },
   { typeName: "Contact", label: "Aloqa formasi", description: "Aloqa formasi va ma'lumotlari", icon: Mail, category: "Kontakt" },
+
+  // Sifat — 5 yangi variant
+  { typeName: "QualityIconGrid", label: "Sifat mezonlari (grid)", description: "Sifat mezonlarini ikonka va matn bilan katakli ko'rinishda ko'rsatish", icon: Grid2x2, category: "Sifat" },
+  { typeName: "QualityMetrics", label: "Sifat ko'rsatkichlari", description: "Qorong'i fonda yirik raqamli sifat ko'rsatkichlari qatori", icon: BarChart3, category: "Sifat" },
+  { typeName: "QualityChecklist", label: "Sifat nazorati (ro'yxat)", description: "Rasm va raqamlangan sifat nazorati bosqichlari ro'yxati", icon: ListOrdered, category: "Sifat" },
+  { typeName: "QualityBadgeWall", label: "Sertifikat devori", description: "Sertifikat va standartlarni doiraviy belgilar qatorida ko'rsatish", icon: Award, category: "Sifat" },
+  { typeName: "QualityPledge", label: "Sifat va'dasi", description: "Kompaniyaning sifat bo'yicha va'dasi — yirik iqtibos ko'rinishida", icon: Quote, category: "Sifat" },
+
+  // Jarayon — 5 yangi variant
+  { typeName: "ProcessTimelineVertical", label: "Jarayon (vertikal timeline)", description: "Ulangan chiziq bilan tik joylashgan jarayon bosqichlari", icon: ListOrdered, category: "Jarayon" },
+  { typeName: "ProcessCardGrid", label: "Jarayon (rasmli kartalar)", description: "Har bir bosqich o'z rasmi bilan alohida kartada", icon: Grid2x2, category: "Jarayon" },
+  { typeName: "ProcessSplitImage", label: "Jarayon (rasm + ro'yxat)", description: "Bitta yirik rasm va raqamlangan bosqichlar ro'yxati", icon: ImageIcon, category: "Jarayon" },
+  { typeName: "ProcessFlow", label: "Jarayon oqimi (ikonkalar)", description: "Ixcham, bir qatorli ikonka va strelkalar bilan jarayon oqimi", icon: Route, category: "Jarayon" },
+  { typeName: "ProcessAccordion", label: "Jarayon (ochiladigan ro'yxat)", description: "Bosqichlarni birma-bir ochib ko'rsatish — batafsil tavsiflar uchun", icon: ChevronsUpDown, category: "Jarayon" },
+
+  // Nega hamkor bo'lish — 5 yangi variant
+  { typeName: "WhyPartnerIconGrid", label: "Hamkorlik afzalliklari (grid)", description: "To'rt ustunli ikonka va matn bilan hamkorlik afzalliklari", icon: Handshake, category: "Nega hamkor bo'lish" },
+  { typeName: "WhyPartnerMetrics", label: "Hamkorlik ko'rsatkichlari", description: "To'q yashil fonda yirik raqamlar bilan hamkorlik natijalari", icon: TrendingUp, category: "Nega hamkor bo'lish" },
+  { typeName: "WhyPartnerSplitImage", label: "Hamkorlik (rasm + ro'yxat)", description: "Rasm va afzalliklar ro'yxati, tugma bilan", icon: ImageIcon, category: "Nega hamkor bo'lish" },
+  { typeName: "WhyPartnerQuote", label: "Hamkor sharhi", description: "Mavjud hamkor/distribyutordan iqtibos va tavsiya", icon: Quote, category: "Nega hamkor bo'lish" },
+  { typeName: "WhyPartnerCtaBand", label: "Hamkorlik chaqirig'i", description: "Afzalliklar ro'yxati va kuchli chaqiriq tugmasi bilan yakunlovchi bant", icon: Rocket, category: "Nega hamkor bo'lish" },
 ];
 
 const POSITION_OPTIONS: { value: InsertPosition; label: string }[] = [

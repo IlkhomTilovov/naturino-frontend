@@ -28,6 +28,7 @@ import { EditableStatsHeroSection } from "./EditableStatsHeroSection";
 import { EditableMinimalHeroSection } from "./EditableMinimalHeroSection";
 import { EditableBadgeListHeroSection } from "./EditableBadgeListHeroSection";
 import { EditableBreadcrumbHeroSection } from "./EditableBreadcrumbHeroSection";
+import { EditableExportCapabilitiesSection } from "./EditableExportCapabilitiesSection";
 import { useLiveEditStore } from "../../../store/liveEditStore";
 
 const EDITABLE_COMPONENTS = {
@@ -46,7 +47,7 @@ const EDITABLE_COMPONENTS = {
   Contact: EditableContentSection,
   WhyPartner: EditableFeatureCardsSection,
   WhoWeWorkWith: EditableFeatureCardsSection,
-  ExportCapabilities: EditableFeatureCardsSection,
+  ExportCapabilities: EditableExportCapabilitiesSection,
   ProductRange: EditableProductRangeSection,
   Gallery: EditableGallerySection,
   FAQ: EditableFaqSection,

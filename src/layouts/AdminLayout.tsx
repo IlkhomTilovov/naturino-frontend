@@ -7,6 +7,7 @@ import {
   ChevronsRight,
   FolderTree,
   Images,
+  Layers,
   Languages,
   LayoutDashboard,
   Menu,
@@ -32,6 +33,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/admin/products", label: "Mahsulotlar", end: false, icon: Package },
       { to: "/admin/categories", label: "Kategoriyalar", end: false, icon: FolderTree },
+      { to: "/admin/subcategories", label: "Sub-toifalar", end: false, icon: Layers },
       { to: "/admin/certificates", label: "Sertifikatlar", end: false, icon: Award },
       { to: "/admin/content", label: "Sayt kontenti", end: false, icon: PenTool },
     ],

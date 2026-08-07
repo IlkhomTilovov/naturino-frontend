@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../../lib/utils/media";
+import { bgVariantClasses } from "../../../../lib/utils/sectionBgVariant";
 import type { PageSectionContent } from "../../../../types/page";
 
 interface GalleryImage {
@@ -14,16 +15,18 @@ export function GallerySection({ content }: { content: PageSectionContent }) {
   const images = (content.images as GalleryImage[] | undefined) ?? [];
   const categories = Array.from(new Set(images.map((i) => i.category).filter(Boolean))) as string[];
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "");
 
   if (!title && images.length === 0) return null;
 
   const visible = activeCategory ? images.filter((i) => i.category === activeCategory) : images;
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16">
+    <section className={`${bg.section} px-4 py-20 sm:px-6`}>
+      <div className="mx-auto max-w-6xl">
       <div className="mx-auto max-w-2xl text-center">
-        {eyebrow && <p className="text-xs font-semibold uppercase tracking-wide text-[var(--rt-brand-primary)]">{eyebrow}</p>}
-        {title && <h2 className="mt-3 text-3xl font-bold text-[#294A34]">{title}</h2>}
+        {eyebrow && <p className={`text-xs font-semibold uppercase tracking-wide ${bg.eyebrow}`}>{eyebrow}</p>}
+        {title && <h2 className={`mt-3 text-3xl font-bold ${bg.heading}`}>{title}</h2>}
       </div>
 
       {categories.length > 0 && (
@@ -75,6 +78,7 @@ export function GallerySection({ content }: { content: PageSectionContent }) {
           ))}
         </div>
       )}
+      </div>
     </section>
   );
 }

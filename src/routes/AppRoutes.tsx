@@ -44,6 +44,12 @@ export function AppRoutes() {
           <Route path="products/:slug" element={<ProductDetailPage />} />
           <Route path="categories/:slug" element={<CategoryPage />} />
           <Route path="categories/:slug/:tab" element={<CategoryTabPage />} />
+          {/* Product reached from within a category's own product listing — kept under
+              /categories/... (not /products/...) so the navbar's "Mahsulotlar" link doesn't
+              falsely light up as active while the visitor is still inside a category. The
+              last segment is still named :slug so ProductDetailPage's own useParams works
+              unmodified. */}
+          <Route path="categories/:catSlug/:tab/:slug" element={<ProductDetailPage />} />
           <Route path="certificates" element={<DynamicPage slug="certificates" fallbackTitle="Certificates" />} />
           <Route path="quality" element={<DynamicPage slug="quality" fallbackTitle="Sifat" />} />
           <Route path="partnership" element={<DynamicPage slug="partnership" fallbackTitle="Partnership / Dealers" />} />
@@ -88,7 +94,8 @@ export function AppRoutes() {
           <Route path="products" element={<ProductsListPage />} />
           <Route path="products/new" element={<ProductFormPage />} />
           <Route path="products/:id" element={<ProductFormPage />} />
-          <Route path="categories" element={<ProductCategoriesPage />} />
+          <Route path="categories" element={<ProductCategoriesPage scope="top" />} />
+          <Route path="subcategories" element={<ProductCategoriesPage scope="sub" />} />
           <Route path="content" element={<ContentHubPage />} />
           <Route path="pages" element={<PagesListPage />} />
           <Route path="languages" element={<LanguagesPage />} />

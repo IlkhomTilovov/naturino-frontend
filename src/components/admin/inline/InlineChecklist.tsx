@@ -2,7 +2,23 @@ import { useState } from "react";
 import { InlineText } from "./InlineText";
 import { DragHandleIcon, PlusIcon, TrashIcon } from "../icons";
 
-export function InlineChecklist({ items, onChange }: { items: string[]; onChange: (items: string[]) => void }) {
+export function InlineChecklist({
+  items,
+  onChange,
+  itemClassName = "group flex items-start gap-2 text-sm text-slate-600",
+  checkClassName = "mt-0.5 text-brand-600",
+  checkSymbol = "✓",
+  textClassName = "flex-1",
+  addLabel = "Band qo'shish",
+}: {
+  items: string[];
+  onChange: (items: string[]) => void;
+  itemClassName?: string;
+  checkClassName?: string;
+  checkSymbol?: string;
+  textClassName?: string;
+  addLabel?: string;
+}) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const update = (index: number, value: string) => onChange(items.map((it, i) => (i === index ? value : it)));
@@ -33,13 +49,15 @@ export function InlineChecklist({ items, onChange }: { items: string[]; onChange
             e.stopPropagation();
             handleDrop(index);
           }}
-          className={`group flex items-start gap-2 text-sm text-slate-600 ${draggedIndex === index ? "opacity-40" : ""}`}
+          className={`${itemClassName} ${draggedIndex === index ? "opacity-40" : ""}`}
         >
           <span className="mt-0.5 cursor-grab text-slate-300 group-hover:text-admin-muted">
             <DragHandleIcon className="h-3.5 w-3.5" />
           </span>
-          <span className="mt-0.5 text-brand-600">✓</span>
-          <InlineText value={item} placeholder="Band matni" onCommit={(v) => update(index, v)} className="flex-1" />
+          <span className={checkClassName} aria-hidden>
+            {checkSymbol}
+          </span>
+          <InlineText value={item} placeholder="Band matni" onCommit={(v) => update(index, v)} className={textClassName} />
           <button
             type="button"
             title="O'chirish"
@@ -62,7 +80,7 @@ export function InlineChecklist({ items, onChange }: { items: string[]; onChange
           }}
           className="flex items-center gap-1 rounded-md border border-dashed border-slate-300 px-2 py-1.5 text-xs font-medium text-admin-muted transition-colors hover:border-admin-primary hover:text-admin-primary"
         >
-          <PlusIcon className="h-3 w-3" /> Band qo'shish
+          <PlusIcon className="h-3 w-3" /> {addLabel}
         </button>
       </li>
     </>

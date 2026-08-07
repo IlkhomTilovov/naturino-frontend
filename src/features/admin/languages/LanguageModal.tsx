@@ -2,6 +2,7 @@ import { useState } from "react";
 import { isAxiosError } from "axios";
 import { Button } from "../../../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { FormSectionCard } from "../../../components/admin/FormSectionCard";
 import type { Language, LanguageFormValues } from "../../../types/language";
 
@@ -122,14 +123,15 @@ export function LanguageModal({
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-admin-primary">Yo'nalish</label>
-                <select
-                  className="input"
-                  value={values.direction}
-                  onChange={(e) => update("direction", e.target.value as "ltr" | "rtl")}
-                >
-                  <option value="ltr">LTR (chapdan o'ngga)</option>
-                  <option value="rtl">RTL (o'ngdan chapga)</option>
-                </select>
+                <Select value={values.direction} onValueChange={(val) => val && update("direction", val as "ltr" | "rtl")}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ltr">LTR (chapdan o'ngga)</SelectItem>
+                    <SelectItem value="rtl">RTL (o'ngdan chapga)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </FormSectionCard>

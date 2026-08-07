@@ -3,6 +3,7 @@ import { z } from "zod";
 export const categorySchema = z.object({
   name: z.string().min(1, "Nomi (UZ) kiritilishi shart"),
   slug: z.string().optional(),
+  parentCategoryId: z.string().nullable().optional(),
   description: z.string().optional(),
   sortOrder: z.coerce.number().int().min(0),
   isActive: z.boolean(),
