@@ -2,21 +2,32 @@ import { Link } from "react-router-dom";
 import type { PageSectionContent } from "../../../../types/page";
 import { useInView } from "../../../../lib/hooks/useInView";
 import { bgVariantClasses } from "../../../../lib/utils/sectionBgVariant";
+import { useCertificateBadges } from "../../../../lib/hooks/useCertificateBadges";
+import { useLanguage } from "../../../../i18n/LanguageContext";
+import { resolveMediaUrl } from "../../../../lib/utils/media";
 
-const DEFAULT_TRUST_BADGES = ["ISO 22000", "HACCP", "20+ eksport bozori", "12 000+ tonna/yil"];
+// buttonUrl can point at either an internal route ("/contact") or an
+// uploaded file ("/uploads/2026/08/....pdf") — the two need different tags,
+// since React Router's <Link> intercepts file paths as client-side routes
+// (no match, no download) instead of letting the browser open/download them.
+function isUploadedFile(url: string) {
+  return url.startsWith("/uploads/") || /\/uploads\//.test(url);
+}
 
 export function CtaSection({ content }: { content: PageSectionContent }) {
   const title = content.title as string | undefined;
   const highlight = content.highlight as string | undefined;
   const titleEnd = content.titleEnd as string | undefined;
   const subtitle = content.subtitle as string | undefined;
-  const trustBadges = (content.trustBadges as string[] | undefined) ?? DEFAULT_TRUST_BADGES;
+  const { language } = useLanguage();
+  const certificateBadges = useCertificateBadges(language);
+  const trustBadges = (content.trustBadges as string[] | undefined) ?? certificateBadges;
   const buttonText = content.buttonText as string | undefined;
   const buttonUrl = (content.buttonUrl as string | undefined) ?? "/contact";
   const secondaryButtonText = content.secondaryButtonText as string | undefined;
   const secondaryButtonUrl = (content.secondaryButtonUrl as string | undefined) ?? "/contact";
   const { ref, inView } = useInView<HTMLDivElement>();
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-[var(--rt-brand-primary)]");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "dark");
   const d = bg.isDark;
 
   if (!title) return null;
@@ -76,24 +87,50 @@ export function CtaSection({ content }: { content: PageSectionContent }) {
             }`}
           >
             {buttonText && (
-              <Link
-                to={buttonUrl}
-                className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_15px_35px_-10px_rgba(232,162,58,0.5)]"
-              >
-                {buttonText} <span aria-hidden>→</span>
-              </Link>
+              isUploadedFile(buttonUrl) ? (
+                <a
+                  href={resolveMediaUrl(buttonUrl) ?? buttonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_15px_35px_-10px_rgba(232,162,58,0.5)]"
+                >
+                  {buttonText} <span aria-hidden>→</span>
+                </a>
+              ) : (
+                <Link
+                  to={buttonUrl}
+                  className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_15px_35px_-10px_rgba(232,162,58,0.5)]"
+                >
+                  {buttonText} <span aria-hidden>→</span>
+                </Link>
+              )
             )}
             {secondaryButtonText && (
-              <Link
-                to={secondaryButtonUrl}
-                className={`inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 ${
-                  d
-                    ? "border-white/25 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
-                    : "border-black/15 bg-black/[0.03] text-[#294A34] hover:border-[#294A34]/40 hover:bg-black/[0.06]"
-                }`}
-              >
-                {secondaryButtonText} <span aria-hidden>→</span>
-              </Link>
+              isUploadedFile(secondaryButtonUrl) ? (
+                <a
+                  href={resolveMediaUrl(secondaryButtonUrl) ?? secondaryButtonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 ${
+                    d
+                      ? "border-white/25 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
+                      : "border-black/15 bg-black/[0.03] text-[#294A34] hover:border-[#294A34]/40 hover:bg-black/[0.06]"
+                  }`}
+                >
+                  {secondaryButtonText} <span aria-hidden>→</span>
+                </a>
+              ) : (
+                <Link
+                  to={secondaryButtonUrl}
+                  className={`inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 ${
+                    d
+                      ? "border-white/25 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
+                      : "border-black/15 bg-black/[0.03] text-[#294A34] hover:border-[#294A34]/40 hover:bg-black/[0.06]"
+                  }`}
+                >
+                  {secondaryButtonText} <span aria-hidden>→</span>
+                </Link>
+              )
             )}
           </div>
         )}

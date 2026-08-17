@@ -14,6 +14,7 @@ import { SECTION_FIELD_SCHEMAS, type FieldDef } from "./sectionFieldSchemas";
 import { RepeaterEditor } from "../../../components/admin/RepeaterEditor";
 import { StringListEditor } from "../../../components/admin/StringListEditor";
 import { MediaUploaderField } from "../../../components/admin/MediaUploaderField";
+import { FileUrlField } from "../../../components/admin/FileUrlField";
 import { HeroBannerManager } from "./HeroBannerManager";
 import { LivePreviewPane, type DeviceMode } from "./LivePreviewPane";
 import { AddSectionModal, type InsertPosition } from "./AddSectionModal";
@@ -659,6 +660,10 @@ function FieldControl({ field, value, onChange }: { field: FieldDef; value: unkn
 
   if (field.type === "pagelink") {
     return <PageLinkField value={value as string | undefined} onChange={onChange} />;
+  }
+
+  if (field.type === "file") {
+    return <FileUrlField value={value as string | undefined} onChange={onChange} />;
   }
 
   if (field.type === "select") {

@@ -1,9 +1,8 @@
 import { InlineText } from "../../../components/admin/inline/InlineText";
 import { InlineChecklist } from "../../../components/admin/inline/InlineChecklist";
 import { bgVariantClasses } from "../../../lib/utils/sectionBgVariant";
+import { useCertificateBadges } from "../../../lib/hooks/useCertificateBadges";
 import type { PageSectionContent } from "../../../types/page";
-
-const TRUST_BADGES = ["ISO 22000", "HACCP", "GMP+", "EAC", "Veterinariya tasdig'i"];
 
 export function EditableComparisonSection({
   content,
@@ -22,8 +21,9 @@ export function EditableComparisonSection({
   const rightLabel = content.rightLabel as string | undefined;
   const rightTitle = content.rightTitle as string | undefined;
   const rightItems = (content.rightItems as string[] | undefined) ?? [];
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-[var(--rt-brand-primary)]");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "dark");
   const d = bg.isDark;
+  const trustBadges = useCertificateBadges();
 
   return (
     <section className={`overflow-hidden ${bg.section} px-4 py-20 sm:px-6 sm:py-28`}>
@@ -94,7 +94,7 @@ export function EditableComparisonSection({
         </div>
 
         <div className={`mt-12 flex flex-wrap items-center justify-center gap-3 border-t pt-10 sm:mt-14 ${d ? "border-white/10" : "border-black/10"}`}>
-          {TRUST_BADGES.map((badge) => (
+          {trustBadges.map((badge) => (
             <span
               key={badge}
               className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold ${

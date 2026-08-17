@@ -12,7 +12,7 @@ export function FaqSection({ content }: { content: PageSectionContent }) {
   const title = content.title as string | undefined;
   const items = (content.items as FaqItem[] | undefined) ?? [];
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "");
 
   if (!title && items.length === 0) return null;
 

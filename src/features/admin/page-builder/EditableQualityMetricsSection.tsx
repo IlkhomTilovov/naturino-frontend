@@ -20,7 +20,7 @@ export function EditableQualityMetricsSection({
   const titleIcon = content.titleIcon as string | undefined;
   const badgeTone = content.badgeTone as string | undefined;
   const columns = content.columns as string | undefined;
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-[var(--rt-brand-primary)]");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "dark");
 
   const TitleIcon = TITLE_ICONS[titleIcon ?? ""];
   const isWarm = badgeTone === "warm";

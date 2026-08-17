@@ -1,4 +1,4 @@
-import { Award, BadgeCheck, Beaker, Leaf, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Award, BadgeCheck, Beaker, Leaf, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
 import type { PageSectionContent } from "../../../../types/page";
 import { useInView } from "../../../../lib/hooks/useInView";
 import { bgVariantClasses } from "../../../../lib/utils/sectionBgVariant";
@@ -25,8 +25,9 @@ export function QualityIconGridSection({ content }: { content: PageSectionConten
   const title = content.title as string | undefined;
   const subtitle = content.subtitle as string | undefined;
   const items = (content.items as QualityItem[] | undefined) ?? [];
+  const warningText = content.warningText as string | undefined;
   const { ref, inView } = useInView<HTMLDivElement>();
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-white");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "bg-white");
 
   if (!title) return null;
 
@@ -63,6 +64,17 @@ export function QualityIconGridSection({ content }: { content: PageSectionConten
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {warningText && (
+          <div
+            className={`mx-auto mt-8 flex max-w-2xl items-start gap-3 rounded-xl border-l-4 border-amber-500 p-4 text-sm ${
+              bg.isDark ? "bg-amber-400/10 text-amber-100" : "bg-amber-50 text-amber-900"
+            }`}
+          >
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" aria-hidden />
+            <p>{warningText}</p>
           </div>
         )}
       </div>

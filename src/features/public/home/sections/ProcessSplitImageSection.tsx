@@ -18,7 +18,7 @@ export function ProcessSplitImageSection({ content }: { content: PageSectionCont
   const steps = (content.steps as Step[] | undefined) ?? [];
   const imageSrc = resolveMediaUrl(content.imageUrl as string | undefined) ?? FALLBACK_IMAGE;
   const { ref, inView } = useInView<HTMLDivElement>();
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-white");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "bg-white");
 
   if (!title) return null;
 

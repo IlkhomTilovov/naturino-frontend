@@ -18,7 +18,7 @@ export function EditableFaqSection({
   const eyebrow = content.eyebrow as string | undefined;
   const title = content.title as string | undefined;
   const items = (content.items as FaqItem[] | undefined) ?? [];
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "");
 
   const updateItem = (i: number, patch: Partial<FaqItem>) => onFieldChange("items", items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   const removeItem = (i: number) => onFieldChange("items", items.filter((_, idx) => idx !== i));

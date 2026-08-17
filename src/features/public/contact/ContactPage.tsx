@@ -391,7 +391,6 @@ export function ContactPage() {
           title: "Xalqaro hamkorlikni boshlashga ",
           highlight: "tayyormisiz?",
           subtitle: "Distribyutorlar va importyorlar uchun premium pet food mahsulotlari, eksport qo'llab-quvvatlashi va barqaror ta'minot.",
-          trustBadges: ["ISO 22000", "HACCP", "20+ eksport bozori", "12 000+ tonna/yil quvvat"],
           buttonUrl: "/contact",
           buttonText: "Eksport taklifini olish",
           secondaryButtonUrl: "/partnership",

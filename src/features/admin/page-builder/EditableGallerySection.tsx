@@ -24,7 +24,7 @@ export function EditableGallerySection({
   const updateImage = (i: number, patch: Partial<GalleryImage>) => onFieldChange("images", images.map((img, idx) => (idx === i ? { ...img, ...patch } : img)));
   const removeImage = (i: number) => onFieldChange("images", images.filter((_, idx) => idx !== i));
   const addImage = () => onFieldChange("images", [...images, { category: "", caption: "" }]);
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "");
 
   return (
     <section className={`${bg.section} px-4 py-20 sm:px-6`}>
