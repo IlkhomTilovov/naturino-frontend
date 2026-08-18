@@ -24,7 +24,7 @@ export function QualityMetricsSection({ content }: { content: PageSectionContent
   const badgeTone = content.badgeTone as string | undefined;
   const columns = content.columns as string | undefined;
   const { ref, inView } = useInView<HTMLDivElement>();
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-[var(--rt-brand-primary)]");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "dark");
 
   if (!title) return null;
 

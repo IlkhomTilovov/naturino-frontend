@@ -1,22 +1,56 @@
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { PageSectionContent } from "../../../../types/page";
 import { useInView } from "../../../../lib/hooks/useInView";
 import { bgVariantClasses } from "../../../../lib/utils/sectionBgVariant";
+import { useCertificateBadges } from "../../../../lib/hooks/useCertificateBadges";
+import { useLanguage } from "../../../../i18n/LanguageContext";
+import { resolveMediaUrl } from "../../../../lib/utils/media";
+import { CertificatesModal } from "../../shared/CertificatesModal";
 
-const DEFAULT_TRUST_BADGES = ["ISO 22000", "HACCP", "20+ eksport bozori", "12 000+ tonna/yil"];
+// buttonUrl can point at three different things, each needing a different
+// element: the "certificates" sentinel opens the certificate-picker modal
+// (for a CTA that doesn't have one specific PDF to link — e.g. a lab-report
+// promise with no lab report on file yet), an uploaded file
+// ("/uploads/2026/08/....pdf") needs a plain <a> so the browser opens/
+// downloads it (React Router's <Link> would intercept it as a client route
+// and go nowhere), and anything else is an internal route via <Link>.
+function isUploadedFile(url: string) {
+  return url.startsWith("/uploads/") || /\/uploads\//.test(url);
+}
+
+function CtaButton({ url, className, children }: { url: string; className: string; children: ReactNode }) {
+  if (url === "certificates") {
+    return <CertificatesModal trigger={<button type="button" className={className}>{children}</button>} />;
+  }
+  if (isUploadedFile(url)) {
+    return (
+      <a href={resolveMediaUrl(url) ?? url} target="_blank" rel="noopener noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link to={url} className={className}>
+      {children}
+    </Link>
+  );
+}
 
 export function CtaSection({ content }: { content: PageSectionContent }) {
   const title = content.title as string | undefined;
   const highlight = content.highlight as string | undefined;
   const titleEnd = content.titleEnd as string | undefined;
   const subtitle = content.subtitle as string | undefined;
-  const trustBadges = (content.trustBadges as string[] | undefined) ?? DEFAULT_TRUST_BADGES;
+  const { language } = useLanguage();
+  const certificateBadges = useCertificateBadges(language);
+  const trustBadges = (content.trustBadges as string[] | undefined) ?? certificateBadges;
   const buttonText = content.buttonText as string | undefined;
   const buttonUrl = (content.buttonUrl as string | undefined) ?? "/contact";
   const secondaryButtonText = content.secondaryButtonText as string | undefined;
   const secondaryButtonUrl = (content.secondaryButtonUrl as string | undefined) ?? "/contact";
   const { ref, inView } = useInView<HTMLDivElement>();
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-[var(--rt-brand-primary)]");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "dark");
   const d = bg.isDark;
 
   if (!title) return null;
@@ -76,16 +110,16 @@ export function CtaSection({ content }: { content: PageSectionContent }) {
             }`}
           >
             {buttonText && (
-              <Link
-                to={buttonUrl}
+              <CtaButton
+                url={buttonUrl}
                 className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_15px_35px_-10px_rgba(232,162,58,0.5)]"
               >
                 {buttonText} <span aria-hidden>→</span>
-              </Link>
+              </CtaButton>
             )}
             {secondaryButtonText && (
-              <Link
-                to={secondaryButtonUrl}
+              <CtaButton
+                url={secondaryButtonUrl}
                 className={`inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 ${
                   d
                     ? "border-white/25 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
@@ -93,7 +127,7 @@ export function CtaSection({ content }: { content: PageSectionContent }) {
                 }`}
               >
                 {secondaryButtonText} <span aria-hidden>→</span>
-              </Link>
+              </CtaButton>
             )}
           </div>
         )}

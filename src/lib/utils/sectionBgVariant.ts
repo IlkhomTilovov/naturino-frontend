@@ -5,9 +5,21 @@ export type BgVariant = "default" | "cream" | "dark";
 // brand surfaces (admin-configurable per section) without hardcoding one
 // look, while keeping every section's text/eyebrow/body colors legible on
 // whichever surface is picked.
-export function bgVariantClasses(variant: string | undefined, defaultSectionClass: string) {
-  const isDark = variant === "dark";
-  const isCream = variant === "cream";
+//
+// defaultVariant tells the helper what this section type looked like BEFORE
+// bgVariant existed — Comparison/CTA/QualityMetrics were always dark, so
+// their content has no bgVariant field at all. Without this, old content
+// falls through to `defaultSectionClass` for the background (correctly dark)
+// while `isDark` computed as false (since content.bgVariant !== "dark"
+// literally) — light-mode text/cards on a dark background.
+export function bgVariantClasses(
+  variant: string | undefined,
+  defaultVariant: "dark" | "cream" | "default",
+  defaultSectionClass = "bg-white",
+) {
+  const effective = variant || defaultVariant;
+  const isDark = effective === "dark";
+  const isCream = effective === "cream";
   return {
     section: isDark ? "bg-[var(--rt-brand-primary)]" : isCream ? "bg-[#F3EDE1]" : defaultSectionClass,
     isDark,

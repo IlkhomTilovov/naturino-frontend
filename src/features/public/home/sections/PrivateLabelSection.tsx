@@ -21,7 +21,7 @@ const ICONS: Record<string, LucideIcon> = {
 const DEFAULT_DETAILS: Record<string, { icon: string; description: string }> = {
   "01": { icon: "formula", description: "Bozor ehtiyojlari va maqsadli auditoriyaga mos retsept va assortiment shakllantiriladi." },
   "02": { icon: "packaging", description: "Mahsulot dizayni, yorliq va qadoqlash sizning brendingizga moslashtiriladi." },
-  "03": { icon: "quality", description: "Mahsulotlar ISO 22000 va HACCP standartlari asosida ishlab chiqariladi va nazorat qilinadi." },
+  "03": { icon: "quality", description: "Mahsulotlar xalqaro sifat standartlari (ISO, HALOL) asosida ishlab chiqariladi va nazorat qilinadi." },
   "04": { icon: "export", description: "Eksport hujjatlari, logistika va xalqaro yetkazib berish jarayoni boshqariladi." },
 };
 

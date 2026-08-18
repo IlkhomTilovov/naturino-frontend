@@ -58,7 +58,7 @@ export function DynamicPage({ slug, fallbackTitle }: { slug: string; fallbackTit
         {sections.map((section) => renderSection(section, lang))}
       </div>
 
-      {(isError || sections.length === 0) && (
+      {(isError || sections.length === 0) && import.meta.env.DEV && (
         <div className="px-6 py-24 text-center text-taupe">
           "{fallbackTitle}" sahifasi bo'limlari admin panelda hali to'ldirilmagan.
         </div>

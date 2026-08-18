@@ -16,7 +16,7 @@ export function ProcessTimelineVerticalSection({ content }: { content: PageSecti
   const subtitle = content.subtitle as string | undefined;
   const steps = (content.steps as Step[] | undefined) ?? [];
   const { ref, inView } = useInView<HTMLDivElement>();
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-white");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "bg-white");
 
   if (!title) return null;
 

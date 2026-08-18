@@ -19,7 +19,7 @@ export function EditableCtaSection({
   const buttonUrl = content.buttonUrl as string | undefined;
   const secondaryButtonText = content.secondaryButtonText as string | undefined;
   const secondaryButtonUrl = content.secondaryButtonUrl as string | undefined;
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-[var(--rt-brand-primary)]");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "dark");
   const d = bg.isDark;
 
   return (

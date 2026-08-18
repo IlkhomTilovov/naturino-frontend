@@ -15,8 +15,10 @@ import {
   Package,
   Ship,
   ShieldCheck,
+  type LucideIcon,
 } from "lucide-react";
 import { productsApi } from "../../../api/endpoints/products";
+import { certificatesApi } from "../../../api/endpoints/certificates";
 import { FALLBACK_IMAGE, resolveMediaUrl } from "../../../lib/utils/media";
 import { ProductCard } from "../../../components/shared/ProductCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
@@ -31,10 +33,17 @@ const HIGHLIGHTS = [
   { Icon: Bone, title: "Yuqori protein retsepti" },
   { Icon: Leaf, title: "Tabiiy ingredientlar" },
   { Icon: ShieldCheck, title: "Veterinariya tasdiqlangan" },
-  { Icon: Factory, title: "ISO 22000 ishlab chiqarish" },
+  { Icon: Factory, title: "Xalqaro sertifikatlangan ishlab chiqarish" },
   { Icon: Package, title: "Eksportga tayyor qadoqlash" },
   { Icon: Globe2, title: "Xalqaro distribyutsiya" },
 ];
+
+const CERT_ICONS: Record<string, LucideIcon> = {
+  badge: Award,
+  shield: ShieldCheck,
+  document: FileText,
+  export: Ship,
+};
 
 const EXPORT_INFO = [
   { label: "MOQ", value: "5 tonnadan" },
@@ -42,13 +51,6 @@ const EXPORT_INFO = [
   { label: "Ta'minot", value: "Barqaror ishlab chiqarish" },
   { label: "Hujjatlar", value: "Eksportga tayyor" },
   { label: "Bozorlar", value: "20+ davlat" },
-];
-
-const CERTIFICATES = [
-  { Icon: ShieldCheck, title: "ISO 22000", description: "Oziq-ovqat xavfsizligi boshqaruvi" },
-  { Icon: Award, title: "HACCP", description: "Xavf tahlili va nazorat tizimi" },
-  { Icon: FileText, title: "Veterinariya tasdig'i", description: "Mahsulot muntazam nazorati" },
-  { Icon: Ship, title: "Eksport hujjatlari", description: "Xalqaro yetkazib berishga tayyor" },
 ];
 
 function categoryBadges(categoryName: string): string[] {
@@ -230,6 +232,10 @@ function ProductDetailContent({
       : EXPORT_INFO;
 
   const certificationItems = product.certifications ?? [];
+  const { data: companyCertificates } = useQuery({ queryKey: ["certificates", "public"], queryFn: certificatesApi.getAll });
+  const fallbackCertificates = (companyCertificates ?? [])
+    .filter((c) => c.isActive)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
     <>
@@ -521,16 +527,19 @@ function ProductDetailContent({
                         {cert.expiryDate && <p className="text-xs text-taupe">Amal qiladi: {cert.expiryDate}</p>}
                       </div>
                     ))
-                  : CERTIFICATES.map((cert) => (
-                      <div
-                        key={cert.title}
-                        className="rounded-2xl border border-[#E7EBDD] bg-[#F3EDE1] p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
-                      >
-                        <cert.Icon className="mx-auto h-7 w-7 text-[var(--rt-brand-secondary)]" strokeWidth={1.75} />
-                        <p className="mt-3 font-semibold text-[#294A34]">{cert.title}</p>
-                        <p className="mt-1 text-xs text-taupe">{cert.description}</p>
-                      </div>
-                    ))}
+                  : fallbackCertificates.map((cert) => {
+                      const Icon = CERT_ICONS[cert.icon ?? ""] ?? ShieldCheck;
+                      return (
+                        <div
+                          key={cert.id}
+                          className="rounded-2xl border border-[#E7EBDD] bg-[#F3EDE1] p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                        >
+                          <Icon className="mx-auto h-7 w-7 text-[var(--rt-brand-secondary)]" strokeWidth={1.75} />
+                          <p className="mt-3 font-semibold text-[#294A34]">{cert.title.split(/\s[—-]\s/)[0].trim()}</p>
+                          {cert.description && <p className="mt-1 text-xs text-taupe line-clamp-2">{cert.description}</p>}
+                        </div>
+                      );
+                    })}
               </div>
             </TabsContent>
           </Tabs>
@@ -558,7 +567,7 @@ function ProductDetailContent({
             { icon: "factory", value: "12 000+", label: "Tonna/yil ishlab chiqarish quvvati" },
             { icon: "globe", value: "20+", label: "Eksport bozori" },
             { icon: "box", value: "40+", label: "SKU assortiment" },
-            { icon: "badge", value: "100%", label: "ISO 22000 sertifikatlangan" },
+            { icon: "badge", value: "100%", label: "Xalqaro sertifikatlangan" },
           ],
         }}
       />
@@ -569,7 +578,6 @@ function ProductDetailContent({
           title: "Xalqaro hamkorlikni ",
           highlight: "boshlashga tayyormisiz?",
           subtitle: "Distribyutorlar va importyorlar uchun premium pet food mahsulotlari, eksport qo'llab-quvvatlashi va barqaror ta'minot.",
-          trustBadges: ["ISO 22000", "HACCP", "20+ eksport bozori", "12 000+ tonna/yil quvvat"],
           buttonUrl: "/contact",
           buttonText: "Eksport taklifini olish",
           secondaryButtonUrl: "/contact",

@@ -14,7 +14,7 @@ export function EditableProcessTimelineVerticalSection({
   const title = content.title as string | undefined;
   const subtitle = content.subtitle as string | undefined;
   const steps = (content.steps as Record<string, unknown>[] | undefined) ?? [];
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-white");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "bg-white");
 
   return (
     <section className={`${bg.section} px-4 py-20 sm:px-6 sm:py-24`}>

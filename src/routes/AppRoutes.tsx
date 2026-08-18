@@ -22,6 +22,7 @@ const LanguagesPage = lazy(() => import("../features/admin/languages/LanguagesPa
 const CertificatesPage = lazy(() => import("../features/admin/certificates/CertificatesPage").then((m) => ({ default: m.CertificatesPage })));
 const ThemesPage = lazy(() => import("../features/admin/appearance/ThemesPage").then((m) => ({ default: m.ThemesPage })));
 const ThemeEditorPage = lazy(() => import("../features/admin/appearance/ThemeEditorPage").then((m) => ({ default: m.ThemeEditorPage })));
+const SettingsPage = lazy(() => import("../features/admin/settings/SettingsPage").then((m) => ({ default: m.SettingsPage })));
 const AdminLayout = lazy(() => import("../layouts/AdminLayout").then((m) => ({ default: m.AdminLayout })));
 const AuthLayout = lazy(() => import("../layouts/AuthLayout").then((m) => ({ default: m.AuthLayout })));
 
@@ -103,7 +104,7 @@ export function AppRoutes() {
           <Route path="appearance/themes" element={<ThemesPage />} />
           <Route path="appearance/themes/new" element={<ThemeEditorPage />} />
           <Route path="appearance/themes/:id" element={<ThemeEditorPage />} />
-          <Route path="settings" element={<ComingSoonPage title="Umumiy sozlamalar" />} />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="settings/seo" element={<ComingSoonPage title="SEO sozlamalari" />} />
           <Route path="settings/media" element={<ComingSoonPage title="Media Manager" />} />
           <Route path="settings/users" element={<ComingSoonPage title="Foydalanuvchilar" />} />

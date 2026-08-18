@@ -1,7 +1,7 @@
 import type { RepeaterFieldDef } from "../../../components/admin/RepeaterEditor";
 import { BG_VARIANT_FIELD } from "../../../lib/utils/sectionBgVariant";
 
-export type FieldType = "text" | "textarea" | "stringlist" | "repeater" | "image" | "pagelink" | "select";
+export type FieldType = "text" | "textarea" | "stringlist" | "repeater" | "image" | "pagelink" | "select" | "file";
 
 export interface FieldDef {
   key: string;
@@ -156,7 +156,9 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     { key: "titleEnd", label: "Sarlavha (davomi)", type: "text" },
     { key: "subtitle", label: "Matn", type: "textarea" },
     { key: "buttonText", label: "Tugma matni", type: "text" },
-    { key: "buttonUrl", label: "Tugma havolasi", type: "text" },
+    { key: "buttonUrl", label: "Tugma havolasi", type: "file", hint: "Ichki sahifa yo'li (masalan /contact), yuklangan fayl (PDF), yoki \"certificates\" — sertifikatlar ro'yxati oynasini ochadi" },
+    { key: "secondaryButtonText", label: "2-tugma matni", type: "text" },
+    { key: "secondaryButtonUrl", label: "2-tugma havolasi", type: "file", hint: "Ichki sahifa yo'li (masalan /contact), yuklangan fayl (PDF), yoki \"certificates\" — sertifikatlar ro'yxati oynasini ochadi" },
   ],
   About: [
     { key: "title", label: "Sarlavha", type: "text" },
@@ -371,6 +373,7 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
         { key: "description", label: "Tavsif", type: "textarea" },
       ],
     },
+    { key: "warningText", label: "Ogohlantirish matni (ixtiyoriy)", type: "textarea" },
   ],
   QualityMetrics: [
     BG_VARIANT_FIELD,

@@ -1,8 +1,8 @@
 import type { PageSectionContent } from "../../../../types/page";
 import { useInView } from "../../../../lib/hooks/useInView";
 import { bgVariantClasses } from "../../../../lib/utils/sectionBgVariant";
-
-const TRUST_BADGES = ["ISO 22000", "HACCP", "GMP+", "EAC", "Veterinariya tasdig'i"];
+import { useCertificateBadges } from "../../../../lib/hooks/useCertificateBadges";
+import { useLanguage } from "../../../../i18n/LanguageContext";
 
 export function ComparisonSection({ content }: { content: PageSectionContent }) {
   const eyebrow = content.eyebrow as string | undefined;
@@ -16,8 +16,10 @@ export function ComparisonSection({ content }: { content: PageSectionContent }) 
   const rightTitle = content.rightTitle as string | undefined;
   const rightItems = (content.rightItems as string[] | undefined) ?? [];
   const { ref, inView } = useInView<HTMLDivElement>();
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "bg-[var(--rt-brand-primary)]");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "dark");
   const d = bg.isDark;
+  const { language } = useLanguage();
+  const trustBadges = useCertificateBadges(language);
 
   if (!title) return null;
 
@@ -117,24 +119,26 @@ export function ComparisonSection({ content }: { content: PageSectionContent }) 
           </div>
         </div>
 
-        <div
-          style={{ transitionDelay: inView ? "640ms" : "0ms" }}
-          className={`mt-12 flex flex-wrap items-center justify-center gap-3 border-t pt-10 transition-all duration-700 sm:mt-14 ${
-            d ? "border-white/10" : "border-black/10"
-          } ${inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
-        >
-          {TRUST_BADGES.map((badge) => (
-            <span
-              key={badge}
-              className={`group flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 hover:border-[var(--rt-accent)] hover:bg-[var(--rt-accent)] hover:text-[#294A34] ${
-                d ? "border-white/15 bg-white/5 text-white/80" : "border-black/10 bg-black/[0.03] text-[#294A34]/80"
-              }`}
-            >
-              <span className={`group-hover:text-[#294A34] ${d ? "text-[var(--rt-accent)]" : "text-[var(--rt-brand-primary)]"}`}>✓</span>
-              {badge}
-            </span>
-          ))}
-        </div>
+        {trustBadges.length > 0 && (
+          <div
+            style={{ transitionDelay: inView ? "640ms" : "0ms" }}
+            className={`mt-12 flex flex-wrap items-center justify-center gap-3 border-t pt-10 transition-all duration-700 sm:mt-14 ${
+              d ? "border-white/10" : "border-black/10"
+            } ${inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
+          >
+            {trustBadges.map((badge) => (
+              <span
+                key={badge}
+                className={`group flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 hover:border-[var(--rt-accent)] hover:bg-[var(--rt-accent)] hover:text-[#294A34] ${
+                  d ? "border-white/15 bg-white/5 text-white/80" : "border-black/10 bg-black/[0.03] text-[#294A34]/80"
+                }`}
+              >
+                <span className={`group-hover:text-[#294A34] ${d ? "text-[var(--rt-accent)]" : "text-[var(--rt-brand-primary)]"}`}>✓</span>
+                {badge}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

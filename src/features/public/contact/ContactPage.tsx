@@ -15,7 +15,9 @@ import {
   Factory,
   ChevronDown,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { contactsApi } from "../../../api/endpoints/contacts";
+import { settingsApi } from "../../../api/endpoints/settings";
 import { useToastStore } from "../../../store/toastStore";
 import { useInView } from "../../../lib/hooks/useInView";
 import { StatsSection } from "../home/sections/StatsSection";
@@ -47,7 +49,7 @@ const CONTACT_CARDS = [
 const WHY_CARDS = [
   { Icon: Factory, title: "O'z ishlab chiqarish majmuasi" },
   { Icon: Globe2, title: "20+ eksport bozori" },
-  { Icon: ShieldCheck, title: "ISO 22000 va HACCP" },
+  { Icon: ShieldCheck, title: "Xalqaro sifat standartlari" },
   { Icon: Package, title: "Barqaror logistika va ta'minot" },
 ];
 
@@ -91,6 +93,18 @@ export function ContactPage() {
   const fromCategory = searchParams.get("fromCategory") ?? undefined;
   const fromTab = searchParams.get("fromTab") || undefined;
   const categoryBackPath = fromCategory ? (fromTab ? `/categories/${fromCategory}/${fromTab}` : `/categories/${fromCategory}`) : null;
+
+  const { data: locationSettings } = useQuery({
+    queryKey: ["settings", "General"],
+    queryFn: () => settingsApi.getGroup("General"),
+  });
+  const mapAddress = locationSettings?.Address || "Toshkent, O'zbekiston";
+  const mapLat = Number(locationSettings?.Latitude);
+  const mapLng = Number(locationSettings?.Longitude);
+  const hasMapCoords = Boolean(locationSettings?.Latitude) && Boolean(locationSettings?.Longitude) && !Number.isNaN(mapLat) && !Number.isNaN(mapLng);
+  const mapSrc = hasMapCoords
+    ? `https://yandex.ru/map-widget/v1/?ll=${mapLng}%2C${mapLat}&z=16&pt=${mapLng},${mapLat},pm2rdl`
+    : `https://yandex.ru/map-widget/v1/?text=${encodeURIComponent(mapAddress)}&z=12`;
 
   const addToast = useToastStore((s) => s.addToast);
   const [submitting, setSubmitting] = useState(false);
@@ -282,12 +296,13 @@ export function ContactPage() {
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="text-2xl font-bold text-[#294A34] sm:text-3xl">Bizning manzilimiz</h2>
           <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-taupe">
-            <MapPin className="h-4 w-4 text-[var(--rt-brand-secondary)]" /> Toshkent, O'zbekiston
+            <MapPin className="h-4 w-4 text-[var(--rt-brand-secondary)]" /> {mapAddress}
           </p>
           <div className="mt-8 overflow-hidden rounded-[28px] border border-black/5 shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
             <iframe
-              title="Naturino manzili — Toshkent, O'zbekiston"
-              src="https://maps.google.com/maps?q=Tashkent,Uzbekistan&z=12&output=embed"
+              key={mapSrc}
+              title={`Naturino manzili — ${mapAddress}`}
+              src={mapSrc}
               className="h-[420px] w-full border-0"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -380,7 +395,7 @@ export function ContactPage() {
             { icon: "globe", value: "20+", label: "Eksport bozori" },
             { icon: "factory", value: "12 000+", label: "Tonna/yil ishlab chiqarish quvvati" },
             { icon: "box", value: "40+", label: "SKU assortiment" },
-            { icon: "badge", value: "100%", label: "ISO 22000 sertifikatlangan ishlab chiqarish" },
+            { icon: "badge", value: "100%", label: "Xalqaro sertifikatlangan ishlab chiqarish" },
           ],
         }}
       />
@@ -391,7 +406,6 @@ export function ContactPage() {
           title: "Xalqaro hamkorlikni boshlashga ",
           highlight: "tayyormisiz?",
           subtitle: "Distribyutorlar va importyorlar uchun premium pet food mahsulotlari, eksport qo'llab-quvvatlashi va barqaror ta'minot.",
-          trustBadges: ["ISO 22000", "HACCP", "20+ eksport bozori", "12 000+ tonna/yil quvvat"],
           buttonUrl: "/contact",
           buttonText: "Eksport taklifini olish",
           secondaryButtonUrl: "/partnership",

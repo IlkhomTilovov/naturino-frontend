@@ -2,6 +2,8 @@ import { Award, Factory, Globe2, Package, type LucideIcon } from "lucide-react";
 import type { PageSectionContent } from "../../../../types/page";
 import { useInView } from "../../../../lib/hooks/useInView";
 import { useCountUp } from "../../../../lib/hooks/useCountUp";
+import { useCertificateBadges } from "../../../../lib/hooks/useCertificateBadges";
+import { useLanguage } from "../../../../i18n/LanguageContext";
 
 interface StatItem {
   icon?: string;
@@ -16,8 +18,6 @@ const ICONS: Record<string, LucideIcon> = {
   badge: Award,
   box: Package,
 };
-
-const DEFAULT_CERTIFICATIONS = ["ISO 22000", "HACCP", "GMP+", "EAC", "Veterinariya tasdig'i"];
 
 /**
  * Splits "12 000+" into { prefix: "", number: 12000, suffix: "+" } so we can count up the
@@ -78,7 +78,9 @@ export function StatsSection({ content }: { content: PageSectionContent }) {
   const subtitle =
     (content.subtitle as string | undefined) ??
     "12 yildan ortiq tajriba, xalqaro eksport va sertifikatlangan ishlab chiqarish quvvatlari.";
-  const certifications = (content.certifications as string[] | undefined) ?? DEFAULT_CERTIFICATIONS;
+  const { language } = useLanguage();
+  const certificateBadges = useCertificateBadges(language);
+  const certifications = (content.certifications as string[] | undefined) ?? certificateBadges;
   const { ref, inView } = useInView<HTMLDivElement>();
 
   if (items.length === 0) return null;

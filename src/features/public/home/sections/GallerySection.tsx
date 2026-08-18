@@ -15,7 +15,7 @@ export function GallerySection({ content }: { content: PageSectionContent }) {
   const images = (content.images as GalleryImage[] | undefined) ?? [];
   const categories = Array.from(new Set(images.map((i) => i.category).filter(Boolean))) as string[];
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const bg = bgVariantClasses(content.bgVariant as string | undefined, "");
+  const bg = bgVariantClasses(content.bgVariant as string | undefined, "default", "");
 
   if (!title && images.length === 0) return null;
 
