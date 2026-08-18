@@ -18,6 +18,12 @@ function fadeUp(inView: boolean, delayMs: number): CSSProperties {
 
 const fadeBase = "transition-all duration-700 ease-out";
 
+const CARD_TEXT: Record<string, { toifa: string; detail: string }> = {
+  uz: { toifa: "Toifa", detail: "Batafsil" },
+  ru: { toifa: "Категория", detail: "Подробнее" },
+  en: { toifa: "Category", detail: "View more" },
+};
+
 // One card per top-level Toifa. Exactly one is always "active" (expanded) —
 // the middle one by default, or whichever card the visitor is hovering —
 // so the panel never sits in a neutral all-equal state; there's always a
@@ -29,6 +35,7 @@ function CategoryCard({
   active,
   mobileVisible,
   onHover,
+  language,
 }: {
   category: ProductCategory;
   name: string;
@@ -36,7 +43,9 @@ function CategoryCard({
   active: boolean;
   mobileVisible: boolean;
   onHover: () => void;
+  language: string;
 }) {
+  const cardText = CARD_TEXT[language] ?? CARD_TEXT.uz;
   const img = resolveMediaUrl(category.imageUrl) ?? FALLBACK_IMAGE;
   return (
     <Link
@@ -59,7 +68,7 @@ function CategoryCard({
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
       <p className="absolute left-0 top-0 p-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/70 sm:p-8">
-        Toifa
+        {cardText.toifa}
       </p>
       <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
         <h3 className="truncate text-2xl font-extrabold leading-tight text-white sm:text-3xl">{name}</h3>
@@ -77,7 +86,7 @@ function CategoryCard({
             active ? "sm:gap-3 sm:opacity-100" : "sm:opacity-0"
           }`}
         >
-          Batafsil <span aria-hidden>→</span>
+          {cardText.detail} <span aria-hidden>→</span>
         </span>
       </div>
     </Link>
@@ -162,6 +171,7 @@ export function HeroSection() {
                   active={category.id === activeId}
                   mobileVisible={i === mobileIndex}
                   onHover={() => setHoveredId(category.id)}
+                  language={language}
                 />
               ))}
             </div>

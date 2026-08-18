@@ -27,7 +27,7 @@ export function TrustBarSection({ content }: { content: PageSectionContent }) {
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           {pills.map((badge, i) => (
             <span
-              key={badge}
+              key={`${badge}-${i}`}
               style={{ transitionDelay: inView ? `${120 + i * 80}ms` : "0ms" }}
               className={`group flex items-center gap-2 rounded-full border border-[var(--rt-brand-primary)]/20 bg-white px-5 py-3 text-sm font-semibold text-[#294A34] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--rt-brand-primary)] hover:bg-[var(--rt-brand-primary)] hover:text-white hover:shadow-md ${
                 inView ? "translate-y-0 scale-100 opacity-100" : "translate-y-3 scale-95 opacity-0"

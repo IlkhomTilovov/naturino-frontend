@@ -88,9 +88,9 @@ export function CtaSection({ content }: { content: PageSectionContent }) {
               inView ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
             }`}
           >
-            {trustBadges.map((badge) => (
+            {trustBadges.map((badge, i) => (
               <span
-                key={badge}
+                key={`${badge}-${i}`}
                 className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold ${
                   d ? "border-white/15 bg-white/5 text-white/80" : "border-black/10 bg-black/[0.03] text-[#294A34]/80"
                 }`}
