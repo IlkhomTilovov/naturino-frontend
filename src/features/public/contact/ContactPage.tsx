@@ -47,7 +47,7 @@ const CONTACT_CARDS = [
 const WHY_CARDS = [
   { Icon: Factory, title: "O'z ishlab chiqarish majmuasi" },
   { Icon: Globe2, title: "20+ eksport bozori" },
-  { Icon: ShieldCheck, title: "ISO 22000 va HACCP" },
+  { Icon: ShieldCheck, title: "Xalqaro sifat standartlari" },
   { Icon: Package, title: "Barqaror logistika va ta'minot" },
 ];
 
@@ -380,7 +380,7 @@ export function ContactPage() {
             { icon: "globe", value: "20+", label: "Eksport bozori" },
             { icon: "factory", value: "12 000+", label: "Tonna/yil ishlab chiqarish quvvati" },
             { icon: "box", value: "40+", label: "SKU assortiment" },
-            { icon: "badge", value: "100%", label: "ISO 22000 sertifikatlangan ishlab chiqarish" },
+            { icon: "badge", value: "100%", label: "Xalqaro sertifikatlangan ishlab chiqarish" },
           ],
         }}
       />

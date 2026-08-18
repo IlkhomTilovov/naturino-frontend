@@ -40,7 +40,7 @@ const ICONS: Record<string, LucideIcon> = {
 const DEFAULT_CARDS: FeatureCard[] = [
   { icon: "box", title: "Barqaror yetkazib berish", description: "Doimiy ishlab chiqarish rejasi va ishonchli muddatlarda yetkazib berish." },
   { icon: "globe", title: "Eksport tajribasi", description: "20+ davlatga mahsulot yetkazib berish bo'yicha amaliy tajriba." },
-  { icon: "shield", title: "Sifat kafolati", description: "Xalqaro standartlarga (ISO 22000, HACCP, GMP+) mos ishlab chiqarish." },
+  { icon: "shield", title: "Sifat kafolati", description: "Xalqaro sifat standartlariga (ISO, HALOL) mos ishlab chiqarish." },
   { icon: "handshake", title: "Biznes hamkorlik", description: "Barqaror o'sishga yo'naltirilgan uzoq muddatli hamkorlik." },
 ];
 

@@ -156,9 +156,9 @@ export const SECTION_FIELD_SCHEMAS: Record<string, FieldDef[]> = {
     { key: "titleEnd", label: "Sarlavha (davomi)", type: "text" },
     { key: "subtitle", label: "Matn", type: "textarea" },
     { key: "buttonText", label: "Tugma matni", type: "text" },
-    { key: "buttonUrl", label: "Tugma havolasi", type: "file", hint: "Ichki sahifa yo'li (masalan /contact) yoki yuklangan fayl (PDF)" },
+    { key: "buttonUrl", label: "Tugma havolasi", type: "file", hint: "Ichki sahifa yo'li (masalan /contact), yuklangan fayl (PDF), yoki \"certificates\" — sertifikatlar ro'yxati oynasini ochadi" },
     { key: "secondaryButtonText", label: "2-tugma matni", type: "text" },
-    { key: "secondaryButtonUrl", label: "2-tugma havolasi", type: "file", hint: "Ichki sahifa yo'li (masalan /contact) yoki yuklangan fayl (PDF)" },
+    { key: "secondaryButtonUrl", label: "2-tugma havolasi", type: "file", hint: "Ichki sahifa yo'li (masalan /contact), yuklangan fayl (PDF), yoki \"certificates\" — sertifikatlar ro'yxati oynasini ochadi" },
   ],
   About: [
     { key: "title", label: "Sarlavha", type: "text" },

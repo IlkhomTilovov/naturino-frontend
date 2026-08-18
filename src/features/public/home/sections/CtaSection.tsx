@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { PageSectionContent } from "../../../../types/page";
 import { useInView } from "../../../../lib/hooks/useInView";
@@ -5,13 +6,35 @@ import { bgVariantClasses } from "../../../../lib/utils/sectionBgVariant";
 import { useCertificateBadges } from "../../../../lib/hooks/useCertificateBadges";
 import { useLanguage } from "../../../../i18n/LanguageContext";
 import { resolveMediaUrl } from "../../../../lib/utils/media";
+import { CertificatesModal } from "../../shared/CertificatesModal";
 
-// buttonUrl can point at either an internal route ("/contact") or an
-// uploaded file ("/uploads/2026/08/....pdf") — the two need different tags,
-// since React Router's <Link> intercepts file paths as client-side routes
-// (no match, no download) instead of letting the browser open/download them.
+// buttonUrl can point at three different things, each needing a different
+// element: the "certificates" sentinel opens the certificate-picker modal
+// (for a CTA that doesn't have one specific PDF to link — e.g. a lab-report
+// promise with no lab report on file yet), an uploaded file
+// ("/uploads/2026/08/....pdf") needs a plain <a> so the browser opens/
+// downloads it (React Router's <Link> would intercept it as a client route
+// and go nowhere), and anything else is an internal route via <Link>.
 function isUploadedFile(url: string) {
   return url.startsWith("/uploads/") || /\/uploads\//.test(url);
+}
+
+function CtaButton({ url, className, children }: { url: string; className: string; children: ReactNode }) {
+  if (url === "certificates") {
+    return <CertificatesModal trigger={<button type="button" className={className}>{children}</button>} />;
+  }
+  if (isUploadedFile(url)) {
+    return (
+      <a href={resolveMediaUrl(url) ?? url} target="_blank" rel="noopener noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link to={url} className={className}>
+      {children}
+    </Link>
+  );
 }
 
 export function CtaSection({ content }: { content: PageSectionContent }) {
@@ -87,50 +110,24 @@ export function CtaSection({ content }: { content: PageSectionContent }) {
             }`}
           >
             {buttonText && (
-              isUploadedFile(buttonUrl) ? (
-                <a
-                  href={resolveMediaUrl(buttonUrl) ?? buttonUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_15px_35px_-10px_rgba(232,162,58,0.5)]"
-                >
-                  {buttonText} <span aria-hidden>→</span>
-                </a>
-              ) : (
-                <Link
-                  to={buttonUrl}
-                  className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_15px_35px_-10px_rgba(232,162,58,0.5)]"
-                >
-                  {buttonText} <span aria-hidden>→</span>
-                </Link>
-              )
+              <CtaButton
+                url={buttonUrl}
+                className="inline-flex items-center gap-2 rounded-lg bg-[var(--rt-accent)] px-6 py-3 font-semibold text-[var(--rt-brand-primary)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_15px_35px_-10px_rgba(232,162,58,0.5)]"
+              >
+                {buttonText} <span aria-hidden>→</span>
+              </CtaButton>
             )}
             {secondaryButtonText && (
-              isUploadedFile(secondaryButtonUrl) ? (
-                <a
-                  href={resolveMediaUrl(secondaryButtonUrl) ?? secondaryButtonUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 ${
-                    d
-                      ? "border-white/25 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
-                      : "border-black/15 bg-black/[0.03] text-[#294A34] hover:border-[#294A34]/40 hover:bg-black/[0.06]"
-                  }`}
-                >
-                  {secondaryButtonText} <span aria-hidden>→</span>
-                </a>
-              ) : (
-                <Link
-                  to={secondaryButtonUrl}
-                  className={`inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 ${
-                    d
-                      ? "border-white/25 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
-                      : "border-black/15 bg-black/[0.03] text-[#294A34] hover:border-[#294A34]/40 hover:bg-black/[0.06]"
-                  }`}
-                >
-                  {secondaryButtonText} <span aria-hidden>→</span>
-                </Link>
-              )
+              <CtaButton
+                url={secondaryButtonUrl}
+                className={`inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 ${
+                  d
+                    ? "border-white/25 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
+                    : "border-black/15 bg-black/[0.03] text-[#294A34] hover:border-[#294A34]/40 hover:bg-black/[0.06]"
+                }`}
+              >
+                {secondaryButtonText} <span aria-hidden>→</span>
+              </CtaButton>
             )}
           </div>
         )}

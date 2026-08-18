@@ -10,6 +10,7 @@ import { useLiveEditStore } from "../store/liveEditStore";
 import { pagesApi } from "../api/endpoints/pages";
 import { languagesApi } from "../api/endpoints/languages";
 import { ROUTE_TO_SLUG } from "../lib/page/publicPath";
+import { useCertificateBadges } from "../lib/hooks/useCertificateBadges";
 
 // Primary links — the money pages, shown large in the main (light) bar.
 const PRIMARY_LINKS = [
@@ -27,8 +28,6 @@ const SECONDARY_LINKS = [
 
 // Full list for the mobile drawer, which flattens both tiers.
 const NAV_LINKS = [...PRIMARY_LINKS, ...SECONDARY_LINKS, { to: "/contact", key: "nav.contact" }];
-
-const FOOTER_TRUST = ["ISO 22000 sertifikatlangan", "HACCP standartlari", "20+ eksport bozori", "12 000+ tonna/yil ishlab chiqarish quvvati"];
 
 const FOOTER_COLUMNS = [
   {
@@ -119,7 +118,8 @@ function LanguageSwitcher({ glass = false }: { glass?: boolean }) {
 export function PublicLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const footerTrust = useCertificateBadges(language);
 
   const liveEditActive = useLiveEditStore((s) => s.active);
   // Shares the ["pages"] cache key with PagesListPage/PageDetailPage — since entering
@@ -277,7 +277,7 @@ export function PublicLayout() {
               <p className="mt-4 max-w-md text-white/70">{t("footer.ctaDescription")}</p>
 
               <ul className="mt-6 flex flex-wrap gap-2.5">
-                {FOOTER_TRUST.map((item) => (
+                {footerTrust.map((item) => (
                   <li
                     key={item}
                     className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white/80"

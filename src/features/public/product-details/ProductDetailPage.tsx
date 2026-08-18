@@ -33,7 +33,7 @@ const HIGHLIGHTS = [
   { Icon: Bone, title: "Yuqori protein retsepti" },
   { Icon: Leaf, title: "Tabiiy ingredientlar" },
   { Icon: ShieldCheck, title: "Veterinariya tasdiqlangan" },
-  { Icon: Factory, title: "ISO 22000 ishlab chiqarish" },
+  { Icon: Factory, title: "Xalqaro sertifikatlangan ishlab chiqarish" },
   { Icon: Package, title: "Eksportga tayyor qadoqlash" },
   { Icon: Globe2, title: "Xalqaro distribyutsiya" },
 ];
@@ -567,7 +567,7 @@ function ProductDetailContent({
             { icon: "factory", value: "12 000+", label: "Tonna/yil ishlab chiqarish quvvati" },
             { icon: "globe", value: "20+", label: "Eksport bozori" },
             { icon: "box", value: "40+", label: "SKU assortiment" },
-            { icon: "badge", value: "100%", label: "ISO 22000 sertifikatlangan" },
+            { icon: "badge", value: "100%", label: "Xalqaro sertifikatlangan" },
           ],
         }}
       />
