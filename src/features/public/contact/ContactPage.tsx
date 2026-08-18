@@ -14,10 +14,13 @@ import {
   ShieldCheck,
   Factory,
   ChevronDown,
+  Search,
+  Store,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { contactsApi } from "../../../api/endpoints/contacts";
 import { settingsApi } from "../../../api/endpoints/settings";
+import { shopsApi, type Shop } from "../../../api/endpoints/shops";
 import { useToastStore } from "../../../store/toastStore";
 import { useInView } from "../../../lib/hooks/useInView";
 import { StatsSection } from "../home/sections/StatsSection";
@@ -78,6 +81,108 @@ const WORKING_HOURS = [
 
 const PRODUCT_INTERESTS = ["It ozuqasi", "Mushuk ozuqasi", "Ho'l ozuqa", "Tortmalar", "Boshqa"];
 
+function ShopsDirectory() {
+  const { data: shops } = useQuery({ queryKey: ["shops", "public"], queryFn: shopsApi.getAllActive });
+  const [search, setSearch] = useState("");
+  const [openCountry, setOpenCountry] = useState<string | null>(null);
+
+  const list = shops ?? [];
+  if (list.length === 0) return null;
+
+  const q = search.trim().toLowerCase();
+  const filtered = q
+    ? list.filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.city.toLowerCase().includes(q) ||
+          s.country.toLowerCase().includes(q) ||
+          s.address.toLowerCase().includes(q),
+      )
+    : list;
+
+  const grouped = filtered.reduce<Record<string, Shop[]>>((acc, s) => {
+    (acc[s.country] ??= []).push(s);
+    return acc;
+  }, {});
+  const countries = Object.keys(grouped).sort();
+
+  return (
+    <section className="bg-white px-4 py-16 sm:px-6 sm:py-24">
+      <div className="mx-auto max-w-4xl">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-[#294A34] sm:text-3xl">Qayerdan sotib olish mumkin</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-taupe">
+            {list.length}+ do'kon orqali mahsulotlarimizni sotib olishingiz mumkin. Davlat yoki shahar bo'yicha qidiring.
+          </p>
+        </div>
+
+        <div className="relative mx-auto mt-8 max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-taupe" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Davlat, shahar yoki diler nomi..."
+            className="w-full rounded-xl border border-[#E7EBDD] bg-[#F3EDE1] py-2.5 pl-9 pr-3 text-sm text-[#294A34] focus:border-[var(--rt-brand-primary)] focus:outline-none"
+          />
+        </div>
+
+        <div className="mt-8 space-y-3">
+          {countries.length === 0 && (
+            <p className="text-center text-sm text-taupe">Hech narsa topilmadi.</p>
+          )}
+
+          {countries.map((country) => {
+            const items = grouped[country];
+            const expanded = Boolean(q) || openCountry === country;
+            return (
+              <div key={country} className="overflow-hidden rounded-2xl border border-[#E7EBDD]">
+                <button
+                  type="button"
+                  onClick={() => setOpenCountry((c) => (c === country ? null : country))}
+                  className="flex w-full items-center justify-between gap-3 bg-[#F3EDE1] px-5 py-3.5 text-left transition-colors hover:bg-[#EFE8D8]"
+                >
+                  <span className="flex items-center gap-2 font-semibold text-[#294A34]">
+                    <Store className="h-4 w-4 text-[var(--rt-brand-secondary)]" /> {country}
+                    <span className="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-taupe">{items.length} ta</span>
+                  </span>
+                  <ChevronDown className={`h-4 w-4 text-taupe transition-transform ${expanded ? "rotate-180" : ""}`} />
+                </button>
+
+                {expanded && (
+                  <ul className="divide-y divide-[#E7EBDD]">
+                    {items.map((s) => (
+                      <li key={s.id} className="flex items-start justify-between gap-3 px-5 py-3.5">
+                        <div>
+                          <p className="font-medium text-[#294A34]">{s.name}</p>
+                          <p className="mt-0.5 text-sm text-taupe">
+                            {s.city} — {s.address}
+                          </p>
+                          {s.phone && <p className="mt-0.5 text-sm text-taupe">{s.phone}</p>}
+                        </div>
+                        {s.latitude != null && s.longitude != null && (
+                          <a
+                            href={`https://yandex.uz/maps/?pt=${s.longitude},${s.latitude}&z=16&l=map`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="shrink-0 whitespace-nowrap text-sm font-medium text-[var(--rt-brand-primary)] hover:underline"
+                          >
+                            Xaritada ko'rish
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function fadeUp(inView: boolean, delayMs = 0) {
   return {
     style: { transitionDelay: inView ? `${delayMs}ms` : "0ms" },
@@ -98,13 +203,23 @@ export function ContactPage() {
     queryKey: ["settings", "General"],
     queryFn: () => settingsApi.getGroup("General"),
   });
+  // Shares the ["shops", "public"] cache key with ShopsDirectory below, so
+  // this doesn't fire a second network request.
+  const { data: mapShops } = useQuery({ queryKey: ["shops", "public"], queryFn: shopsApi.getAllActive });
+
   const mapAddress = locationSettings?.Address || "Toshkent, O'zbekiston";
-  const mapLat = Number(locationSettings?.Latitude);
-  const mapLng = Number(locationSettings?.Longitude);
-  const hasMapCoords = Boolean(locationSettings?.Latitude) && Boolean(locationSettings?.Longitude) && !Number.isNaN(mapLat) && !Number.isNaN(mapLng);
-  const mapSrc = hasMapCoords
-    ? `https://yandex.ru/map-widget/v1/?ll=${mapLng}%2C${mapLat}&z=16&pt=${mapLng},${mapLat},pm2rdl`
-    : `https://yandex.ru/map-widget/v1/?text=${encodeURIComponent(mapAddress)}&z=12`;
+  // The map only ever plots pins we actually placed (admin-entered shop
+  // coordinates) — never a generic geocoded search result, which used to
+  // surface unrelated nearby businesses baked into Yandex's own map tiles.
+  const shopPoints = (mapShops ?? []).filter(
+    (s): s is typeof s & { latitude: number; longitude: number } => s.latitude != null && s.longitude != null,
+  ).slice(0, 100);
+  const mapSrc =
+    shopPoints.length > 0
+      ? `https://yandex.ru/map-widget/v1/?ll=${shopPoints[0].longitude}%2C${shopPoints[0].latitude}&z=${
+          shopPoints.length > 5 ? 5 : shopPoints.length > 1 ? 10 : 15
+        }&pt=${shopPoints.map((s) => `${s.longitude},${s.latitude},pm2rdl`).join("~")}`
+      : null;
 
   const addToast = useToastStore((s) => s.addToast);
   const [submitting, setSubmitting] = useState(false);
@@ -298,18 +413,26 @@ export function ContactPage() {
           <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-taupe">
             <MapPin className="h-4 w-4 text-[var(--rt-brand-secondary)]" /> {mapAddress}
           </p>
-          <div className="mt-8 overflow-hidden rounded-[28px] border border-black/5 shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
-            <iframe
-              key={mapSrc}
-              title={`Naturino manzili — ${mapAddress}`}
-              src={mapSrc}
-              className="h-[420px] w-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          {mapSrc ? (
+            <div className="mt-8 overflow-hidden rounded-[28px] border border-black/5 shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
+              <iframe
+                key={mapSrc}
+                title={`Naturino manzili — ${mapAddress}`}
+                src={mapSrc}
+                className="h-[420px] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          ) : (
+            <div className="mt-8 rounded-[28px] border border-black/5 bg-white/60 px-6 py-16 text-sm text-taupe">
+              Xarita hozircha bo'sh — admin panelda Do'konlar bo'limiga koordinatali manzil qo'shilgach, shu yerda ko'rinadi.
+            </div>
+          )}
         </div>
       </section>
+
+      <ShopsDirectory />
 
       {/* SECTION 05 — EXPORT INFORMATION */}
       <section className="bg-white px-4 py-16 sm:px-6 sm:py-24">

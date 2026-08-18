@@ -17,6 +17,7 @@ import {
   Search,
   SearchCheck,
   Settings,
+  Store,
   Users,
 } from "lucide-react";
 import { authApi } from "../api/endpoints/auth";
@@ -35,6 +36,7 @@ const NAV_GROUPS = [
       { to: "/admin/categories", label: "Kategoriyalar", end: false, icon: FolderTree },
       { to: "/admin/subcategories", label: "Sub-toifalar", end: false, icon: Layers },
       { to: "/admin/certificates", label: "Sertifikatlar", end: false, icon: Award },
+      { to: "/admin/shops", label: "Do'konlar", end: false, icon: Store },
       { to: "/admin/content", label: "Sayt kontenti", end: false, icon: PenTool },
     ],
   },
