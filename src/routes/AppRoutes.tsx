@@ -20,6 +20,7 @@ const PageDetailPage = lazy(() => import("../features/admin/page-builder/PageDet
 const LiveEditPage = lazy(() => import("../features/admin/page-builder/LiveEditPage").then((m) => ({ default: m.LiveEditPage })));
 const LanguagesPage = lazy(() => import("../features/admin/languages/LanguagesPage").then((m) => ({ default: m.LanguagesPage })));
 const CertificatesPage = lazy(() => import("../features/admin/certificates/CertificatesPage").then((m) => ({ default: m.CertificatesPage })));
+const ShopsPage = lazy(() => import("../features/admin/shops/ShopsPage").then((m) => ({ default: m.ShopsPage })));
 const ThemesPage = lazy(() => import("../features/admin/appearance/ThemesPage").then((m) => ({ default: m.ThemesPage })));
 const ThemeEditorPage = lazy(() => import("../features/admin/appearance/ThemeEditorPage").then((m) => ({ default: m.ThemeEditorPage })));
 const SettingsPage = lazy(() => import("../features/admin/settings/SettingsPage").then((m) => ({ default: m.SettingsPage })));
@@ -101,6 +102,7 @@ export function AppRoutes() {
           <Route path="pages" element={<PagesListPage />} />
           <Route path="languages" element={<LanguagesPage />} />
           <Route path="certificates" element={<CertificatesPage />} />
+          <Route path="shops" element={<ShopsPage />} />
           <Route path="appearance/themes" element={<ThemesPage />} />
           <Route path="appearance/themes/new" element={<ThemeEditorPage />} />
           <Route path="appearance/themes/:id" element={<ThemeEditorPage />} />
