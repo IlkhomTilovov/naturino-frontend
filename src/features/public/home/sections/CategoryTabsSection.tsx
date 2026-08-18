@@ -44,7 +44,7 @@ export function CategoryTabsSection({
     <div className="sticky top-[68px] z-40 w-full border-b border-[#E7EBDD] bg-white/95 backdrop-blur-md">
       <nav
         aria-label="Kategoriya bo'limlari"
-        className="mx-auto flex h-14 max-w-[1400px] items-center justify-end gap-1 overflow-x-auto px-4 sm:px-6"
+        className="mx-auto flex h-14 max-w-[1400px] items-center justify-start gap-1 overflow-x-auto px-4 sm:justify-end sm:px-6"
       >
         {tabs.map((tab, i) => {
           const tabSlug = tab.slug?.trim();
