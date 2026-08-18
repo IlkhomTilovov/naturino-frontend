@@ -34,34 +34,34 @@ const FOOTER_COLUMNS = [
     title: "Kompaniya",
     titleKey: "footer.companyHeading",
     links: [
-      { to: "/about-us", label: "Kompaniya haqida" },
-      { to: "/ishlab-chiqarish", label: "Ishlab chiqarish" },
-      { to: "/quality", label: "Sifat nazorati" },
-      { to: "/certificates", label: "Sertifikatlar" },
-      { to: "/partnership", label: "Eksport" },
-      { to: "/contact", label: "Aloqa" },
+      { to: "/about-us", labelKey: "footer.link.aboutUs" },
+      { to: "/ishlab-chiqarish", labelKey: "footer.link.production" },
+      { to: "/quality", labelKey: "footer.link.quality" },
+      { to: "/certificates", labelKey: "footer.link.certificates" },
+      { to: "/partnership", labelKey: "footer.link.export" },
+      { to: "/contact", labelKey: "footer.link.contact" },
     ],
   },
   {
     title: "Mahsulotlar",
     titleKey: "footer.productsHeading",
     links: [
-      { to: "/products", label: "Quruq it ozuqasi" },
-      { to: "/products", label: "Ho'l it ozuqasi" },
-      { to: "/products", label: "Quruq mushuk ozuqasi" },
-      { to: "/products", label: "Ho'l mushuk ozuqasi" },
-      { to: "/products", label: "Barcha mahsulotlar" },
+      { to: "/products", labelKey: "footer.link.dryDogFood" },
+      { to: "/products", labelKey: "footer.link.wetDogFood" },
+      { to: "/products", labelKey: "footer.link.dryCatFood" },
+      { to: "/products", labelKey: "footer.link.wetCatFood" },
+      { to: "/products", labelKey: "footer.link.allProducts" },
     ],
   },
   {
     title: "Eksport va aloqa",
     titleKey: "footer.exportHeading",
     links: [
-      { to: "/partnership", label: "Eksport bozorlari" },
-      { to: "/partnership", label: "Logistika" },
-      { to: "/partnership", label: "Distribyutorlik" },
-      { to: "/products", label: "Katalog yuklash" },
-      { to: "/contact", label: "Narx so'rash" },
+      { to: "/partnership", labelKey: "footer.link.exportMarkets" },
+      { to: "/partnership", labelKey: "footer.link.logistics" },
+      { to: "/partnership", labelKey: "footer.link.distribution" },
+      { to: "/products", labelKey: "footer.link.downloadCatalog" },
+      { to: "/contact", labelKey: "footer.link.requestQuote" },
     ],
   },
 ];
@@ -277,9 +277,9 @@ export function PublicLayout() {
               <p className="mt-4 max-w-md text-white/70">{t("footer.ctaDescription")}</p>
 
               <ul className="mt-6 flex flex-wrap gap-2.5">
-                {footerTrust.map((item) => (
+                {footerTrust.map((item, i) => (
                   <li
-                    key={item}
+                    key={`${item}-${i}`}
                     className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white/80"
                   >
                     <span className="text-[var(--rt-accent)]">✓</span>
@@ -313,10 +313,10 @@ export function PublicLayout() {
 
               <ul className="mt-5 space-y-1.5 text-sm font-medium text-slate-600">
                 <li className="flex items-center gap-1.5">
-                  <span className="text-[var(--rt-brand-primary)]">✓</span> 20+ eksport bozori
+                  <span className="text-[var(--rt-brand-primary)]">✓</span> {t("footer.stat.exportMarkets")}
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="text-[var(--rt-brand-primary)]">✓</span> 12 000+ tonna/yil
+                  <span className="text-[var(--rt-brand-primary)]">✓</span> {t("footer.stat.tonnage")}
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="text-[var(--rt-brand-primary)]">✓</span> ISO 22000
@@ -329,9 +329,9 @@ export function PublicLayout() {
                 <p className="text-sm font-semibold text-[#0F172A]">{t(col.titleKey)}</p>
                 <ul className="mt-4 space-y-2.5 text-sm text-slate-500">
                   {col.links.map((link) => (
-                    <li key={link.label}>
+                    <li key={link.labelKey}>
                       <Link to={resolveNavTo(link.to)} className="transition-colors hover:text-[var(--rt-brand-primary)]">
-                        {link.label}
+                        {t(link.labelKey)}
                       </Link>
                     </li>
                   ))}
@@ -343,9 +343,9 @@ export function PublicLayout() {
               <p className="text-sm font-semibold text-[#0F172A]">{t(FOOTER_COLUMNS[2].titleKey)}</p>
               <ul className="mt-4 space-y-2.5 text-sm text-slate-500">
                 {FOOTER_COLUMNS[2].links.map((link) => (
-                  <li key={link.label}>
+                  <li key={link.labelKey}>
                     <Link to={resolveNavTo(link.to)} className="transition-colors hover:text-[var(--rt-brand-primary)]">
-                      {link.label}
+                      {t(link.labelKey)}
                     </Link>
                   </li>
                 ))}
@@ -353,7 +353,7 @@ export function PublicLayout() {
 
               <div className="mt-6 space-y-2.5 text-sm text-slate-500">
                 <p className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 shrink-0 text-[var(--rt-brand-primary)]" /> Toshkent, O'zbekiston
+                  <MapPin className="h-4 w-4 shrink-0 text-[var(--rt-brand-primary)]" /> {t("footer.address")}
                 </p>
                 <a href="mailto:export@naturino.uz" className="flex items-center gap-2 transition-colors hover:text-[var(--rt-brand-primary)]">
                   <Mail className="h-4 w-4 shrink-0 text-[var(--rt-brand-primary)]" /> export@naturino.uz

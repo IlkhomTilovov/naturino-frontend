@@ -13,8 +13,51 @@ import { getLocalized } from "../../../lib/page/localizedContent";
 
 const PAGE_SIZE = 12;
 
+const TEXT: Record<string, {
+  defaultTitle: string;
+  defaultSubtitle: string;
+  breadcrumbHome: string;
+  breadcrumbCurrent: string;
+  all: string;
+  noProducts: string;
+  loading: string;
+  loadMore: string;
+}> = {
+  uz: {
+    defaultTitle: "Naturino mahsulotlari",
+    defaultSubtitle: "It va mushuklar uchun premium, sertifikatlangan ozuqalar — kategoriya bo'yicha tanlang.",
+    breadcrumbHome: "Bosh sahifa",
+    breadcrumbCurrent: "Mahsulotlar katalogi",
+    all: "Barchasi",
+    noProducts: "Bu kategoriyada mahsulotlar topilmadi.",
+    loading: "Yuklanmoqda...",
+    loadMore: "Yana yuklash",
+  },
+  ru: {
+    defaultTitle: "Продукция Naturino",
+    defaultSubtitle: "Премиальные сертифицированные корма для собак и кошек — выберите по категории.",
+    breadcrumbHome: "Главная",
+    breadcrumbCurrent: "Каталог продукции",
+    all: "Все",
+    noProducts: "В этой категории товары не найдены.",
+    loading: "Загрузка...",
+    loadMore: "Загрузить ещё",
+  },
+  en: {
+    defaultTitle: "Naturino Products",
+    defaultSubtitle: "Premium certified food for dogs and cats — choose by category.",
+    breadcrumbHome: "Home",
+    breadcrumbCurrent: "Product Catalog",
+    all: "All",
+    noProducts: "No products found in this category.",
+    loading: "Loading...",
+    loadMore: "Load more",
+  },
+};
+
 export function ProductsPage() {
   const { language } = useLanguage();
+  const t = TEXT[language] ?? TEXT.uz;
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [pageNum, setPageNum] = useState(1);
   const [searchParams] = useSearchParams();
@@ -68,7 +111,7 @@ export function ProductsPage() {
   return (
     <>
       <Helmet>
-        <title>{heroTitle ?? "Mahsulotlar"} — Naturino</title>
+        <title>{heroTitle ?? t.defaultTitle} — Naturino</title>
       </Helmet>
 
       <section className="relative overflow-hidden bg-[var(--rt-brand-primary)] px-6 pb-14 pt-16 text-center text-white sm:pb-16 sm:pt-20">
@@ -82,14 +125,12 @@ export function ProductsPage() {
 
         <div className="relative z-10 mx-auto max-w-3xl">
           <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rt-accent)]">
-            <span className="text-white/50">{breadcrumbHome ?? "Bosh sahifa"}</span>
+            <span className="text-white/50">{breadcrumbHome ?? t.breadcrumbHome}</span>
             <span aria-hidden className="text-white/30">/</span>
-            {(breadcrumbCurrent ?? cmsPage?.title ?? "Mahsulotlar katalogi").toLocaleUpperCase("uz")}
+            {(breadcrumbCurrent ?? t.breadcrumbCurrent).toLocaleUpperCase(language)}
           </p>
-          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">{heroTitle ?? "Naturino mahsulotlari"}</h1>
-          <p className="mx-auto mt-4 max-w-xl text-white/70">
-            {heroSubtitle ?? "It va mushuklar uchun premium, sertifikatlangan ozuqalar — kategoriya bo'yicha tanlang."}
-          </p>
+          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">{heroTitle ?? t.defaultTitle}</h1>
+          <p className="mx-auto mt-4 max-w-xl text-white/70">{heroSubtitle ?? t.defaultSubtitle}</p>
         </div>
       </section>
 
@@ -104,7 +145,7 @@ export function ProductsPage() {
                 : "bg-[#E9E1D0] text-slate-600 hover:bg-slate-200"
             }`}
           >
-            Barchasi
+            {t.all}
           </button>
           {activeCategories.map((category) => (
             <button
@@ -132,7 +173,7 @@ export function ProductsPage() {
           )}
 
           {!isLoading && accumulated.length === 0 && (
-            <p className="py-16 text-center text-taupe">Bu kategoriyada mahsulotlar topilmadi.</p>
+            <p className="py-16 text-center text-taupe">{t.noProducts}</p>
           )}
 
           {accumulated.length > 0 && (
@@ -151,7 +192,7 @@ export function ProductsPage() {
                 disabled={isFetching}
                 className="rounded-full border border-[var(--rt-brand-primary)] px-6 py-3 text-sm font-semibold text-[var(--rt-brand-primary)] transition-colors hover:bg-[var(--rt-brand-primary)] hover:text-white disabled:opacity-50"
               >
-                {isFetching ? "Yuklanmoqda..." : "Yana yuklash"}
+                {isFetching ? t.loading : t.loadMore}
               </button>
             </div>
           )}

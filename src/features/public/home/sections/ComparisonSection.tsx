@@ -126,9 +126,9 @@ export function ComparisonSection({ content }: { content: PageSectionContent }) 
               d ? "border-white/10" : "border-black/10"
             } ${inView ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
           >
-            {trustBadges.map((badge) => (
+            {trustBadges.map((badge, i) => (
               <span
-                key={badge}
+                key={`${badge}-${i}`}
                 className={`group flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 hover:border-[var(--rt-accent)] hover:bg-[var(--rt-accent)] hover:text-[#294A34] ${
                   d ? "border-white/15 bg-white/5 text-white/80" : "border-black/10 bg-black/[0.03] text-[#294A34]/80"
                 }`}

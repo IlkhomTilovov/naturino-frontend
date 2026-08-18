@@ -110,7 +110,7 @@ export function StatsSection({ content }: { content: PageSectionContent }) {
             <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
               {certifications.map((cert, i) => (
                 <span
-                  key={cert}
+                  key={`${cert}-${i}`}
                   style={{ transitionDelay: inView ? `${500 + i * 80}ms` : "0ms" }}
                   className={`group flex items-center gap-2 rounded-full border border-black/5 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--rt-brand-primary)] hover:text-white hover:shadow-md ${
                     inView ? "translate-y-0 scale-100 opacity-100" : "translate-y-3 scale-95 opacity-0"

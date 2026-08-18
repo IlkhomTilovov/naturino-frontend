@@ -312,9 +312,9 @@ function ProductDetailContent({
           <div>
             {badges.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {badges.map((badge) => (
+                {badges.map((badge, i) => (
                   <span
-                    key={badge}
+                    key={`${badge}-${i}`}
                     className="rounded-full bg-[var(--rt-brand-secondary)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--rt-brand-secondary)]"
                   >
                     {badge}

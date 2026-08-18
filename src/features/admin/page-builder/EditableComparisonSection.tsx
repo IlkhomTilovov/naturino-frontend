@@ -94,9 +94,9 @@ export function EditableComparisonSection({
         </div>
 
         <div className={`mt-12 flex flex-wrap items-center justify-center gap-3 border-t pt-10 sm:mt-14 ${d ? "border-white/10" : "border-black/10"}`}>
-          {trustBadges.map((badge) => (
+          {trustBadges.map((badge, i) => (
             <span
-              key={badge}
+              key={`${badge}-${i}`}
               className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold ${
                 d ? "border-white/15 bg-white/5 text-white/80" : "border-black/10 bg-black/[0.03] text-[#294A34]/80"
               }`}

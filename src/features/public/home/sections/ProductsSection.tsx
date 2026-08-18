@@ -85,9 +85,9 @@ function ShowcaseCard({ product, offset }: { product: Product; offset: number })
                 Tavsiya etiladi
               </span>
             )}
-            {badges.map((badge) => (
+            {badges.map((badge, i) => (
               <span
-                key={badge}
+                key={`${badge}-${i}`}
                 className="rounded-full bg-[var(--rt-brand-primary)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--rt-brand-primary)]"
               >
                 {badge}
